@@ -2,7 +2,7 @@ name: LoveNovel
 options:
   bundleIdPrefix: com.reinamaccredy
   deploymentTarget:
-    iOS: "17.0"
+    iOS: "26.0"
 settings:
   base:
     SWIFT_VERSION: 6.0
@@ -14,7 +14,7 @@ targets:
   LoveNovel:
     type: application
     platform: iOS
-    deploymentTarget: "17.0"
+    deploymentTarget: "26.0"
     sources:
       - path: LoveNovel
         excludes:
@@ -36,7 +36,7 @@ targets:
   LoveNovelTests:
     type: bundle.unit-test
     platform: iOS
-    deploymentTarget: "17.0"
+    deploymentTarget: "26.0"
     sources:
       - LoveNovelTests
     dependencies:
@@ -50,7 +50,7 @@ targets:
   LoveNovelUITests:
     type: bundle.ui-testing
     platform: iOS
-    deploymentTarget: "17.0"
+    deploymentTarget: "26.0"
     sources:
       - LoveNovelUITests
     dependencies:
