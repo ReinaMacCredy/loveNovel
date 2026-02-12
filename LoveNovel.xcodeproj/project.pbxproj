@@ -1,0 +1,684 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0FBC13B1BB2E408B2D403AD1 /* LoveNovelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02BD211964C995FF78E0BC9 /* LoveNovelApp.swift */; };
+		1692822D9C881A0202630BC9 /* LibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4899975FB13AC5045358C0 /* LibraryViewModel.swift */; };
+		1C73DA1DD398072DC43DE0A8 /* FeaturedBookCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7718E28329D4118CBCB43E4 /* FeaturedBookCard.swift */; };
+		2F083812DFFBD4D42F5F8DE6 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559E5C50C690E1BA98A61FF2 /* SectionHeader.swift */; };
+		37AA996A0574518DCA389BAE /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371DBC162060B6A9E5ED40EE /* AppTheme.swift */; };
+		3C1C7CCCEDAC6C6E237238A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D82EB91B939D8D8FFAFEAFF8 /* Assets.xcassets */; };
+		45A94CEF9C62394EAD6DACD9 /* CatalogRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054F4BE566902193B9F4C6A8 /* CatalogRepository.swift */; };
+		6FF0F2B54D44614F707C764F /* mock_catalog.json in Resources */ = {isa = PBXBuildFile; fileRef = 1AEDDAC47E0A105891718066 /* mock_catalog.json */; };
+		72EFB7303D28234631E0D439 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1B46587C222903D543D623 /* RootTabView.swift */; };
+		7301D38B497911978498DFE1 /* HomeFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0511D7462653F1464C987861 /* HomeFeed.swift */; };
+		7F48492B4EFABB151787B048 /* CatalogRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859F9A0E1DAD16CB544E92B6 /* CatalogRepositoryTests.swift */; };
+		B070E087AE0A669F3BDFB212 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49FC3C70AF7169E7204B8C40 /* Preview Assets.xcassets */; };
+		B0C9EC4363E518EEE8AE7D9D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F998371340B70A54F021AA5 /* SettingsView.swift */; };
+		BBAE7225FF50544966B561E4 /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FE06CDD886582F8FBD0CCB /* ExploreViewModel.swift */; };
+		BBE9A9EC724729F260173040 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FABCEA055173ECB5DFEF9E2 /* Book.swift */; };
+		BF233B643B91D6E20CE0E14D /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A2C5F76048A224EB3C8A7BD /* ProfileView.swift */; };
+		C143319A9A9879D2A76F189B /* CatalogProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DD8165929DA880A908ECC8 /* CatalogProviding.swift */; };
+		C3D7352C4B17A6FA0C3A4AB0 /* TabNavigationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA5EA658585C55972D674CF /* TabNavigationUITests.swift */; };
+		CCE87810F1F811DF76FEA9DD /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE7079E90295ED90F8F3E11 /* LibraryView.swift */; };
+		D7E6BE1C562F9C2575DAF155 /* BookCoverStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F933A30EFAF472908B6541C7 /* BookCoverStrip.swift */; };
+		E00EB3FB22C3E88FA9BED3B2 /* ExploreViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2118C897BCDCB2D00C78782 /* ExploreViewModelTests.swift */; };
+		FAF0D5D5BD9916DBBAA782A0 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A9E38451BCEA71BC5D41BC /* ExploreView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		180BBD3D67C7CC5125B8D31B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6080AA3623CA21A93C9FBFF4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0E5DC55C901AA1D8F939DF9A;
+			remoteInfo = LoveNovel;
+		};
+		65EB296A445C0BCF89C77CC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6080AA3623CA21A93C9FBFF4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0E5DC55C901AA1D8F939DF9A;
+			remoteInfo = LoveNovel;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0511D7462653F1464C987861 /* HomeFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeed.swift; sourceTree = "<group>"; };
+		054F4BE566902193B9F4C6A8 /* CatalogRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogRepository.swift; sourceTree = "<group>"; };
+		1AEDDAC47E0A105891718066 /* mock_catalog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mock_catalog.json; sourceTree = "<group>"; };
+		2A2C5F76048A224EB3C8A7BD /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		371DBC162060B6A9E5ED40EE /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		4738664FC7BB0770BF295434 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		49FC3C70AF7169E7204B8C40 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		50DD8165929DA880A908ECC8 /* CatalogProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogProviding.swift; sourceTree = "<group>"; };
+		559E5C50C690E1BA98A61FF2 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
+		6A42002DF1D3FDF8FBC1BAA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6FABCEA055173ECB5DFEF9E2 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
+		73A9E38451BCEA71BC5D41BC /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
+		859F9A0E1DAD16CB544E92B6 /* CatalogRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogRepositoryTests.swift; sourceTree = "<group>"; };
+		8AA5EA658585C55972D674CF /* TabNavigationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabNavigationUITests.swift; sourceTree = "<group>"; };
+		8F998371340B70A54F021AA5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		98FE06CDD886582F8FBD0CCB /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
+		9A1493BAA10508A92770B10F /* LoveNovel.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LoveNovel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD4899975FB13AC5045358C0 /* LibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewModel.swift; sourceTree = "<group>"; };
+		ADE7079E90295ED90F8F3E11 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		B2118C897BCDCB2D00C78782 /* ExploreViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModelTests.swift; sourceTree = "<group>"; };
+		B554896B2A1DC7F6E4E03182 /* LoveNovelTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LoveNovelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6E80A51070E41E8FC1307B4 /* LoveNovelUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LoveNovelUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7718E28329D4118CBCB43E4 /* FeaturedBookCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedBookCard.swift; sourceTree = "<group>"; };
+		D82EB91B939D8D8FFAFEAFF8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EF1B46587C222903D543D623 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
+		F02BD211964C995FF78E0BC9 /* LoveNovelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoveNovelApp.swift; sourceTree = "<group>"; };
+		F933A30EFAF472908B6541C7 /* BookCoverStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCoverStrip.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		149BD03015E8C9B496FA91F9 = {
+			isa = PBXGroup;
+			children = (
+				CEECC5EEB5D80DBDFF69CD87 /* LoveNovel */,
+				69453839160412D1216F9138 /* LoveNovelTests */,
+				74EA49C0156D845D7DDFF774 /* LoveNovelUITests */,
+				D8C68AF461BF70D23EBE50CD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1C60FA187F170015D735C1C3 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				50DD8165929DA880A908ECC8 /* CatalogProviding.swift */,
+				054F4BE566902193B9F4C6A8 /* CatalogRepository.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		409D87B5220C76F30E5CE1E4 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				371DBC162060B6A9E5ED40EE /* AppTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		5B232F7D37F1FB584EE6C0AF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1AEDDAC47E0A105891718066 /* mock_catalog.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		5BD6753D08E455EF60852210 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				A7D07DAED1C51A59532B0F11 /* Explore */,
+				AD82042A2D1E39A7637F2E9A /* Library */,
+				693EF42857EC7985BA7CF712 /* Profile */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		693EF42857EC7985BA7CF712 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				2A2C5F76048A224EB3C8A7BD /* ProfileView.swift */,
+				8F998371340B70A54F021AA5 /* SettingsView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		69453839160412D1216F9138 /* LoveNovelTests */ = {
+			isa = PBXGroup;
+			children = (
+				859F9A0E1DAD16CB544E92B6 /* CatalogRepositoryTests.swift */,
+				B2118C897BCDCB2D00C78782 /* ExploreViewModelTests.swift */,
+				6A42002DF1D3FDF8FBC1BAA3 /* Info.plist */,
+			);
+			path = LoveNovelTests;
+			sourceTree = "<group>";
+		};
+		74EA49C0156D845D7DDFF774 /* LoveNovelUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4738664FC7BB0770BF295434 /* Info.plist */,
+				8AA5EA658585C55972D674CF /* TabNavigationUITests.swift */,
+			);
+			path = LoveNovelUITests;
+			sourceTree = "<group>";
+		};
+		9FAF05078384B31741AAC845 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6FABCEA055173ECB5DFEF9E2 /* Book.swift */,
+				0511D7462653F1464C987861 /* HomeFeed.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A7D07DAED1C51A59532B0F11 /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				73A9E38451BCEA71BC5D41BC /* ExploreView.swift */,
+				98FE06CDD886582F8FBD0CCB /* ExploreViewModel.swift */,
+				CD410C05040A6F7F32C70722 /* Components */,
+			);
+			path = Explore;
+			sourceTree = "<group>";
+		};
+		AD82042A2D1E39A7637F2E9A /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				ADE7079E90295ED90F8F3E11 /* LibraryView.swift */,
+				AD4899975FB13AC5045358C0 /* LibraryViewModel.swift */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
+		CC805351D717D5CD8B0B3DEB /* App */ = {
+			isa = PBXGroup;
+			children = (
+				EF1B46587C222903D543D623 /* RootTabView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		CD410C05040A6F7F32C70722 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F933A30EFAF472908B6541C7 /* BookCoverStrip.swift */,
+				D7718E28329D4118CBCB43E4 /* FeaturedBookCard.swift */,
+				559E5C50C690E1BA98A61FF2 /* SectionHeader.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		CE071D60A86CDA3DD0C8B2DC /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				49FC3C70AF7169E7204B8C40 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		CEECC5EEB5D80DBDFF69CD87 /* LoveNovel */ = {
+			isa = PBXGroup;
+			children = (
+				D82EB91B939D8D8FFAFEAFF8 /* Assets.xcassets */,
+				F02BD211964C995FF78E0BC9 /* LoveNovelApp.swift */,
+				CC805351D717D5CD8B0B3DEB /* App */,
+				1C60FA187F170015D735C1C3 /* Data */,
+				5BD6753D08E455EF60852210 /* Features */,
+				9FAF05078384B31741AAC845 /* Models */,
+				CE071D60A86CDA3DD0C8B2DC /* Preview Content */,
+				5B232F7D37F1FB584EE6C0AF /* Resources */,
+				409D87B5220C76F30E5CE1E4 /* Theme */,
+			);
+			path = LoveNovel;
+			sourceTree = "<group>";
+		};
+		D8C68AF461BF70D23EBE50CD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9A1493BAA10508A92770B10F /* LoveNovel.app */,
+				B554896B2A1DC7F6E4E03182 /* LoveNovelTests.xctest */,
+				B6E80A51070E41E8FC1307B4 /* LoveNovelUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0E5DC55C901AA1D8F939DF9A /* LoveNovel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 14FF6848CFC8DD76D4D95F30 /* Build configuration list for PBXNativeTarget "LoveNovel" */;
+			buildPhases = (
+				4D8FA035F148A54D416F354D /* Sources */,
+				BCD6C0EAFC18F243F043EFF3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LoveNovel;
+			packageProductDependencies = (
+			);
+			productName = LoveNovel;
+			productReference = 9A1493BAA10508A92770B10F /* LoveNovel.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3482849258C536B3999A3346 /* LoveNovelUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E1F3A91761BAB18AAAE0A6ED /* Build configuration list for PBXNativeTarget "LoveNovelUITests" */;
+			buildPhases = (
+				8457D60E425A8AACA239A799 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9238EC55422B3F44F5441C12 /* PBXTargetDependency */,
+			);
+			name = LoveNovelUITests;
+			packageProductDependencies = (
+			);
+			productName = LoveNovelUITests;
+			productReference = B6E80A51070E41E8FC1307B4 /* LoveNovelUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		7837168D574D6D2DA396547E /* LoveNovelTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C1F2EB9CC97E926F3AE8D9A3 /* Build configuration list for PBXNativeTarget "LoveNovelTests" */;
+			buildPhases = (
+				1986EED26583AD157349A2A0 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				22E053F35E65FE3321CF04E5 /* PBXTargetDependency */,
+			);
+			name = LoveNovelTests;
+			packageProductDependencies = (
+			);
+			productName = LoveNovelTests;
+			productReference = B554896B2A1DC7F6E4E03182 /* LoveNovelTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6080AA3623CA21A93C9FBFF4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					3482849258C536B3999A3346 = {
+						TestTargetID = 0E5DC55C901AA1D8F939DF9A;
+					};
+				};
+			};
+			buildConfigurationList = 92C8F5EA18BA2200B911CA69 /* Build configuration list for PBXProject "LoveNovel" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 149BD03015E8C9B496FA91F9;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0E5DC55C901AA1D8F939DF9A /* LoveNovel */,
+				7837168D574D6D2DA396547E /* LoveNovelTests */,
+				3482849258C536B3999A3346 /* LoveNovelUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BCD6C0EAFC18F243F043EFF3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3C1C7CCCEDAC6C6E237238A6 /* Assets.xcassets in Resources */,
+				B070E087AE0A669F3BDFB212 /* Preview Assets.xcassets in Resources */,
+				6FF0F2B54D44614F707C764F /* mock_catalog.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1986EED26583AD157349A2A0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F48492B4EFABB151787B048 /* CatalogRepositoryTests.swift in Sources */,
+				E00EB3FB22C3E88FA9BED3B2 /* ExploreViewModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D8FA035F148A54D416F354D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				37AA996A0574518DCA389BAE /* AppTheme.swift in Sources */,
+				BBE9A9EC724729F260173040 /* Book.swift in Sources */,
+				D7E6BE1C562F9C2575DAF155 /* BookCoverStrip.swift in Sources */,
+				C143319A9A9879D2A76F189B /* CatalogProviding.swift in Sources */,
+				45A94CEF9C62394EAD6DACD9 /* CatalogRepository.swift in Sources */,
+				FAF0D5D5BD9916DBBAA782A0 /* ExploreView.swift in Sources */,
+				BBAE7225FF50544966B561E4 /* ExploreViewModel.swift in Sources */,
+				1C73DA1DD398072DC43DE0A8 /* FeaturedBookCard.swift in Sources */,
+				7301D38B497911978498DFE1 /* HomeFeed.swift in Sources */,
+				CCE87810F1F811DF76FEA9DD /* LibraryView.swift in Sources */,
+				1692822D9C881A0202630BC9 /* LibraryViewModel.swift in Sources */,
+				0FBC13B1BB2E408B2D403AD1 /* LoveNovelApp.swift in Sources */,
+				BF233B643B91D6E20CE0E14D /* ProfileView.swift in Sources */,
+				72EFB7303D28234631E0D439 /* RootTabView.swift in Sources */,
+				2F083812DFFBD4D42F5F8DE6 /* SectionHeader.swift in Sources */,
+				B0C9EC4363E518EEE8AE7D9D /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8457D60E425A8AACA239A799 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3D7352C4B17A6FA0C3A4AB0 /* TabNavigationUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		22E053F35E65FE3321CF04E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0E5DC55C901AA1D8F939DF9A /* LoveNovel */;
+			targetProxy = 65EB296A445C0BCF89C77CC5 /* PBXContainerItemProxy */;
+		};
+		9238EC55422B3F44F5441C12 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0E5DC55C901AA1D8F939DF9A /* LoveNovel */;
+			targetProxy = 180BBD3D67C7CC5125B8D31B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		178C7C9E8C26A05A5086A735 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"LoveNovel/Preview Content\"";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LoveNovel/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reinamaccredy.lovenovel;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		6001EB39AAA1D57D6887FB95 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LoveNovelTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.reinamaccredy.lovenovel.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LoveNovel.app/LoveNovel";
+			};
+			name = Release;
+		};
+		6938B01B0DDDA7C30DA96C8B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LoveNovelUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.reinamaccredy.lovenovel.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LoveNovel;
+			};
+			name = Release;
+		};
+		7FDD5A9DF80C94F9A31E3A05 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LoveNovelTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.reinamaccredy.lovenovel.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LoveNovel.app/LoveNovel";
+			};
+			name = Debug;
+		};
+		B1765F3E19A820B0A0453090 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"LoveNovel/Preview Content\"";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LoveNovel/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reinamaccredy.lovenovel;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B5ACF5CF9A1C1D6D10741199 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		BBA45822881172B7EFBFAF11 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LoveNovelUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.reinamaccredy.lovenovel.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LoveNovel;
+			};
+			name = Debug;
+		};
+		C43AA69391E7B0FCB3785014 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		14FF6848CFC8DD76D4D95F30 /* Build configuration list for PBXNativeTarget "LoveNovel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1765F3E19A820B0A0453090 /* Debug */,
+				178C7C9E8C26A05A5086A735 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		92C8F5EA18BA2200B911CA69 /* Build configuration list for PBXProject "LoveNovel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B5ACF5CF9A1C1D6D10741199 /* Debug */,
+				C43AA69391E7B0FCB3785014 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C1F2EB9CC97E926F3AE8D9A3 /* Build configuration list for PBXNativeTarget "LoveNovelTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7FDD5A9DF80C94F9A31E3A05 /* Debug */,
+				6001EB39AAA1D57D6887FB95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E1F3A91761BAB18AAAE0A6ED /* Build configuration list for PBXNativeTarget "LoveNovelUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BBA45822881172B7EFBFAF11 /* Debug */,
+				6938B01B0DDDA7C30DA96C8B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6080AA3623CA21A93C9FBFF4 /* Project object */;
+}

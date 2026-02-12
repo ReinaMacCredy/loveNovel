@@ -1,0 +1,62 @@
+name: LoveNovel
+options:
+  bundleIdPrefix: com.reinamaccredy
+  deploymentTarget:
+    iOS: "17.0"
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    SWIFT_STRICT_CONCURRENCY: complete
+    TARGETED_DEVICE_FAMILY: 1
+    SUPPORTS_MACCATALYST: NO
+    SWIFT_EMIT_LOC_STRINGS: NO
+targets:
+  LoveNovel:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: LoveNovel
+        excludes:
+          - Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.reinamaccredy.lovenovel
+        INFOPLIST_FILE: LoveNovel/Info.plist
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: 1.0
+        DEVELOPMENT_ASSET_PATHS: "\"LoveNovel/Preview Content\""
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+    scheme:
+      testTargets:
+        - LoveNovelTests
+        - LoveNovelUITests
+
+  LoveNovelTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - LoveNovelTests
+    dependencies:
+      - target: LoveNovel
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.reinamaccredy.lovenovel.tests
+        INFOPLIST_FILE: LoveNovelTests/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+
+  LoveNovelUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - LoveNovelUITests
+    dependencies:
+      - target: LoveNovel
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.reinamaccredy.lovenovel.uitests
+        INFOPLIST_FILE: LoveNovelUITests/Info.plist
+        GENERATE_INFOPLIST_FILE: NO

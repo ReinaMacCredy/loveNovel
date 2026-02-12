@@ -1,0 +1,112 @@
+{
+  "latest": [
+    {
+      "id": "mutabilis",
+      "title": "Mutabilis",
+      "author": "Drew Wagar",
+      "summary": "When a series of linked murders forces GalCop to outlaw the shadow market, one pilot follows the truth into deep space.",
+      "rating": 4.3,
+      "accentHex": "FF5A2D"
+    },
+    {
+      "id": "rice-tea",
+      "title": "Rice Tea",
+      "author": "Julien McArdle",
+      "summary": "A noir story about the digital underground and the people hiding inside it.",
+      "rating": 4.6,
+      "accentHex": "1B3B72"
+    },
+    {
+      "id": "derelict",
+      "title": "Derelict",
+      "author": "Albert Berg",
+      "summary": "An abandoned station wakes up with a message no one was supposed to hear.",
+      "rating": 4.2,
+      "accentHex": "C3321F"
+    },
+    {
+      "id": "beach-scene",
+      "title": "The Beach Scene",
+      "author": "Alan Berg",
+      "summary": "A bright coastline hides a long memory and one impossible reunion.",
+      "rating": 4.1,
+      "accentHex": "D54A3A"
+    },
+    {
+      "id": "variant-effect",
+      "title": "The Variant Effect",
+      "author": "C. Miles Taylor",
+      "summary": "An experimental treatment unlocks strange memories that should not exist.",
+      "rating": 4.5,
+      "accentHex": "7A1D19"
+    },
+    {
+      "id": "corvus",
+      "title": "Corvus",
+      "author": "M. Rivera",
+      "summary": "A silent city and a missing astronomer become the same mystery.",
+      "rating": 4.0,
+      "accentHex": "6D707A"
+    }
+  ],
+  "featured": {
+    "id": "mutabilis",
+    "title": "Mutabilis",
+    "author": "Drew Wagar",
+    "summary": "When a series of linked murders forces GalCop to outlaw the shadow market, one pilot follows the truth into deep space.",
+    "rating": 4.3,
+    "accentHex": "FF5A2D"
+  },
+  "recommended": [
+    {
+      "id": "mutabilis",
+      "title": "Mutabilis",
+      "author": "Drew Wagar",
+      "summary": "When a series of linked murders forces GalCop to outlaw the shadow market, one pilot follows the truth into deep space.",
+      "rating": 4.3,
+      "accentHex": "FF5A2D"
+    },
+    {
+      "id": "rice-tea",
+      "title": "Rice Tea",
+      "author": "Julien McArdle",
+      "summary": "A noir story about the digital underground and the people hiding inside it.",
+      "rating": 4.6,
+      "accentHex": "1B3B72"
+    },
+    {
+      "id": "derelict",
+      "title": "Derelict",
+      "author": "Albert Berg",
+      "summary": "An abandoned station wakes up with a message no one was supposed to hear.",
+      "rating": 4.2,
+      "accentHex": "C3321F"
+    }
+  ],
+  "moreLikeThis": [
+    {
+      "id": "candies",
+      "title": "Candies",
+      "author": "N. Tran",
+      "summary": "Three siblings inherit a candy factory that behaves like a time machine.",
+      "rating": 3.9,
+      "accentHex": "DD9E25"
+    },
+    {
+      "id": "red-horizon",
+      "title": "Red Horizon",
+      "author": "S. Holden",
+      "summary": "A red sea and one drifting satellite mark the start of a final mission.",
+      "rating": 4.4,
+      "accentHex": "B32D2B"
+    },
+    {
+      "id": "variant-effect",
+      "title": "The Variant Effect",
+      "author": "C. Miles Taylor",
+      "summary": "An experimental treatment unlocks strange memories that should not exist.",
+      "rating": 4.5,
+      "accentHex": "7A1D19"
+    }
+  ]
+}
