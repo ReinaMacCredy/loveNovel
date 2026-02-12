@@ -106,33 +106,31 @@ open LoveNovel.xcodeproj
 
 ## MCP Tool Playbook
 
-Use Xcode MCP tools as the default path for project work. Keep shell usage for non-Xcode tasks.
+Use Xcode MCP tools as the preferred path for Xcode-aware workflows. Direct shell/file read-write-edit is allowed when faster and sufficient.
 
-1. **Session setup**: Run `XcodeListWindows` first to get the active `tabIdentifier`.
-2. **Find files**: Use `XcodeLS` / `XcodeGlob` to navigate project groups and locate targets.
-3. **Search code**: Use `XcodeGrep` before editing to follow existing patterns.
-4. **Read before edit**: Use `XcodeRead` for local context before any mutation.
-5. **Edit safely**:
-   - `XcodeUpdate` for targeted replacements.
-   - `XcodeWrite` for new files or full rewrites.
-   - `XcodeMV` / `XcodeMakeDir` / `XcodeRM` for structure changes.
-6. **Build and diagnose**:
-   - Run `BuildProject` after code changes.
-   - Use `XcodeListNavigatorIssues` and `GetBuildLog` to resolve failures quickly.
-   - Use `XcodeRefreshCodeIssuesInFile` for focused diagnostics while iterating.
-7. **Test workflow**:
-   - Use `GetTestList` to discover test IDs.
-   - Prefer `RunSomeTests` for affected scope first.
-   - Run `RunAllTests` before finalizing larger changes.
-8. **UI and runtime checks**:
-   - `RenderPreview` for SwiftUI visual validation.
-   - `ExecuteSnippet` for quick behavioral checks in-file.
-9. **Apple API verification**: Use `DocumentationSearch` for framework/API confirmation.
+1. **Session setup (when needed)**: Run `XcodeListWindows` when you need an active `tabIdentifier` for Xcode MCP operations.
+2. **Find/search/read**:
+   - Xcode path: `XcodeLS` / `XcodeGlob` / `XcodeGrep` / `XcodeRead`
+   - Direct path: `rg`, `sed`, `cat`, and other shell tools
+3. **Edit safely**:
+   - Xcode path: `XcodeUpdate`, `XcodeWrite`, `XcodeMV`, `XcodeMakeDir`, `XcodeRM`
+   - Direct path: apply patches or direct file edits in the workspace
+4. **Build and diagnose**:
+   - Use `BuildProject` or `xcodebuild` after code changes
+   - Use `XcodeListNavigatorIssues`, `GetBuildLog`, or build logs from shell as needed
+5. **Test workflow**:
+   - Use `GetTestList`/`RunSomeTests`/`RunAllTests` or `xcodebuild test`
+   - Run targeted tests first, then full suite for broader refactors
+6. **UI and runtime checks**:
+   - `RenderPreview` for SwiftUI visual validation
+   - `ExecuteSnippet` for quick behavioral checks in-file
+7. **Apple API verification**: Use `DocumentationSearch` for framework/API confirmation.
 
 ### Always-Use Rules
 
-- Always start with `XcodeListWindows` and capture `tabIdentifier`.
-- Always read/search before editing (`XcodeRead`, `XcodeGrep`).
+- Direct read/write/edit without MCP is allowed.
+- Use Xcode MCP tools when Xcode context is needed (window/tab context, previews, navigator issues, snippets).
+- Always read/search before editing (via Xcode tools or shell tools).
 - Always build after modifications; do not leave the project in a broken build state.
 - Always run tests for changed behavior (targeted minimum, full suite for broad refactors).
 - Always update both iOS 17 and iOS 18 paths when touching tab/navigation logic.

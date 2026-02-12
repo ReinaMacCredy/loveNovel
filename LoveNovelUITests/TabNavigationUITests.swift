@@ -17,14 +17,13 @@ final class TabNavigationUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        let tabBar = app.otherElements["bottom-tab-bar"]
+        let tabBar = app.tabBars.firstMatch
         XCTAssertTrue(tabBar.waitForExistence(timeout: 2))
-        XCTAssertEqual(app.otherElements.matching(identifier: "bottom-tab-bar").count, 1)
-        XCTAssertEqual(app.tabBars.count, 0)
+        XCTAssertEqual(app.tabBars.count, 1)
 
-        let libraryTab = tabBar.descendants(matching: .button)["tab-library"]
-        let exploreTab = tabBar.descendants(matching: .button)["tab-explore"]
-        let profileTab = tabBar.descendants(matching: .button)["tab-profile"]
+        let libraryTab = tabBar.buttons["Library"]
+        let exploreTab = tabBar.buttons["Explore"]
+        let profileTab = tabBar.buttons["Profile"]
 
         XCTAssertTrue(libraryTab.exists)
         XCTAssertTrue(exploreTab.exists)
