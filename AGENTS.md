@@ -106,30 +106,36 @@ open LoveNovel.xcodeproj
 
 ## MCP Tool Playbook
 
-Use Xcode MCP tools as the preferred path for Xcode-aware workflows. Direct shell/file read-write-edit is allowed when faster and sufficient.
+Use `XcodeBuildMCP` as the preferred path for build/test/simulator workflows. Direct shell/file read-write-edit is allowed when faster and sufficient.
 
-1. **Session setup (when needed)**: Run `XcodeListWindows` when you need an active `tabIdentifier` for Xcode MCP operations.
-2. **Find/search/read**:
-   - Xcode path: `XcodeLS` / `XcodeGlob` / `XcodeGrep` / `XcodeRead`
-   - Direct path: `rg`, `sed`, `cat`, and other shell tools
-3. **Edit safely**:
-   - Xcode path: `XcodeUpdate`, `XcodeWrite`, `XcodeMV`, `XcodeMakeDir`, `XcodeRM`
-   - Direct path: apply patches or direct file edits in the workspace
-4. **Build and diagnose**:
-   - Use `BuildProject` or `xcodebuild` after code changes
-   - Use `XcodeListNavigatorIssues`, `GetBuildLog`, or build logs from shell as needed
-5. **Test workflow**:
-   - Use `GetTestList`/`RunSomeTests`/`RunAllTests` or `xcodebuild test`
-   - Run targeted tests first, then full suite for broader refactors
-6. **UI and runtime checks**:
-   - `RenderPreview` for SwiftUI visual validation
-   - `ExecuteSnippet` for quick behavioral checks in-file
-7. **Apple API verification**: Use `DocumentationSearch` for framework/API confirmation.
+1. **Project and session bootstrap**:
+   - `discover_projs` to find `.xcodeproj` / `.xcworkspace`
+   - `list_schemes` and `list_sims` to pick scheme/simulator
+   - `session_set_defaults` to set `projectPath/workspacePath`, `scheme`, simulator, and build config
+   - `session_show_defaults` to verify active defaults
+2. **Build and test loop**:
+   - `build_sim` for compile checks
+   - `test_sim` for unit/UI tests
+   - `clean` when DerivedData/build artifacts cause issues
+   - `show_build_settings` for build setting diagnosis
+3. **Run on simulator**:
+   - `boot_sim` / `open_sim` as needed
+   - `build_run_sim` for fast build+launch cycle
+   - `get_sim_app_path` + `install_app_sim` + `launch_app_sim` (or `launch_app_logs_sim`) for explicit install/launch flow
+   - `stop_app_sim` to terminate app quickly
+4. **Logs and UI validation**:
+   - `start_sim_log_cap` and `stop_sim_log_cap` for targeted runtime logs
+   - `snapshot_ui` for view hierarchy and frames
+   - `screenshot` and `record_sim_video` for visual evidence
+   - `get_app_bundle_id` when bundle-specific operations are needed
+5. **Code navigation/editing**:
+   - Direct path: `rg`, `sed`, `cat`, apply patches, and direct file edits in the workspace
+   - Use shell editing by default unless Xcode runtime/build context is required
 
 ### Always-Use Rules
 
 - Direct read/write/edit without MCP is allowed.
-- Use Xcode MCP tools when Xcode context is needed (window/tab context, previews, navigator issues, snippets).
+- Use `XcodeBuildMCP` tools when build/test/simulator context is needed.
 - Always read/search before editing (via Xcode tools or shell tools).
 - Always build after modifications; do not leave the project in a broken build state.
 - Always run tests for changed behavior (targeted minimum, full suite for broad refactors).
