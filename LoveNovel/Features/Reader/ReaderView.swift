@@ -34,21 +34,9 @@ struct ReaderView: View {
             }
 
             if viewModel.isControlPanelVisible {
-                VStack(spacing: 0) {
-                    Color.clear
-                        .frame(height: 128)
-                        .allowsHitTesting(false)
-
-                    Color.black.opacity(0.36)
-                        .onTapGesture {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                viewModel.dismissControlPanel()
-                            }
-                        }
-                }
-                .ignoresSafeArea()
-                .transition(.opacity)
-                .zIndex(1)
+                panelBackdrop
+                    .transition(.opacity)
+                    .zIndex(1)
 
                 bottomPanel
                     .zIndex(2)
@@ -82,6 +70,8 @@ struct ReaderView: View {
             Text(viewModel.alertMessage ?? "")
         }
         .toolbar(.hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .tabBar)
+        .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden(true)
     }
 
@@ -163,26 +153,31 @@ struct ReaderView: View {
 
     private var bottomPanel: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 20) {
-                ForEach(ReaderViewModel.PanelTab.allCases) { tab in
-                    Button {
-                        viewModel.setPanelTab(tab)
-                    } label: {
-                        VStack(spacing: 10) {
-                            Text(tab.rawValue)
-                                .font(.system(size: 16, weight: viewModel.selectedPanelTab == tab ? .semibold : .regular))
-                                .foregroundStyle(viewModel.selectedPanelTab == tab ? AppTheme.Colors.textPrimary : AppTheme.Colors.textSecondary)
+            HStack(spacing: 12) {
+                HStack(spacing: 0) {
+                    ForEach(ReaderViewModel.PanelTab.allCases) { tab in
+                        Button {
+                            viewModel.setPanelTab(tab)
+                        } label: {
+                            VStack(spacing: 10) {
+                                Text(tab.rawValue)
+                                    .font(.system(size: 16, weight: viewModel.selectedPanelTab == tab ? .semibold : .regular))
+                                    .foregroundStyle(viewModel.selectedPanelTab == tab ? AppTheme.Colors.textPrimary : AppTheme.Colors.textSecondary)
+                                    .frame(maxWidth: .infinity)
 
-                            Rectangle()
-                                .fill(viewModel.selectedPanelTab == tab ? AppTheme.Colors.textPrimary : .clear)
-                                .frame(height: 3)
+                                Rectangle()
+                                    .fill(viewModel.selectedPanelTab == tab ? AppTheme.Colors.textPrimary : .clear)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 3)
+                                    .padding(.horizontal, 18)
+                            }
+                            .frame(maxWidth: .infinity)
                         }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier(tab == .info ? "reader.panel.tab.info" : "reader.panel.tab.settings")
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier(tab == .info ? "reader.panel.tab.info" : "reader.panel.tab.settings")
                 }
-
-                Spacer()
+                .frame(maxWidth: .infinity)
 
                 Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
@@ -216,6 +211,17 @@ struct ReaderView: View {
                 .fill(AppTheme.Colors.screenBackground)
                 .ignoresSafeArea(edges: .bottom)
         )
+    }
+
+    private var panelBackdrop: some View {
+        Color.black.opacity(0.36)
+            .ignoresSafeArea()
+            .contentShape(Rectangle())
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    viewModel.dismissControlPanel()
+                }
+            }
     }
 
     private var panelInfoContent: some View {
@@ -352,15 +358,17 @@ struct ReaderView: View {
                                 Circle()
                                     .fill(themeColor(for: theme))
                                     .frame(width: 24, height: 24)
-
+                                
+                                // Subtle border for all circles to make them visible
                                 Circle()
-                                    .stroke(
-                                        viewModel.selectedTheme == theme ? AppTheme.Colors.accentBlue : Color.black.opacity(0.18),
-                                        lineWidth: viewModel.selectedTheme == theme ? 2.2 : 1.2
-                                    )
+                                    .stroke(Color.black.opacity(0.08), lineWidth: 0.5)
                                     .frame(width: 24, height: 24)
 
                                 if viewModel.selectedTheme == theme {
+                                    Circle()
+                                        .stroke(AppTheme.Colors.accentBlue, lineWidth: 2.2)
+                                        .frame(width: 24, height: 24)
+                                    
                                     Image(systemName: "checkmark")
                                         .font(.system(size: 9, weight: .semibold))
                                         .foregroundStyle(theme == .charcoal || theme == .black ? .white : AppTheme.Colors.accentBlue)
@@ -512,6 +520,10 @@ struct ReaderView: View {
         460
     }
 
+    private var panelBackdropTopInset: CGFloat {
+        128
+    }
+
     private var readerBackgroundColor: Color {
         switch viewModel.selectedTheme {
         case .light:
@@ -568,7 +580,7 @@ struct ReaderView: View {
         case .charcoal:
             return Color(red: 0.16, green: 0.16, blue: 0.19)
         case .black:
-            return .black
+            return Color(red: 0, green: 0, blue: 0, opacity: 1.0)
         }
     }
 
