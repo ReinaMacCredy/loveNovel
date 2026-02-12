@@ -9,6 +9,11 @@ enum AppTheme {
         static let accentBlue = Color(red: 0.16, green: 0.44, blue: 0.64)
         static let tabActive = Color.black
         static let star = Color(red: 0.98, green: 0.75, blue: 0.14)
+        static let heroOverlay = Color.black.opacity(0.34)
+        static let detailDivider = Color.black.opacity(0.08)
+        static let pillBorder = Color(red: 0.16, green: 0.44, blue: 0.64)
+        static let mutedIcon = Color.black.opacity(0.32)
+        static let readerBackground = Color(red: 0.96, green: 0.96, blue: 0.97)
     }
 
     enum Layout {
@@ -17,6 +22,11 @@ enum AppTheme {
         static let cardSpacing: CGFloat = 10
         static let coverCornerRadius: CGFloat = 16
         static let featuredCornerRadius: CGFloat = 22
+        static let detailHeroHeight: CGFloat = 206
+        static let detailTabHeight: CGFloat = 54
+        static let detailSectionSpacing: CGFloat = 18
+        static let detailBottomInset: CGFloat = 10
+        static let detailActionBarCornerRadius: CGFloat = 22
     }
 }
 

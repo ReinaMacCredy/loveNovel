@@ -69,6 +69,7 @@ struct FeaturedBookCard: View {
                     }
                     .padding(12)
                 }
+                .accessibilityIdentifier("book.featured.\(book.id)")
                 .onTapGesture {
                     onTapPoster(book)
                 }

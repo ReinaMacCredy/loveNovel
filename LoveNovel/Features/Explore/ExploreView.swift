@@ -2,43 +2,49 @@ import SwiftUI
 
 struct ExploreView: View {
     @StateObject private var viewModel: ExploreViewModel
+    @State private var selectedBook: Book?
 
     init(viewModel: @autoclosure @escaping () -> ExploreViewModel = ExploreViewModel()) {
         _viewModel = StateObject(wrappedValue: viewModel())
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: AppTheme.Layout.sectionSpacing) {
-                header
-                stateContent
-            }
-            .padding(.horizontal, AppTheme.Layout.horizontalInset)
-            .padding(.top, 10)
-            .padding(.bottom, 24)
-        }
-        .background(AppTheme.Colors.screenBackground.ignoresSafeArea())
-        .task {
-            await viewModel.load()
-        }
-        .alert(
-            "Coming Soon",
-            isPresented: Binding(
-                get: { viewModel.placeholderMessage != nil },
-                set: { isPresented in
-                    if !isPresented {
-                        viewModel.dismissPlaceholder()
-                    }
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: AppTheme.Layout.sectionSpacing) {
+                    header
+                    stateContent
                 }
-            )
-        ) {
-            Button("OK", role: .cancel) {
-                viewModel.dismissPlaceholder()
+                .padding(.horizontal, AppTheme.Layout.horizontalInset)
+                .padding(.top, 10)
+                .padding(.bottom, 24)
             }
-        } message: {
-            Text(viewModel.placeholderMessage ?? "")
+            .background(AppTheme.Colors.screenBackground.ignoresSafeArea())
+            .task {
+                await viewModel.load()
+            }
+            .alert(
+                "Coming Soon",
+                isPresented: Binding(
+                    get: { viewModel.placeholderMessage != nil },
+                    set: { isPresented in
+                        if !isPresented {
+                            viewModel.dismissPlaceholder()
+                        }
+                    }
+                )
+            ) {
+                Button("OK", role: .cancel) {
+                    viewModel.dismissPlaceholder()
+                }
+            } message: {
+                Text(viewModel.placeholderMessage ?? "")
+            }
+            .navigationDestination(item: $selectedBook) { book in
+                NovelDetailView(book: book)
+            }
+            .accessibilityIdentifier("screen.explore")
         }
-        .accessibilityIdentifier("screen.explore")
     }
 
     private var header: some View {
@@ -141,7 +147,7 @@ struct ExploreView: View {
                 viewModel.showPlaceholder(message: "Latest list actions are coming in v2.")
             }
             BookCoverStrip(books: feed.latest, size: .compact, showTitle: false) { book in
-                viewModel.didTapBook(book)
+                selectedBook = book
             }
 
             FeaturedBookCard(
@@ -153,7 +159,7 @@ struct ExploreView: View {
                     viewModel.didTapAdd(book)
                 },
                 onTapPoster: { book in
-                    viewModel.didTapBook(book)
+                    selectedBook = book
                 }
             )
 
@@ -161,14 +167,14 @@ struct ExploreView: View {
                 viewModel.showPlaceholder(message: "Recommended actions are coming in v2.")
             }
             BookCoverStrip(books: feed.recommended, size: .regular, showTitle: true) { book in
-                viewModel.didTapBook(book)
+                selectedBook = book
             }
 
             SectionHeader(title: "More Like This") {
                 viewModel.showPlaceholder(message: "More-like-this actions are coming in v2.")
             }
             BookCoverStrip(books: feed.moreLikeThis, size: .regular, showTitle: true) { book in
-                viewModel.didTapBook(book)
+                selectedBook = book
             }
         }
     }

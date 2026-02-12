@@ -34,10 +34,15 @@ struct BookCoverStrip: View {
             HStack(spacing: AppTheme.Layout.cardSpacing) {
                 ForEach(books) { book in
                     VStack(alignment: .leading, spacing: 8) {
-                        BookCoverCard(book: book, size: size)
-                            .onTapGesture {
-                                onTapBook(book)
-                            }
+                        Button {
+                            onTapBook(book)
+                        } label: {
+                            BookCoverCard(book: book, size: size)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("book.cover.\(book.id)")
+                        .accessibilityLabel(book.title)
+                        .accessibilityHint("Open story details")
 
                         if showTitle {
                             Text(book.title)

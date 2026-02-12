@@ -92,10 +92,10 @@ LoveNovelUITests/              # UI: TabNavigationUITests (launch + tab switchin
 
 ```bash
 # Build
-xcodebuild -project LoveNovel.xcodeproj -scheme LoveNovel -destination 'platform=iOS Simulator,name=iPhone 16' build
+xcodebuild -project LoveNovel.xcodeproj -scheme LoveNovel -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
 
 # Test (unit + UI)
-xcodebuild -project LoveNovel.xcodeproj -scheme LoveNovel -destination 'platform=iOS Simulator,name=iPhone 16' test
+xcodebuild -project LoveNovel.xcodeproj -scheme LoveNovel -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test
 
 # Regenerate xcodeproj after project.yml changes
 xcodegen generate
@@ -134,6 +134,7 @@ Use `XcodeBuildMCP` as the preferred path for build/test/simulator workflows. Di
 
 ### Always-Use Rules
 
+- **Always use the iPhone 17 Pro simulator** for build, test, and run workflows. Do not use any other simulator device unless explicitly requested.
 - Direct read/write/edit without MCP is allowed.
 - Use `XcodeBuildMCP` tools when build/test/simulator context is needed.
 - Always read/search before editing (via Xcode tools or shell tools).
