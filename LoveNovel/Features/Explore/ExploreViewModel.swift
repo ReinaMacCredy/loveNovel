@@ -50,6 +50,7 @@ final class ExploreViewModel: ObservableObject {
 
     @Published private(set) var phase: Phase = .idle
     @Published private(set) var feed: HomeFeed?
+    @Published private(set) var detailsByBookID: [String: BookDetail] = [:]
     @Published private(set) var errorMessage: String?
     @Published private(set) var selectedStoryMode: StoryMode = .all
     @Published var placeholderMessage: String?
@@ -92,12 +93,21 @@ final class ExploreViewModel: ObservableObject {
                 return
             }
 
+            let loadedDetails = await preloadDetails(for: uniqueBooks(in: loadedFeed))
+
+            if Task.isCancelled {
+                phase = .idle
+                return
+            }
+
             feed = loadedFeed
+            detailsByBookID = loadedDetails
             phase = .loaded
         } catch is CancellationError {
             phase = .idle
         } catch {
             feed = nil
+            detailsByBookID = [:]
             errorMessage = AppLocalization.string("Could not load stories.")
             phase = .failed
         }
@@ -245,6 +255,40 @@ final class ExploreViewModel: ObservableObject {
         pendingLoadContinuations.removeAll(keepingCapacity: true)
         continuations.forEach { continuation in
             continuation.resume()
+        }
+    }
+
+    private func preloadDetails(for books: [Book]) async -> [String: BookDetail] {
+        guard !books.isEmpty else {
+            return [:]
+        }
+
+        let bookDetails = self.bookDetails
+        return await withTaskGroup(of: (String, BookDetail)?.self, returning: [String: BookDetail].self) { group in
+            for book in books {
+                group.addTask {
+                    do {
+                        let detail = try await bookDetails.fetchDetail(for: book)
+                        return (book.id, detail)
+                    } catch is CancellationError {
+                        return nil
+                    } catch {
+                        return nil
+                    }
+                }
+            }
+
+            var loadedDetails: [String: BookDetail] = [:]
+            loadedDetails.reserveCapacity(books.count)
+
+            for await result in group {
+                guard let (bookID, detail) = result else {
+                    continue
+                }
+                loadedDetails[bookID] = detail
+            }
+
+            return loadedDetails
         }
     }
 }

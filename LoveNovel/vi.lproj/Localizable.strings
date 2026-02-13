@@ -45,6 +45,11 @@
 "Could not load stories." = "Không thể tải truyện.";
 "Try Again" = "Thử lại";
 "Latest" = "Mới nhất";
+"Mới nhất" = "Mới nhất";
+"Đề cử" = "Đề cử";
+"Thời gian thực" = "Thời gian thực";
+"Mới hoàn thành" = "Mới hoàn thành";
+"Đang đọc" = "Đang đọc";
 "Recommended" = "Đề xuất";
 "More Like This" = "Tương tự";
 "Latest list actions are coming in v2." = "Chức năng danh sách mới nhất sẽ có trong v2.";

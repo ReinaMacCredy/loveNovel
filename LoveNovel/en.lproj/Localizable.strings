@@ -45,6 +45,11 @@
 "Could not load stories." = "Could not load stories.";
 "Try Again" = "Try Again";
 "Latest" = "Latest";
+"Mới nhất" = "Latest";
+"Đề cử" = "Recommended";
+"Thời gian thực" = "Realtime";
+"Mới hoàn thành" = "Completed";
+"Đang đọc" = "Reading";
 "Recommended" = "Recommended";
 "More Like This" = "More Like This";
 "Latest list actions are coming in v2." = "Latest list actions are coming in v2.";

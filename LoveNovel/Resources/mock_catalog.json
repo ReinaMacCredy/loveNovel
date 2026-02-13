@@ -1,112 +1,200 @@
 {
   "latest": [
     {
-      "id": "mutabilis",
-      "title": "Mutabilis",
-      "author": "Drew Wagar",
-      "summary": "When a series of linked murders forces GalCop to outlaw the shadow market, one pilot follows the truth into deep space.",
-      "rating": 4.3,
-      "accentHex": "FF5A2D"
-    },
-    {
       "id": "rice-tea",
-      "title": "Rice Tea",
-      "author": "Julien McArdle",
-      "summary": "A noir story about the digital underground and the people hiding inside it.",
+      "title": "Loạn Võ Thế Giới",
+      "author": "Huyền Huyễn",
+      "summary": "Một thiếu niên bỗng rơi vào loạn thế võ đạo và mở ra hành trình thăng cấp nghịch mệnh.",
+      "rating": 4.8,
+      "accentHex": "B03A2E"
+    },
+    {
+      "id": "bach-the-phi-thang",
+      "title": "Bách Thế Phi Thăng",
+      "author": "Tiên Hiệp",
+      "summary": "Trải qua trăm kiếp, hắn chỉ cầu một lần phi thăng chân chính.",
       "rating": 4.6,
-      "accentHex": "1B3B72"
+      "accentHex": "5B6E7A"
     },
     {
-      "id": "derelict",
-      "title": "Derelict",
-      "author": "Albert Berg",
-      "summary": "An abandoned station wakes up with a message no one was supposed to hear.",
-      "rating": 4.2,
-      "accentHex": "C3321F"
-    },
-    {
-      "id": "beach-scene",
-      "title": "The Beach Scene",
-      "author": "Alan Berg",
-      "summary": "A bright coastline hides a long memory and one impossible reunion.",
-      "rating": 4.1,
-      "accentHex": "D54A3A"
-    },
-    {
-      "id": "variant-effect",
-      "title": "The Variant Effect",
-      "author": "C. Miles Taylor",
-      "summary": "An experimental treatment unlocks strange memories that should not exist.",
+      "id": "xuyen-qua-bi-chon-song",
+      "title": "Xuyên Qua Bị Chôn Sống, Ta Trở Tay Gọi Đi...",
+      "author": "Khoa Huyễn",
+      "summary": "Tỉnh dậy trong quan tài, hắn phải dùng hệ thống để lật ngược số mệnh.",
       "rating": 4.5,
-      "accentHex": "7A1D19"
+      "accentHex": "374C6B"
     },
     {
-      "id": "corvus",
-      "title": "Corvus",
-      "author": "M. Rivera",
-      "summary": "A silent city and a missing astronomer become the same mystery.",
-      "rating": 4.0,
-      "accentHex": "6D707A"
+      "id": "thai-co-than-ton",
+      "title": "Thái Cổ Thần Tôn",
+      "author": "Huyền Huyễn",
+      "summary": "Hắn thức tỉnh thần huyết viễn cổ và bước lên đỉnh thiên đạo.",
+      "rating": 4.4,
+      "accentHex": "2F3A46"
+    },
+    {
+      "id": "liem-cau-phan-dien",
+      "title": "Liếm Cẩu Phản Diện Chỉ Nghĩ Cứu Nữ Chính",
+      "author": "Đô Thị",
+      "summary": "Xuyên sách thành phản diện, hắn chỉ muốn sống sót và sửa lại kết cục bi thảm.",
+      "rating": 4.2,
+      "accentHex": "B77A43"
+    },
+    {
+      "id": "tien-nhan-bien-mat",
+      "title": "Tiến Nhập Biển Mật Về Sau",
+      "author": "Tiên Hiệp",
+      "summary": "Một bí cảnh cổ mở ra, kéo cả tông môn vào vòng xoáy sinh tử.",
+      "rating": 4.1,
+      "accentHex": "6A8B4E"
+    },
+    {
+      "id": "deu-tan-the",
+      "title": "Đều Tận Thế, Nhân Sinh Nằm Ngửa Hệ Thống Mới Đến?",
+      "author": "Khoa Huyễn",
+      "summary": "Mạt thế đã giáng lâm, đúng lúc đó hệ thống lười biếng của hắn mới bắt đầu kích hoạt.",
+      "rating": 5.0,
+      "accentHex": "4A2B3A"
+    },
+    {
+      "id": "cau-tai-vo-dao-the-gioi-thanh-thanh",
+      "title": "Cầu Tái Võ Đạo Thế Giới Thành Thánh",
+      "author": "Huyền Huyễn",
+      "summary": "Từ phàm nhân nhỏ bé đến võ thánh, hắn dùng từng trận chiến để đạp nát thiên mệnh.",
+      "rating": 4.4,
+      "accentHex": "42643B"
+    },
+    {
+      "id": "gia-phu-nhan-loai-nghi-truong",
+      "title": "Gia Phụ Nhân Loại Nghị Trưởng, Ngươi Muốn Cùng Ta Liều Bối Cảnh?",
+      "author": "Huyền Huyễn",
+      "summary": "Là thiếu gia nhà nghị trưởng, hắn dùng cả trí lẫn lực để phản kích mọi âm mưu.",
+      "rating": 4.3,
+      "accentHex": "284A6A"
+    },
+    {
+      "id": "truong-sinh-tu-tien",
+      "title": "Trường Sinh Tu Tiên, Cùng Quỷ Đồng Hành",
+      "author": "Tiên Hiệp",
+      "summary": "Con đường trường sinh không chỉ có tiên duyên, mà còn là bóng tối và quỷ đạo.",
+      "rating": 4.1,
+      "accentHex": "7A5D3A"
+    },
+    {
+      "id": "phan-phai-thieu-dai-duc",
+      "title": "Phản Phái Thiếu Đại Đức, Phi Long Cưỡi Mặt, Làm Sao Thua?",
+      "author": "Huyền Huyễn",
+      "summary": "Sinh ra làm phản diện mạnh nhất, hắn quyết không để kịch bản định đoạt.",
+      "rating": 2.3,
+      "accentHex": "9A7A34"
+    },
+    {
+      "id": "check-in-thon-phe-tinh-khong",
+      "title": "Ở Thôn Phệ Tinh Không Check-In Trở Nên Mạnh Mẽ",
+      "author": "Huyền Huyễn",
+      "summary": "Mỗi ngày check-in, mỗi ngày biến mạnh trong thế giới tinh không nguy hiểm.",
+      "rating": 0.0,
+      "accentHex": "5E6A2E"
+    },
+    {
+      "id": "than-hao-dai-phan-phai",
+      "title": "Thần Hào: Ta Thật Là Đại Phản Phái A",
+      "author": "Đô Thị",
+      "summary": "Mang hệ thống thần hào, hắn trở thành đại phản phái khiến cả thành phố chấn động.",
+      "rating": 4.7,
+      "accentHex": "A24B2A"
     }
   ],
   "featured": {
-    "id": "mutabilis",
-    "title": "Mutabilis",
-    "author": "Drew Wagar",
-    "summary": "When a series of linked murders forces GalCop to outlaw the shadow market, one pilot follows the truth into deep space.",
-    "rating": 4.3,
-    "accentHex": "FF5A2D"
+    "id": "deu-tan-the",
+    "title": "Đều Tận Thế, Nhân Sinh Nằm Ngửa Hệ Thống Mới Đến?",
+    "author": "Khoa Huyễn",
+    "summary": "Mạt thế đã giáng lâm, đúng lúc đó hệ thống lười biếng của hắn mới bắt đầu kích hoạt.",
+    "rating": 5.0,
+    "accentHex": "4A2B3A"
   },
   "recommended": [
     {
-      "id": "mutabilis",
-      "title": "Mutabilis",
-      "author": "Drew Wagar",
-      "summary": "When a series of linked murders forces GalCop to outlaw the shadow market, one pilot follows the truth into deep space.",
-      "rating": 4.3,
-      "accentHex": "FF5A2D"
+      "id": "cau-tai-loan-vo-the-gioi-lam-dia-chu",
+      "title": "Cầu Tái Loạn Võ Thế Giới Làm Địa Chủ",
+      "author": "Huyền Huyễn",
+      "summary": "Ở loạn võ thế giới, hắn từ tay trắng trở thành một lãnh địa chi chủ.",
+      "rating": 4.5,
+      "accentHex": "597DA4"
     },
     {
-      "id": "rice-tea",
-      "title": "Rice Tea",
-      "author": "Julien McArdle",
-      "summary": "A noir story about the digital underground and the people hiding inside it.",
+      "id": "bach-the-phi-thang",
+      "title": "Bách Thế Phi Thăng",
+      "author": "Tiên Hiệp",
+      "summary": "Trải qua trăm kiếp, hắn chỉ cầu một lần phi thăng chân chính.",
       "rating": 4.6,
-      "accentHex": "1B3B72"
+      "accentHex": "5B6E7A"
     },
     {
-      "id": "derelict",
-      "title": "Derelict",
-      "author": "Albert Berg",
-      "summary": "An abandoned station wakes up with a message no one was supposed to hear.",
+      "id": "xuyen-qua-bi-chon-song",
+      "title": "Xuyên Qua Bị Chôn Sống, Ta Trở Tay Gọi Đi...",
+      "author": "Khoa Huyễn",
+      "summary": "Tỉnh dậy trong quan tài, hắn phải dùng hệ thống để lật ngược số mệnh.",
+      "rating": 4.5,
+      "accentHex": "374C6B"
+    },
+    {
+      "id": "thai-co-than-ton",
+      "title": "Thái Cổ Thần Tôn",
+      "author": "Huyền Huyễn",
+      "summary": "Hắn thức tỉnh thần huyết viễn cổ và bước lên đỉnh thiên đạo.",
+      "rating": 4.4,
+      "accentHex": "2F3A46"
+    },
+    {
+      "id": "liem-cau-phan-dien",
+      "title": "Liếm Cẩu Phản Diện Chỉ Nghĩ Cứu Nữ Chính",
+      "author": "Đô Thị",
+      "summary": "Xuyên sách thành phản diện, hắn chỉ muốn sống sót và sửa lại kết cục bi thảm.",
       "rating": 4.2,
-      "accentHex": "C3321F"
+      "accentHex": "B77A43"
+    },
+    {
+      "id": "tien-nhan-bien-mat",
+      "title": "Tiến Nhập Biển Mật Về Sau",
+      "author": "Tiên Hiệp",
+      "summary": "Một bí cảnh cổ mở ra, kéo cả tông môn vào vòng xoáy sinh tử.",
+      "rating": 4.1,
+      "accentHex": "6A8B4E"
     }
   ],
   "moreLikeThis": [
     {
-      "id": "candies",
-      "title": "Candies",
-      "author": "N. Tran",
-      "summary": "Three siblings inherit a candy factory that behaves like a time machine.",
-      "rating": 3.9,
-      "accentHex": "DD9E25"
+      "id": "uchiha-ban-than-goc-nhin",
+      "title": "Uchiha Bản Thân Góc Nhìn",
+      "author": "Đồng Nhân",
+      "summary": "Lấy góc nhìn của Uchiha, câu chuyện Naruto mở ra một hướng đi hoàn toàn khác.",
+      "rating": 4.3,
+      "accentHex": "7C3A4A"
     },
     {
-      "id": "red-horizon",
-      "title": "Red Horizon",
-      "author": "S. Holden",
-      "summary": "A red sea and one drifting satellite mark the start of a final mission.",
-      "rating": 4.4,
-      "accentHex": "B32D2B"
+      "id": "bat-dau-thuc-tinh-f-cap",
+      "title": "Bắt Đầu Thức Tỉnh F Cấp? Ta Có Thể Rút...",
+      "author": "Khoa Huyễn",
+      "summary": "Từ thức tỉnh cấp thấp nhất, hắn dùng năng lực rút thưởng để nghịch thiên cải mệnh.",
+      "rating": 4.2,
+      "accentHex": "2E4E7A"
     },
     {
-      "id": "variant-effect",
-      "title": "The Variant Effect",
-      "author": "C. Miles Taylor",
-      "summary": "An experimental treatment unlocks strange memories that should not exist.",
-      "rating": 4.5,
-      "accentHex": "7A1D19"
+      "id": "thien-tai-thu-muoi-nam",
+      "title": "Thiên Tai Thứ Mười Năm Đi Với Ta Làm...",
+      "author": "Mạt Thế",
+      "summary": "Sau mười năm thiên tai, nhân loại bước vào kỷ nguyên sinh tồn khốc liệt.",
+      "rating": 4.0,
+      "accentHex": "5E4C89"
+    },
+    {
+      "id": "hokage-uchiha-sasuke",
+      "title": "Hokage: Uchiha Sasuke Báo Ứng...",
+      "author": "Đồng Nhân",
+      "summary": "Sasuke bước vào vòng xoáy chiến tranh mới với lựa chọn khó nhất đời mình.",
+      "rating": 4.1,
+      "accentHex": "303244"
     }
   ]
 }
