@@ -171,6 +171,7 @@ Use the `mcp__xcode__*` toolset as the preferred path for Xcode-aware build/test
 ### Screenshot + Debug Quick Reference
 
 - `mcp__xcode__RenderPreview` is the primary tool for auto-capturing SwiftUI preview snapshots.
+- Use `mcp__xcode__DocumentationSearch` to query official Apple Developer docs before/while implementing new APIs.
 - Use `mcp__xcode__BuildProject` + `mcp__xcode__GetBuildLog` for compile/debug loops.
 - Use `mcp__xcode__XcodeListNavigatorIssues` and `mcp__xcode__XcodeRefreshCodeIssuesInFile` for diagnostics.
 - Use `mcp__xcode__RunSomeTests` / `mcp__xcode__RunAllTests` and `mcp__xcode__ExecuteSnippet` for runtime debugging.
