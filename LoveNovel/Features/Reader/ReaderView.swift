@@ -6,7 +6,11 @@ private enum ReaderStorageKey {
 
 struct ReaderView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
     @AppStorage(ReaderStorageKey.didShowTutorial) private var didShowTutorial: Bool = false
+    @AppStorage(AppSettingsKey.readerDarkMode) private var readerDarkModeRawValue: String = ReaderDarkModeOption.auto.rawValue
+    @AppStorage(AppSettingsKey.readerLightTheme) private var readerLightThemeRawValue: String = ReaderViewModel.ReaderThemeStyle.light.rawValue
+    @AppStorage(AppSettingsKey.readerDarkTheme) private var readerDarkThemeRawValue: String = ReaderViewModel.ReaderThemeStyle.charcoal.rawValue
     @StateObject private var viewModel: ReaderViewModel
     private let onClose: (() -> Void)?
 
@@ -76,6 +80,28 @@ struct ReaderView: View {
         .toolbar(.hidden, for: .tabBar)
         .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden(true)
+        .onAppear {
+            applyThemeFromSettings()
+        }
+        .onChange(of: colorScheme) { _, _ in
+            guard selectedDarkMode == .auto else {
+                return
+            }
+
+            applyThemeFromSettings()
+        }
+        .onChange(of: readerDarkModeRawValue) { _, _ in
+            applyThemeFromSettings()
+        }
+        .onChange(of: readerLightThemeRawValue) { _, _ in
+            applyThemeFromSettings()
+        }
+        .onChange(of: readerDarkThemeRawValue) { _, _ in
+            applyThemeFromSettings()
+        }
+        .onChange(of: viewModel.selectedTheme) { _, updatedTheme in
+            persistThemeSelection(updatedTheme)
+        }
     }
 
     private func closeReader() {
@@ -383,6 +409,8 @@ struct ReaderView: View {
                             }
                         }
                         .buttonStyle(.plain)
+                        .accessibilityIdentifier("reader.theme.\(theme.rawValue)")
+                        .accessibilityValue(viewModel.selectedTheme == theme ? "selected" : "unselected")
                     }
                 }
 
@@ -529,6 +557,43 @@ struct ReaderView: View {
 
     private var panelBackdropTopInset: CGFloat {
         128
+    }
+
+    private var selectedDarkMode: ReaderDarkModeOption {
+        ReaderDarkModeOption(rawValue: readerDarkModeRawValue) ?? .auto
+    }
+
+    private var selectedLightTheme: ReaderViewModel.ReaderThemeStyle {
+        ReaderViewModel.ReaderThemeStyle(rawValue: readerLightThemeRawValue) ?? .light
+    }
+
+    private var selectedDarkTheme: ReaderViewModel.ReaderThemeStyle {
+        ReaderViewModel.ReaderThemeStyle(rawValue: readerDarkThemeRawValue) ?? .charcoal
+    }
+
+    private var effectiveThemeFromSettings: ReaderViewModel.ReaderThemeStyle {
+        selectedDarkMode.usesDarkTheme(systemScheme: colorScheme) ? selectedDarkTheme : selectedLightTheme
+    }
+
+    private func applyThemeFromSettings() {
+        let theme = effectiveThemeFromSettings
+
+        if viewModel.selectedTheme != theme {
+            viewModel.setTheme(theme)
+        }
+    }
+
+    private func persistThemeSelection(_ theme: ReaderViewModel.ReaderThemeStyle) {
+        if selectedDarkMode.usesDarkTheme(systemScheme: colorScheme) {
+            if readerDarkThemeRawValue != theme.rawValue {
+                readerDarkThemeRawValue = theme.rawValue
+            }
+            return
+        }
+
+        if readerLightThemeRawValue != theme.rawValue {
+            readerLightThemeRawValue = theme.rawValue
+        }
     }
 
     private var readerBackgroundColor: Color {

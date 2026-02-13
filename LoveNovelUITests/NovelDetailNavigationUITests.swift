@@ -9,6 +9,7 @@ final class NovelDetailNavigationUITests: XCTestCase {
     func testExploreBookTapPushesNovelDetailAndReturnsBack() {
         let app = XCUIApplication()
         app.launch()
+        activateExploreTab(in: app)
 
         let riceTeaCover = app.buttons.matching(identifier: "book.cover.rice-tea").firstMatch
         XCTAssertTrue(riceTeaCover.waitForExistence(timeout: 10))
@@ -46,6 +47,7 @@ final class NovelDetailNavigationUITests: XCTestCase {
     func testChapterTapOpensReaderAndSettingsButtonShowsSettingsPanel() {
         let app = XCUIApplication()
         app.launch()
+        activateExploreTab(in: app)
 
         let riceTeaCover = app.buttons.matching(identifier: "book.cover.rice-tea").firstMatch
         XCTAssertTrue(riceTeaCover.waitForExistence(timeout: 10))
@@ -120,10 +122,19 @@ final class NovelDetailNavigationUITests: XCTestCase {
     }
 
     private func openRiceTeaDetail(in app: XCUIApplication) {
+        activateExploreTab(in: app)
+
         let riceTeaCover = app.buttons.matching(identifier: "book.cover.rice-tea").firstMatch
         XCTAssertTrue(riceTeaCover.waitForExistence(timeout: 10))
         riceTeaCover.tap()
         XCTAssertTrue(app.scrollViews["screen.novel_detail"].waitForExistence(timeout: 4))
+    }
+
+    private func activateExploreTab(in app: XCUIApplication) {
+        let exploreTab = app.tabBars.buttons["Explore"]
+        if exploreTab.waitForExistence(timeout: 2) {
+            exploreTab.tap()
+        }
     }
 
     private func swipeUpFromLeftEdge(in app: XCUIApplication) {

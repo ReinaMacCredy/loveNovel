@@ -37,9 +37,30 @@ struct SettingsView: View {
 
                 Divider()
 
-                settingsRow(title: "Languages")
+                NavigationLink {
+                    LanguageSettingsView()
+                } label: {
+                    settingsRow(
+                        title: "Languages",
+                        accessibilityIdentifier: "settings.row.languages"
+                    )
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("settings.row.languages")
+
                 Divider()
-                settingsRow(title: "Dark mode")
+
+                NavigationLink {
+                    DarkModeSettingsView()
+                } label: {
+                    settingsRow(
+                        title: "Dark mode",
+                        accessibilityIdentifier: "settings.row.dark_mode"
+                    )
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("settings.row.dark_mode")
+
                 Divider()
 
                 Spacer()
@@ -49,7 +70,7 @@ struct SettingsView: View {
         .accessibilityIdentifier("screen.settings")
     }
 
-    private func settingsRow(title: String) -> some View {
+    private func settingsRow(title: String, accessibilityIdentifier: String) -> some View {
         HStack {
             Text(title)
                 .font(.system(size: 17, weight: .regular))
@@ -63,6 +84,8 @@ struct SettingsView: View {
         }
         .padding(.horizontal, AppTheme.Layout.horizontalInset)
         .padding(.vertical, 16)
+        .contentShape(Rectangle())
+        .accessibilityIdentifier(accessibilityIdentifier)
     }
 }
 

@@ -22,16 +22,23 @@ struct ProfileView: View {
                     NavigationLink {
                         SettingsView()
                     } label: {
-                        menuRow(title: "Settings")
+                        menuRow(
+                            title: "Settings",
+                            accessibilityIdentifier: "profile.row.settings"
+                        )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier("profile.row.settings")
 
                     Divider()
 
                     Button {
                         showLoginAlert = true
                     } label: {
-                        menuRow(title: "Login")
+                        menuRow(
+                            title: "Login",
+                            accessibilityIdentifier: "profile.row.login"
+                        )
                     }
                     .buttonStyle(.plain)
 
@@ -50,7 +57,7 @@ struct ProfileView: View {
         }
     }
 
-    private func menuRow(title: String) -> some View {
+    private func menuRow(title: String, accessibilityIdentifier: String) -> some View {
         HStack {
             Text(title)
                 .font(.system(size: 17, weight: .regular))
@@ -64,6 +71,8 @@ struct ProfileView: View {
         }
         .padding(.horizontal, AppTheme.Layout.horizontalInset)
         .padding(.vertical, 18)
+        .contentShape(Rectangle())
+        .accessibilityIdentifier(accessibilityIdentifier)
     }
 }
 
