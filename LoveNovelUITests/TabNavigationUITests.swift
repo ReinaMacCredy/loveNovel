@@ -106,6 +106,24 @@ final class TabNavigationUITests: XCTestCase {
         XCTAssertTrue(app.buttons["History"].waitForExistence(timeout: 2))
     }
 
+    func testExploreFilterButtonOpensAllStoriesListAndNavigatesToDetail() {
+        let app = launchConfiguredApp()
+
+        activateExploreTab(in: app)
+
+        let filterButton = app.buttons["explore.header.filter"]
+        XCTAssertTrue(filterButton.waitForExistence(timeout: 4))
+        filterButton.tap()
+
+        let firstRow = app.buttons.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@", "explore.all_stories.row.")
+        ).firstMatch
+        XCTAssertTrue(firstRow.waitForExistence(timeout: 6))
+        firstRow.tap()
+
+        XCTAssertTrue(app.scrollViews["screen.novel_detail"].waitForExistence(timeout: 4))
+    }
+
     func testDarkModeSettingSyncsToReaderCenterTapPanel() {
         let app = launchConfiguredApp()
 

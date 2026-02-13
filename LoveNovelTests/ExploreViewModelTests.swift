@@ -9,6 +9,14 @@ private struct StubCatalogProvider: CatalogProviding {
     }
 }
 
+private struct StubBookDetailProvider: BookDetailProviding {
+    let operation: @Sendable (Book) async throws -> BookDetail
+
+    func fetchDetail(for book: Book) async throws -> BookDetail {
+        try await operation(book)
+    }
+}
+
 final class ExploreViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
@@ -122,6 +130,48 @@ final class ExploreViewModelTests: XCTestCase {
         XCTAssertEqual(finalPhase, .loaded)
     }
 
+    func testAllStoriesListItemsReturnsOrderedDeduplicatedRows() async {
+        let provider = StubCatalogProvider {
+            Self.sampleFeed
+        }
+        let detailProvider = StubBookDetailProvider { book in
+            Self.sampleDetail(for: book, chapterCount: book.id == "mutabilis" ? 42 : 21, genre: "Đô Thị")
+        }
+
+        let viewModel = await MainActor.run {
+            ExploreViewModel(catalog: provider, bookDetails: detailProvider)
+        }
+
+        let rows = await viewModel.allStoriesListItems()
+
+        XCTAssertEqual(rows.map(\.book.id), ["mutabilis", "rice-tea", "corvus"])
+        XCTAssertEqual(rows.first?.categoryTag, "#ĐÔ THỊ")
+        XCTAssertEqual(rows.first?.rankTag, "#1508")
+        XCTAssertEqual(rows.first?.chapterCount, 42)
+    }
+
+    func testAllStoriesListItemsFallsBackWhenDetailProviderFails() async {
+        struct TestFailure: Error {}
+
+        let provider = StubCatalogProvider {
+            Self.sampleFeed
+        }
+        let detailProvider = StubBookDetailProvider { _ in
+            throw TestFailure()
+        }
+
+        let viewModel = await MainActor.run {
+            ExploreViewModel(catalog: provider, bookDetails: detailProvider)
+        }
+
+        let rows = await viewModel.allStoriesListItems()
+
+        XCTAssertEqual(rows.count, 3)
+        XCTAssertEqual(rows.first?.categoryTag, "#NOVEL")
+        XCTAssertEqual(rows.first?.chapterCount, 0)
+        XCTAssertEqual(rows.first?.viewsLabel, "0")
+    }
+
     func testSetStoryModeUpdatesSelectedStoryMode() async {
         let provider = StubCatalogProvider {
             Self.sampleFeed
@@ -182,6 +232,24 @@ final class ExploreViewModelTests: XCTestCase {
             )
         ]
     )
+
+    private static func sampleDetail(for book: Book, chapterCount: Int, genre: String) -> BookDetail {
+        BookDetail(
+            bookId: book.id,
+            longDescription: book.summary,
+            chapterCount: chapterCount,
+            viewsLabel: "1K",
+            status: .ongoing,
+            genres: [genre],
+            tags: ["tag"],
+            uploaderName: "Uploader",
+            sameAuthorBooks: [],
+            sameUploaderBooks: [],
+            chapterTimestamp: "2020-04-02 00:58",
+            reviews: [],
+            comments: []
+        )
+    }
 }
 
 final class LeftEdgeSwipeUpBackGestureEvaluatorTests: XCTestCase {

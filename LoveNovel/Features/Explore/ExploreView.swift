@@ -5,6 +5,7 @@ struct ExploreView: View {
     @State private var selectedBook: Book?
     @State private var isStoryModeSheetPresented: Bool = false
     @State private var isShowingSearch: Bool = false
+    @State private var isShowingAllStories: Bool = false
 
     init(viewModel: @autoclosure @escaping () -> ExploreViewModel = ExploreViewModel()) {
         _viewModel = StateObject(wrappedValue: viewModel())
@@ -56,8 +57,12 @@ struct ExploreView: View {
             .navigationDestination(isPresented: $isShowingSearch) {
                 ExploreSearchView(viewModel: viewModel)
             }
-            .toolbar(isShowingSearch ? .hidden : .automatic, for: .tabBar)
+            .navigationDestination(isPresented: $isShowingAllStories) {
+                ExploreAllStoriesView(viewModel: viewModel)
+            }
+            .toolbar((isShowingSearch || isShowingAllStories) ? .hidden : .automatic, for: .tabBar)
             .animation(.smooth, value: isShowingSearch)
+            .animation(.smooth, value: isShowingAllStories)
             .accessibilityIdentifier("screen.explore")
         }
     }
@@ -99,9 +104,12 @@ struct ExploreView: View {
                 .accessibilityIdentifier("explore.header.search")
 
                 Button {
-                    viewModel.showPlaceholder(message: AppLocalization.string("Open search to use filters."))
+                    isShowingAllStories = true
                 } label: {
-                    FilterButtonLabel()
+                    Image(systemName: "list.bullet")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(Color.black.opacity(0.55))
+                        .frame(width: 44, height: 44)
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("explore.header.filter")

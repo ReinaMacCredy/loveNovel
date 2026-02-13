@@ -39,6 +39,15 @@ final class ExploreViewModel: ObservableObject {
         }
     }
 
+    struct AllStoriesListItem: Identifiable, Sendable, Equatable {
+        let id: String
+        let book: Book
+        let categoryTag: String
+        let rankTag: String
+        let chapterCount: Int
+        let viewsLabel: String
+    }
+
     @Published private(set) var phase: Phase = .idle
     @Published private(set) var feed: HomeFeed?
     @Published private(set) var errorMessage: String?
@@ -46,10 +55,15 @@ final class ExploreViewModel: ObservableObject {
     @Published var placeholderMessage: String?
 
     private let catalog: any CatalogProviding
+    private let bookDetails: any BookDetailProviding
     private var pendingLoadContinuations: [CheckedContinuation<Void, Never>] = []
 
-    init(catalog: any CatalogProviding = CatalogRepository()) {
+    init(
+        catalog: any CatalogProviding = CatalogRepository(),
+        bookDetails: any BookDetailProviding = BookDetailRepository()
+    ) {
         self.catalog = catalog
+        self.bookDetails = bookDetails
     }
 
     func load(force: Bool = false) async {
@@ -139,6 +153,68 @@ final class ExploreViewModel: ObservableObject {
         }
     }
 
+    func allStoriesListItems() async -> [AllStoriesListItem] {
+        if feed == nil {
+            await load()
+        }
+
+        guard !Task.isCancelled else {
+            return []
+        }
+
+        guard let feed else {
+            return []
+        }
+
+        let books = uniqueBooks(in: feed)
+        var items: [AllStoriesListItem] = []
+        items.reserveCapacity(books.count)
+
+        for (index, book) in books.enumerated() {
+            if Task.isCancelled {
+                return []
+            }
+
+            let rankTag = "#\(1508 + index)"
+
+            do {
+                let detail = try await bookDetails.fetchDetail(for: book)
+
+                if Task.isCancelled {
+                    return []
+                }
+
+                let categoryTag = formattedCategoryTag(from: detail.genres.first)
+
+                items.append(
+                    AllStoriesListItem(
+                        id: book.id,
+                        book: book,
+                        categoryTag: categoryTag,
+                        rankTag: rankTag,
+                        chapterCount: detail.chapterCount,
+                        viewsLabel: detail.viewsLabel
+                    )
+                )
+            } catch is CancellationError {
+                return []
+            } catch {
+                items.append(
+                    AllStoriesListItem(
+                        id: book.id,
+                        book: book,
+                        categoryTag: "#NOVEL",
+                        rankTag: rankTag,
+                        chapterCount: 0,
+                        viewsLabel: "0"
+                    )
+                )
+            }
+        }
+
+        return items
+    }
+
     private func uniqueBooks(in feed: HomeFeed) -> [Book] {
         var seenBookIDs = Set<String>()
         let orderedBooks = feed.latest + [feed.featured] + feed.recommended + feed.moreLikeThis
@@ -150,6 +226,14 @@ final class ExploreViewModel: ObservableObject {
 
     private func normalizedSearchText(_ text: String) -> String {
         text.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+    }
+
+    private func formattedCategoryTag(from genre: String?) -> String {
+        guard let genre = genre?.trimmingCharacters(in: .whitespacesAndNewlines), !genre.isEmpty else {
+            return "#NOVEL"
+        }
+
+        return "#\(genre.uppercased())"
     }
 
     private func resumePendingLoadContinuations() {
