@@ -7,69 +7,104 @@ iOS novel-reader app. SwiftUI, Swift 6, XcodeGen. No external dependencies.
 ```
 LoveNovel/
   LoveNovelApp.swift          # @main entry, launches RootTabView
-  App/RootTabView.swift        # Tab navigation (Library | Explore | Profile), default: Explore
+  App/RootTabView.swift        # TabView (Library | Explore | Profile), default: Explore
   Features/
-    Explore/                   # Feed-driven book discovery (only feature with real data flow)
-      ExploreView.swift        # ScrollView with scroll-direction tracking for tab bar auto-hide
+    Explore/                   # Feed-driven book discovery, navigates to NovelDetail
+      ExploreView.swift        # NavigationStack + ScrollView. Tapping book cover pushes NovelDetailView.
       ExploreViewModel.swift   # Phase state machine: idle -> loading -> loaded | failed
       Components/              # BookCoverStrip, FeaturedBookCard, SectionHeader
+    NovelDetail/               # Book detail with tabbed content (Info/Review/Comments/Content)
+      NovelDetailView.swift    # 864 lines. Hero + tab strip + phase content + bottom action bar.
+                               #   Contains 4 private types: ReaderDestination, HeroCoverCard,
+                               #   AuthorRelatedBookCard, UploaderRelatedBookCard.
+      NovelDetailViewModel.swift  # Phase state machine + Tab/CommentSort/ChapterOrder enums.
+                               #   Manages detail loading, chapter display, comment sorting.
+    Reader/                    # Chapter reader with theming and control panel
+      ReaderView.swift         # 605 lines. Themed reading surface + bottom panel (info/settings)
+                               #   + tutorial overlay. Theme-aware colors computed in view.
+      ReaderViewModel.swift    # PanelTab, ReadingMode, ReaderThemeStyle (8 themes). Chapter
+                               #   navigation via slider/buttons. Font and size selection.
     Library/                   # Empty-state placeholder (History/Bookmark segments, no data yet)
     Profile/                   # Menu list -> Settings navigation
-      SettingsView.swift       # 297 lines - contains DarkModeSettingsView, ThemePaletteRow,
-                               #   BorderedSegmentedControl, LanguageOption, DarkModeOption (all private)
+      SettingsView.swift       # Simple settings list (Languages, Dark mode rows). 74 lines.
   Data/
-    CatalogProviding.swift     # Protocol (Sendable). Single method: fetchHomeFeed() async throws -> HomeFeed
-    CatalogRepository.swift    # Actor. Loads/caches mock_catalog.json from bundle. CatalogSource enum
-                               #   for DI (.bundled vs .rawData). BundleToken fallback for test bundles.
+    CatalogProviding.swift     # Protocol (Sendable). fetchHomeFeed() async throws -> HomeFeed
+    CatalogRepository.swift    # Actor. Loads/caches mock_catalog.json. CatalogSource enum for DI.
+    BookDetailProviding.swift  # Protocol (Sendable). fetchDetail(for:) async throws -> BookDetail
+    BookDetailRepository.swift # Actor. Loads/caches mock_book_details.json. BookDetailSource enum
+                               #   for DI. Fallback detail for unknown books. BundleToken pattern.
   Models/
-    Book.swift                 # Codable + Identifiable + Sendable + Equatable. Fields: id, title, author,
-                               #   summary, rating, accentHex
-    HomeFeed.swift             # Codable + Sendable + Equatable. Sections: latest, featured (single), 
+    Book.swift                 # Codable + Identifiable + Sendable + Equatable. Fields: id, title,
+                               #   author, summary, rating, accentHex
+    HomeFeed.swift             # Codable + Sendable + Equatable. Sections: latest, featured (single),
                                #   recommended, moreLikeThis
+    BookDetail.swift           # BookDetail (chapterCount, genres, tags, reviews, comments, related
+                               #   books). Also: RelatedBook, BookPublicationStatus, BookChapter,
+                               #   BookReview, BookComment - all Codable + Sendable + Equatable.
   Theme/AppTheme.swift         # Design tokens: Colors (static), Layout (static). Color(hex:) extension.
-  Resources/mock_catalog.json  # Bundled sample data
-project.yml                    # XcodeGen spec. Source of truth for LoveNovel.xcodeproj
-LoveNovelTests/                # Unit: CatalogRepositoryTests, ExploreViewModelTests, ExploreViewScrollTests
-LoveNovelUITests/              # UI: TabNavigationUITests (launch + tab switching)
+  Resources/                   # mock_catalog.json, mock_book_details.json
+project.yml                    # XcodeGen spec. iOS 26.0 target. Source of truth for .xcodeproj
+LoveNovelTests/                # Unit: CatalogRepository, BookDetailRepository, ExploreViewModel,
+                               #   NovelDetailViewModel, ReaderViewModel
+LoveNovelUITests/              # UI: TabNavigation, NovelDetailNavigation (Explore->Detail->Reader)
 ```
 
 ## Where to Look
 
 | Task | Location | Notes |
 |------|----------|-------|
-| Add new feature tab | `App/RootTabView.swift` | Add to `AppTab` enum + both `modernTabView` (iOS 18+) and `legacyTabView` |
+| Add new feature tab | `App/RootTabView.swift` | Add to `AppTab` enum + new tab case in TabView |
 | Add new Explore section | `ExploreView.loadedContent()` | Follow pattern: `SectionHeader` + `BookCoverStrip` |
 | New reusable component | `Features/Explore/Components/` | Only Explore has shared components currently |
 | New domain model | `Models/` | Must be `Codable + Sendable + Equatable` |
-| Add data source | `Data/` | Implement `CatalogProviding`, inject via view model init |
-| Change colors/spacing | `Theme/AppTheme.swift` | All tokens centralized here |
+| Add data source | `Data/` | Create protocol (Sendable) + actor repository. See `BookDetailProviding`/`BookDetailRepository` |
+| Change colors/spacing | `Theme/AppTheme.swift` | All tokens centralized here. Reader themes in `ReaderView` |
 | Add new screen to Profile | `Features/Profile/` | Push via `NavigationLink` inside `ProfileView` |
+| Add NovelDetail tab | `NovelDetailView.loadedContent()` | Switch on `viewModel.selectedTab`, add case to `Tab` enum |
+| Add reader setting | `ReaderView.panelSettingsContent` | Add control in settings panel, state in `ReaderViewModel` |
+| Navigate to reader | `NovelDetailView.openReader()` | Sets `readerDestination`, triggers `navigationDestination` |
 
 ## Code Map
 
 | Symbol | Type | Location | Role |
 |--------|------|----------|------|
-| `CatalogProviding` | protocol | Data/ | Data abstraction boundary. All data access goes through this. |
-| `CatalogRepository` | actor | Data/ | Concrete data provider. Caches after first load. |
-| `ExploreViewModel` | class (@MainActor) | Features/Explore/ | Only view model with real data flow. Phase enum drives UI state. |
-| `LibraryViewModel` | class (@MainActor) | Features/Library/ | Segment selection only. No data loading. |
+| `CatalogProviding` | protocol | Data/ | Home feed data boundary. |
+| `CatalogRepository` | actor | Data/ | Loads/caches mock_catalog.json. |
+| `BookDetailProviding` | protocol | Data/ | Book detail data boundary. |
+| `BookDetailRepository` | actor | Data/ | Loads/caches mock_book_details.json. Fallback for unknown books. |
+| `ExploreViewModel` | @MainActor class | Features/Explore/ | Feed loading + placeholder alerts. Phase-driven UI. |
+| `NovelDetailViewModel` | @MainActor class | Features/NovelDetail/ | Detail loading + tab/sort/chapter state. Phase-driven UI. |
+| `ReaderViewModel` | @MainActor class | Features/Reader/ | Reading state: theme, font, chapter nav, control panel, tutorial. |
+| `LibraryViewModel` | @MainActor class | Features/Library/ | Segment selection only. No data loading. |
 | `AppTab` | enum | App/ | Tab definition. Used in RootTabView selection binding. |
-| `ExploreScrollDirection` | enum | Features/Explore/ | Drives tab bar visibility. Referenced by RootTabView. |
-| `BookCoverSize` | enum | Features/Explore/Components/ | .compact (56x56) and .regular (118x168) cover sizes. |
+| `BookCoverSize` | enum | Features/Explore/Components/ | .compact and .regular cover sizes. |
 | `AppTheme` | enum | Theme/ | Namespace for `Colors` and `Layout` static tokens. |
+| `ReaderDestination` | private struct | Features/NovelDetail/ | Identifiable + Hashable. Drives navigation from detail to reader. |
+
+## Navigation Flow
+
+```
+RootTabView (TabView)
+  +-- LibraryView (empty state)
+  +-- ExploreView (NavigationStack)
+  |     +--[tap book cover]--> NovelDetailView (navigationDestination)
+  |                              +--[tap chapter / "Read Now"]--> ReaderView (navigationDestination)
+  +-- ProfileView (NavigationStack)
+        +--[tap Settings]--> SettingsView (NavigationLink)
+```
 
 ## Conventions
 
-- **Swift 6 strict concurrency**: `SWIFT_STRICT_CONCURRENCY=complete`. All models are `Sendable`. Data layer uses `actor`. View models use `@MainActor`.
+- **Swift 6 strict concurrency**: `SWIFT_STRICT_CONCURRENCY=complete`. All models `Sendable`. Data layer uses `actor`. View models use `@MainActor`.
 - **XcodeGen**: `project.yml` is the source of truth. Run `xcodegen generate` after any change. Never hand-edit `.xcodeproj`.
-- **iOS version branching**: `RootTabView` has `@available(iOS 18.0, *)` for new `Tab` API with `legacyTabView` fallback for iOS 17.
-- **View model injection**: Views take view model via `@autoclosure` init parameter (see `ExploreView`). Repositories injected via protocol (`any CatalogProviding`).
-- **State machine pattern**: `ExploreViewModel.Phase` enum (idle/loading/loaded/failed). Check `.loading` guard and `.loaded` early return in `load()`.
-- **Cancellation handling**: Both `CatalogRepository` and `ExploreViewModel` check `Task.isCancelled` explicitly.
-- **Test data**: Tests use inline `static let` sample data, not shared fixtures. `CatalogRepository` tests use `.rawData()` source for DI.
-- **Accessibility IDs**: Screens use `screen.{name}` pattern (e.g., `screen.explore`, `screen.library`, `screen.profile`, `screen.settings`).
+- **View model injection**: `ExploreView` takes view model via `@autoclosure` init. `NovelDetailView` takes `Book` directly (creates VM internally) or VM via `@autoclosure`. `ReaderView` takes explicit params.
+- **State machine pattern**: All data-loading view models use `Phase` enum (idle/loading/loaded/failed). Guard `.loading` and early-return `.loaded` in `load()`.
+- **Cancellation handling**: Repositories and view models check `Task.isCancelled` explicitly. Catch `CancellationError` separately from generic errors.
+- **Repository pattern**: Protocol (Sendable) defines boundary. Actor implements with caching. `Source` enum for DI (`.bundled` vs `.rawData`). `BundleToken` fallback for test bundles.
+- **Test data**: Tests use inline `static let` sample data, not shared fixtures. Repository tests use `.rawData()` source. VM tests use private stub structs implementing the protocol with closure injection.
+- **Accessibility IDs**: Screens: `screen.{name}`. Detail tabs: `novel_detail.tab.{name}`. Reader: `reader.{element}`. Book covers: `book.cover.{id}`.
 - **Previews**: `#Preview` macro at bottom of every view file.
-- **MARK comments**: Used for section organization in views (e.g., `// MARK: - Tab Container`).
+- **Vietnamese UI**: Reader panel labels and NovelDetail genre/tag headers use Vietnamese strings.
 
 ## Anti-Patterns
 
@@ -78,15 +113,19 @@ LoveNovelUITests/              # UI: TabNavigationUITests (launch + tab switchin
 - Do NOT suppress concurrency warnings - fix them properly (actors, @MainActor, Sendable).
 - Do NOT create shared test fixtures - each test class owns its sample data inline.
 - Do NOT add default exports or barrel files - Swift does not use this pattern.
+- Do NOT put reusable types inside view files - `NovelDetailView.swift` already has 4 private types; extract to separate files if adding more.
 
 ## Gotchas
 
-- `SettingsView.swift` (297 lines) contains 5 types (3 private views + 2 private enums). If adding more settings, consider extracting to separate files.
-- `LibraryView.swift` line 42 has a stale `#imageLiteral` reference that may cause build issues.
-- Many features are v2 stubs showing "Coming Soon" alerts (`showPlaceholder`). Do not mistake these for real implementations.
-- `RootTabView` has dual tab implementations (iOS 17 legacy + iOS 18 modern). Both must be updated when adding/modifying tabs.
+- `NovelDetailView.swift` (864 lines) is the largest file. Contains 4 private types (ReaderDestination, HeroCoverCard, AuthorRelatedBookCard, UploaderRelatedBookCard). Extract to separate files if adding complexity.
+- `ReaderView.swift` (605 lines) computes theme-aware colors inline (readerBackgroundColor, readerPrimaryTextColor). These are not in AppTheme - they live in the view.
+- `ReaderViewModel` uses Vietnamese strings for UI labels (e.g., PanelTab raw values: "Thong tin", "Cai dat"; ReadingMode: "Lat trang", "Cuon doc"). Keep consistent when adding labels.
+- Many features are v2 stubs showing "Coming Soon" alerts (`alertMessage`, `showPlaceholder`). Do not mistake these for real implementations.
 - `Color(hex:)` extension handles 3, 6, and 8 character hex strings. Falls back to `.gray` on parse failure.
-- `CatalogRepository.resolveSource` has a `BundleToken` fallback to find resources in the correct bundle during testing.
+- `BookDetailRepository.fallbackDetail` returns synthetic data for books not in JSON. Tests assert against this fallback.
+- `ReaderView` uses `@AppStorage("reader.didShowTutorial")` to persist tutorial state across launches.
+- `ExploreView` navigates to `NovelDetailView` via `navigationDestination(item: $selectedBook)`. `NovelDetailView` navigates to `ReaderView` via `navigationDestination(item: $readerDestination)`.
+- Library placeholder buttons (search, gear) have empty closures - v1 stubs.
 
 ## Commands
 
@@ -106,41 +145,38 @@ open LoveNovel.xcodeproj
 
 ## MCP Tool Playbook
 
-Use `XcodeBuildMCP` as the preferred path for build/test/simulator workflows. Direct shell/file read-write-edit is allowed when faster and sufficient.
+Use the `mcp__xcode__*` toolset as the preferred path for Xcode-aware build/test/diagnostics workflows. Direct shell/file read-write-edit is still allowed when faster and sufficient.
 
-1. **Project and session bootstrap**:
-   - `discover_projs` to find `.xcodeproj` / `.xcworkspace`
-   - `list_schemes` and `list_sims` to pick scheme/simulator
-   - `session_set_defaults` to set `projectPath/workspacePath`, `scheme`, simulator, and build config
-   - `session_show_defaults` to verify active defaults
+1. **Project and context bootstrap**:
+   - `mcp__xcode__XcodeListWindows` to discover the active workspace window and `tabIdentifier`
+   - `mcp__xcode__XcodeLS`, `mcp__xcode__XcodeGlob`, `mcp__xcode__XcodeGrep` to inspect the project quickly from Xcode context
 2. **Build and test loop**:
-   - `build_sim` for compile checks
-   - `test_sim` for unit/UI tests
-   - `clean` when DerivedData/build artifacts cause issues
-   - `show_build_settings` for build setting diagnosis
-3. **Run on simulator**:
-   - `boot_sim` / `open_sim` as needed
-   - `build_run_sim` for fast build+launch cycle
-   - `get_sim_app_path` + `install_app_sim` + `launch_app_sim` (or `launch_app_logs_sim`) for explicit install/launch flow
-   - `stop_app_sim` to terminate app quickly
-4. **Logs and UI validation**:
-   - `start_sim_log_cap` and `stop_sim_log_cap` for targeted runtime logs
-   - `snapshot_ui` for view hierarchy and frames
-   - `screenshot` and `record_sim_video` for visual evidence
-   - `get_app_bundle_id` when bundle-specific operations are needed
-5. **Code navigation/editing**:
-   - Direct path: `rg`, `sed`, `cat`, apply patches, and direct file edits in the workspace
-   - Use shell editing by default unless Xcode runtime/build context is required
+   - `mcp__xcode__BuildProject` for compile checks
+   - `mcp__xcode__GetBuildLog` to inspect compiler/build failures
+   - `mcp__xcode__GetTestList` to discover test identifiers
+   - `mcp__xcode__RunSomeTests` for targeted regression checks
+   - `mcp__xcode__RunAllTests` for full suite runs
+3. **Diagnostics and validation**:
+   - `mcp__xcode__XcodeListNavigatorIssues` for current Issue Navigator visibility
+   - `mcp__xcode__XcodeRefreshCodeIssuesInFile` for file-scoped diagnostics
+   - `mcp__xcode__RenderPreview` for SwiftUI preview verification
+   - `mcp__xcode__ExecuteSnippet` for quick runtime checks in source context
+4. **Project-aware editing (optional path)**:
+   - `mcp__xcode__XcodeRead`, `mcp__xcode__XcodeUpdate`, `mcp__xcode__XcodeWrite` for file edits through Xcode project structure
+   - `mcp__xcode__XcodeMakeDir`, `mcp__xcode__XcodeMV`, `mcp__xcode__XcodeRM` for project navigator structure updates
+5. **Shell editing path (default for speed)**:
+   - Use `rg`, `sed`, `cat`, and `apply_patch` for local workspace edits
+   - Prefer shell editing unless Xcode runtime/build context is required
 
 ### Always-Use Rules
 
 - **Always use the iPhone 17 Pro simulator** for build, test, and run workflows. Do not use any other simulator device unless explicitly requested.
 - Direct read/write/edit without MCP is allowed.
-- Use `XcodeBuildMCP` tools when build/test/simulator context is needed.
+- Use `mcp__xcode__*` tools when build/test/diagnostic context is needed.
+- Call `mcp__xcode__XcodeListWindows` first when a `tabIdentifier` is required.
 - Always read/search before editing (via Xcode tools or shell tools).
 - Always build after modifications; do not leave the project in a broken build state.
 - Always run tests for changed behavior (targeted minimum, full suite for broad refactors).
-- Always update both iOS 17 and iOS 18 paths when touching tab/navigation logic.
 - Always use `xcodegen generate` after `project.yml` changes; never hand-edit `.xcodeproj`.
 
 ## Skill Auto-Load Policy

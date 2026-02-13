@@ -4,6 +4,7 @@ struct NovelDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: NovelDetailViewModel
     @State private var readerDestination: ReaderDestination?
+    private let scrollSpaceName = "novel_detail.scroll"
 
     init(book: Book) {
         _viewModel = StateObject(wrappedValue: NovelDetailViewModel(book: book))
@@ -25,6 +26,7 @@ struct NovelDetailView: View {
                 }
                 .padding(.bottom, bottomContentPadding)
             }
+            .coordinateSpace(name: scrollSpaceName)
             .background(AppTheme.Colors.screenBackground.ignoresSafeArea())
             .ignoresSafeArea(edges: .top)
             .overlay(alignment: .bottom) {
@@ -68,104 +70,161 @@ struct NovelDetailView: View {
     }
 
     private func heroSection(topInset: CGFloat) -> some View {
-        ZStack(alignment: .topLeading) {
-            ZStack {
-                LinearGradient(
-                    colors: [
-                        Color(hex: viewModel.book.accentHex),
-                        Color.black.opacity(0.78)
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+        GeometryReader { heroProxy in
+            let minY = heroProxy.frame(in: .named(scrollSpaceName)).minY
+            let pullDownOffset = max(minY, 0)
+            let upwardScroll = max(-minY, 0)
+            let collapseProgress = min(upwardScroll / 220, 1)
+            let contentScale = max(0.88, 1 - (collapseProgress * 0.12))
+            let contentYOffset = -(collapseProgress * 16)
+            let coverWidth = max(88, min(108, heroProxy.size.width * 0.26))
+            let coverHeight = coverWidth * 1.25
+            let titleFontSize = max(19, min(25, heroProxy.size.width * 0.064))
+            let authorFontSize = max(14, min(18, heroProxy.size.width * 0.044))
+            let stretchScale = 1 + min(pullDownOffset / 420, 0.1)
 
-                Circle()
-                    .fill(Color.white.opacity(0.28))
-                    .frame(width: 160, height: 160)
-                    .offset(x: -80, y: -58)
-                    .blur(radius: 18)
+            ZStack(alignment: .topLeading) {
+                ZStack {
+                    LinearGradient(
+                        colors: [
+                            Color(hex: viewModel.book.accentHex).opacity(0.92),
+                            Color.black.opacity(0.72)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
 
-                Circle()
-                    .fill(Color.white.opacity(0.18))
-                    .frame(width: 210, height: 210)
-                    .offset(x: 120, y: -50)
-                    .blur(radius: 32)
-            }
-            .overlay(AppTheme.Colors.heroOverlay)
-            .clipped()
+                    Circle()
+                        .fill(Color.white.opacity(0.22))
+                        .frame(width: 190, height: 190)
+                        .offset(x: -90, y: -70)
+                        .blur(radius: 22)
 
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundStyle(.white)
-                            .frame(width: 26, height: 26)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("novel_detail.back")
+                    Circle()
+                        .fill(Color(hex: viewModel.book.accentHex).opacity(0.45))
+                        .frame(width: 260, height: 260)
+                        .offset(x: 140, y: -32)
+                        .blur(radius: 30)
 
-                    Spacer()
+                    Circle()
+                        .fill(Color.white.opacity(0.14))
+                        .frame(width: 190, height: 190)
+                        .offset(x: 174, y: 110)
+                        .blur(radius: 34)
                 }
+                .scaleEffect(stretchScale, anchor: .center)
+                .overlay(AppTheme.Colors.heroOverlay.opacity(0.8))
+                .blur(radius: collapseProgress * 5)
+                .clipped()
 
-                HStack(alignment: .top, spacing: 8) {
-                    HeroCoverCard(book: viewModel.book)
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(viewModel.book.title)
-                            .font(.system(size: 14, weight: .semibold))
-                            .minimumScaleFactor(0.7)
-                            .lineLimit(1)
-                            .foregroundStyle(.white)
-
-                        Text(viewModel.book.author)
-                            .font(.system(size: 8.5, weight: .regular))
-                            .foregroundStyle(.white.opacity(0.86))
-                    }
-                    .padding(.top, 2)
-
-                    Spacer(minLength: 0)
-                }
-
-                HStack(spacing: 8) {
-                    Button {
-                        openReaderFromCurrentContext()
-                    } label: {
-                        Text("Read Now")
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 6)
-                            .background(Capsule().fill(AppTheme.Colors.accentBlue))
-                    }
-                    .buttonStyle(.plain)
-
-                    Button {
-                        viewModel.didTapAddToLibrary()
-                    } label: {
-                        HStack(spacing: 6) {
-                            Image(systemName: "plus")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundStyle(AppTheme.Colors.accentBlue)
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundStyle(.white)
                                 .frame(width: 34, height: 34)
-                                .background(Circle().fill(.white))
-
-                            Text("Add to\nLibrary")
-                                .font(.system(size: 8, weight: .regular))
-                                .multilineTextAlignment(.leading)
-                                .foregroundStyle(.white.opacity(0.9))
+                                .contentShape(Circle())
                         }
-                    }
-                    .buttonStyle(.plain)
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("novel_detail.back")
 
-                    Spacer()
+                        Spacer()
+                    }
+
+                    HStack(alignment: .top, spacing: 10) {
+                        HeroCoverCard(
+                            book: viewModel.book,
+                            width: coverWidth,
+                            height: coverHeight
+                        )
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(heroPrimaryGenre)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 9)
+                                .padding(.vertical, 3)
+                                .background(Capsule().fill(AppTheme.Colors.accentBlue.opacity(0.9)))
+
+                            Text(viewModel.book.title)
+                                .font(.system(size: titleFontSize, weight: .semibold))
+                                .minimumScaleFactor(0.55)
+                                .lineLimit(2)
+                                .foregroundStyle(.white)
+
+                            Text(viewModel.book.author)
+                                .font(.system(size: authorFontSize, weight: .regular))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.75)
+                                .foregroundStyle(.white.opacity(0.9))
+
+                            HStack(spacing: 5) {
+                                ForEach(0..<5, id: \.self) { index in
+                                    Image(systemName: index < Int(viewModel.book.rating.rounded()) ? "star.fill" : "star")
+                                        .font(.system(size: 11, weight: .semibold))
+                                        .foregroundStyle(AppTheme.Colors.star)
+                                }
+
+                                Text(String(format: "%.1f", viewModel.book.rating))
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.92))
+
+                                Text(heroReviewCountText)
+                                    .font(.system(size: 10, weight: .regular))
+                                    .foregroundStyle(.white.opacity(0.86))
+                                    .lineLimit(1)
+                            }
+                        }
+
+                        Spacer(minLength: 0)
+                    }
+
+                    HStack(spacing: 8) {
+                        Button {
+                            openReaderFromCurrentContext()
+                        } label: {
+                            Text("Đọc truyện")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 7)
+                                .background(Capsule().fill(AppTheme.Colors.accentBlue))
+                        }
+                        .buttonStyle(.plain)
+
+                        Button {
+                            viewModel.didTapAddToLibrary()
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundStyle(AppTheme.Colors.accentBlue)
+                                    .frame(width: 40, height: 40)
+                                    .background(Circle().fill(.white))
+
+                                Text("Thêm vào\nTủ Truyện")
+                                    .font(.system(size: 10, weight: .regular))
+                                    .multilineTextAlignment(.leading)
+                                    .foregroundStyle(.white.opacity(0.92))
+                            }
+                        }
+                        .buttonStyle(.plain)
+
+                        Spacer(minLength: 0)
+                    }
                 }
+                .padding(.horizontal, AppTheme.Layout.horizontalInset)
+                .padding(.top, topInset + 6)
+                .padding(.bottom, 8)
+                .scaleEffect(contentScale, anchor: .topLeading)
+                .offset(y: contentYOffset)
             }
-            .padding(.horizontal, AppTheme.Layout.horizontalInset)
-            .padding(.top, topInset + 4)
-            .padding(.bottom, 10)
+            .frame(height: AppTheme.Layout.detailHeroHeight + topInset + pullDownOffset)
+            .clipped()
+            .offset(y: -pullDownOffset)
         }
         .frame(height: AppTheme.Layout.detailHeroHeight + topInset)
     }
@@ -176,17 +235,19 @@ struct NovelDetailView: View {
                 Button {
                     viewModel.setTab(tab)
                 } label: {
-                    VStack(spacing: 8) {
-                        Text(tab.rawValue)
-                            .font(.system(size: 12, weight: viewModel.selectedTab == tab ? .semibold : .regular))
+                    VStack(spacing: 10) {
+                        Text(tabTitle(for: tab))
+                            .font(.system(size: 16, weight: viewModel.selectedTab == tab ? .semibold : .regular))
                             .foregroundStyle(viewModel.selectedTab == tab ? AppTheme.Colors.textPrimary : AppTheme.Colors.textSecondary)
                             .frame(maxWidth: .infinity)
 
-                        Rectangle()
-                            .fill(viewModel.selectedTab == tab ? AppTheme.Colors.textPrimary : .clear)
-                            .frame(height: 2.5)
+                        Capsule()
+                            .fill(AppTheme.Colors.textPrimary)
+                            .frame(width: 92, height: 3.5)
+                            .opacity(viewModel.selectedTab == tab ? 1 : 0)
                     }
-                    .padding(.top, 8)
+                    .padding(.top, 14)
+                    .padding(.bottom, 8)
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier(tabIdentifier(for: tab))
@@ -533,7 +594,7 @@ struct NovelDetailView: View {
             Button {
                 openReaderFromCurrentContext()
             } label: {
-                Text("Read")
+                Text("Đọc")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 22)
@@ -612,6 +673,37 @@ struct NovelDetailView: View {
                         .fill(Color.white.opacity(0.8))
                 )
         )
+    }
+
+    private var heroPrimaryGenre: String {
+        guard let firstGenre = viewModel.detail?.genres.first, !firstGenre.isEmpty else {
+            return "Tiên Hiệp"
+        }
+
+        return firstGenre
+    }
+
+    private var heroReviewCountText: String {
+        let reviewCount = viewModel.detail?.reviews.count ?? 0
+
+        if reviewCount == 0 {
+            return "(chưa có đánh giá)"
+        }
+
+        return "(\(reviewCount) đánh giá)"
+    }
+
+    private func tabTitle(for tab: NovelDetailViewModel.Tab) -> String {
+        switch tab {
+        case .info:
+            return "Giới Thiệu"
+        case .review:
+            return "Đánh Giá"
+        case .comments:
+            return "Bình Luận"
+        case .content:
+            return "D.S Chương"
+        }
     }
 
     private func tabIdentifier(for tab: NovelDetailViewModel.Tab) -> String {
@@ -713,6 +805,8 @@ private struct ReaderDestination: Identifiable, Hashable {
 
 private struct HeroCoverCard: View {
     let book: Book
+    let width: CGFloat
+    let height: CGFloat
 
     var body: some View {
         RoundedRectangle(cornerRadius: 14)
@@ -727,24 +821,29 @@ private struct HeroCoverCard: View {
                     endPoint: .bottomTrailing
                 )
             )
-            .frame(width: 82, height: 116)
+            .frame(width: width, height: height)
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(Color.white.opacity(0.14), lineWidth: 1)
+            )
+            .shadow(color: Color.black.opacity(0.26), radius: 14, y: 8)
             .overlay(alignment: .bottomLeading) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(book.title)
-                        .font(.system(size: 9, weight: .heavy))
+                        .font(.system(size: 12, weight: .heavy))
                         .foregroundStyle(.white)
                         .lineLimit(2)
 
                     Text("A novel about the digital underground")
-                        .font(.system(size: 5, weight: .regular))
+                        .font(.system(size: 6.5, weight: .regular))
                         .foregroundStyle(.white.opacity(0.8))
                         .lineLimit(2)
 
                     Text(book.author)
-                        .font(.system(size: 6.5, weight: .medium))
+                        .font(.system(size: 8, weight: .medium))
                         .foregroundStyle(.white.opacity(0.85))
                 }
-                .padding(6)
+                .padding(8)
             }
     }
 }

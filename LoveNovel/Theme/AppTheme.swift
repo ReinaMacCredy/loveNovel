@@ -22,8 +22,8 @@ enum AppTheme {
         static let cardSpacing: CGFloat = 10
         static let coverCornerRadius: CGFloat = 16
         static let featuredCornerRadius: CGFloat = 22
-        static let detailHeroHeight: CGFloat = 206
-        static let detailTabHeight: CGFloat = 54
+        static let detailHeroHeight: CGFloat = 246
+        static let detailTabHeight: CGFloat = 68
         static let detailSectionSpacing: CGFloat = 18
         static let detailBottomInset: CGFloat = 10
         static let detailActionBarCornerRadius: CGFloat = 22
