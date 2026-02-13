@@ -81,4 +81,57 @@ final class NovelDetailNavigationUITests: XCTestCase {
         )
         XCTAssertTrue(returnedToDetail || returnedToExplore || remainedInReader)
     }
+
+    func testLeftEdgeSwipeUpReturnsFromNovelDetail() {
+        let app = XCUIApplication()
+        app.launch()
+
+        openRiceTeaDetail(in: app)
+        swipeUpFromLeftEdge(in: app)
+
+        XCTAssertTrue(app.buttons["All Stories"].waitForExistence(timeout: 3))
+    }
+
+    func testLeftEdgeSwipeUpReturnsFromReader() {
+        let app = XCUIApplication()
+        app.launch()
+
+        openRiceTeaDetail(in: app)
+
+        let contentTab = app.buttons["novel_detail.tab.content"]
+        XCTAssertTrue(contentTab.waitForExistence(timeout: 4))
+        contentTab.tap()
+
+        let chapterRow = app.buttons.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@", "novel_detail.chapter_row.")
+        ).firstMatch
+        XCTAssertTrue(chapterRow.waitForExistence(timeout: 4))
+        chapterRow.tap()
+
+        let tutorialDismiss = app.buttons["reader.tutorial.dismiss"]
+        if tutorialDismiss.waitForExistence(timeout: 1.5) {
+            tutorialDismiss.tap()
+        }
+
+        XCTAssertTrue(app.buttons["reader.top.settings"].waitForExistence(timeout: 4))
+        swipeUpFromLeftEdge(in: app)
+
+        XCTAssertTrue(app.buttons["novel_detail.back"].waitForExistence(timeout: 3))
+    }
+
+    private func openRiceTeaDetail(in app: XCUIApplication) {
+        let riceTeaCover = app.buttons.matching(identifier: "book.cover.rice-tea").firstMatch
+        XCTAssertTrue(riceTeaCover.waitForExistence(timeout: 10))
+        riceTeaCover.tap()
+        XCTAssertTrue(app.scrollViews["screen.novel_detail"].waitForExistence(timeout: 4))
+    }
+
+    private func swipeUpFromLeftEdge(in app: XCUIApplication) {
+        let window = app.windows.firstMatch
+        XCTAssertTrue(window.waitForExistence(timeout: 2))
+
+        let start = window.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.78))
+        let end = window.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.30))
+        start.press(forDuration: 0.05, thenDragTo: end)
+    }
 }

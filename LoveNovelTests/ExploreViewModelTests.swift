@@ -58,6 +58,38 @@ final class ExploreViewModelTests: XCTestCase {
         XCTAssertEqual(message, "Could not load stories.")
     }
 
+    func testSearchBooksReturnsMatchesAcrossFieldsAndDeduplicates() async {
+        let provider = StubCatalogProvider {
+            Self.sampleFeed
+        }
+
+        let viewModel = await MainActor.run {
+            ExploreViewModel(catalog: provider)
+        }
+
+        let titleMatches = await viewModel.searchBooks(matching: "mutabilis")
+        XCTAssertEqual(titleMatches.map(\.id), ["mutabilis"])
+
+        let authorMatches = await viewModel.searchBooks(matching: "julien")
+        XCTAssertEqual(authorMatches.map(\.id), ["rice-tea"])
+
+        let summaryMatches = await viewModel.searchBooks(matching: "underground")
+        XCTAssertEqual(summaryMatches.map(\.id), ["rice-tea"])
+    }
+
+    func testSearchBooksWithWhitespaceQueryReturnsEmpty() async {
+        let provider = StubCatalogProvider {
+            Self.sampleFeed
+        }
+
+        let viewModel = await MainActor.run {
+            ExploreViewModel(catalog: provider)
+        }
+
+        let matches = await viewModel.searchBooks(matching: "   ")
+        XCTAssertTrue(matches.isEmpty)
+    }
+
     private static let sampleFeed = HomeFeed(
         latest: [
             Book(
@@ -82,7 +114,7 @@ final class ExploreViewModelTests: XCTestCase {
                 id: "rice-tea",
                 title: "Rice Tea",
                 author: "Julien McArdle",
-                summary: "Test summary",
+                summary: "A noir story about the digital underground.",
                 rating: 4.5,
                 accentHex: "1B3B72"
             )

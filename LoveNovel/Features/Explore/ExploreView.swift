@@ -73,21 +73,22 @@ struct ExploreView: View {
             Spacer()
 
             HStack(spacing: 20) {
-                Button {
-                    viewModel.showPlaceholder(message: "Search is coming in v2.")
+                NavigationLink {
+                    ExploreSearchView(viewModel: viewModel)
                 } label: {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 18, weight: .regular))
                         .foregroundStyle(AppTheme.Colors.textSecondary)
                 }
+                .accessibilityIdentifier("explore.header.search")
 
                 Button {
-                    viewModel.showPlaceholder(message: "Filters are coming in v2.")
+                    viewModel.showPlaceholder(message: "Open search to use filters.")
                 } label: {
-                    Image(systemName: "line.3.horizontal.decrease")
-                        .font(.system(size: 18, weight: .regular))
-                        .foregroundStyle(AppTheme.Colors.textSecondary)
+                    FilterButtonLabel()
                 }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("explore.header.filter")
             }
             .buttonStyle(.plain)
         }

@@ -70,4 +70,43 @@ final class ExploreViewModel: ObservableObject {
     func didTapAdd(_ book: Book) {
         showPlaceholder(message: "\(book.title) was added as a demo action.")
     }
+
+    func searchBooks(matching query: String) async -> [Book] {
+        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedQuery.isEmpty else {
+            return []
+        }
+
+        if feed == nil {
+            await load()
+        }
+
+        guard !Task.isCancelled else {
+            return []
+        }
+
+        guard let feed else {
+            return []
+        }
+
+        let normalizedQuery = normalizedSearchText(trimmedQuery)
+        return uniqueBooks(in: feed).filter { book in
+            normalizedSearchText(book.title).contains(normalizedQuery)
+            || normalizedSearchText(book.author).contains(normalizedQuery)
+            || normalizedSearchText(book.summary).contains(normalizedQuery)
+        }
+    }
+
+    private func uniqueBooks(in feed: HomeFeed) -> [Book] {
+        var seenBookIDs = Set<String>()
+        let orderedBooks = feed.latest + [feed.featured] + feed.recommended + feed.moreLikeThis
+
+        return orderedBooks.filter { book in
+            seenBookIDs.insert(book.id).inserted
+        }
+    }
+
+    private func normalizedSearchText(_ text: String) -> String {
+        text.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+    }
 }

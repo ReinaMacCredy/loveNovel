@@ -27,6 +27,9 @@ struct NovelDetailView: View {
                 .padding(.bottom, bottomContentPadding)
             }
             .coordinateSpace(name: scrollSpaceName)
+            .leftEdgeSwipeUpBackGesture {
+                dismiss()
+            }
             .background(AppTheme.Colors.screenBackground.ignoresSafeArea())
             .ignoresSafeArea(edges: .top)
             .overlay(alignment: .bottom) {

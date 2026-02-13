@@ -24,6 +24,7 @@
 		84F239C78B49B1FC7E46D2F5 /* ReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F2E679F33D586F86E0687B /* ReaderView.swift */; };
 		9FC6C13CB088FBA14A9DB09A /* ReaderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C268016FC006002D0D1DAFB /* ReaderViewModelTests.swift */; };
 		A5308F3228D9FADD1519E60A /* BookDetailRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514382D7C531748B4CC40661 /* BookDetailRepositoryTests.swift */; };
+		AAA022A1D94AD14218A579C4 /* LeftEdgeSwipeUpBackModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35140A57C951EA7C2CC6DB7B /* LeftEdgeSwipeUpBackModifier.swift */; };
 		B070E087AE0A669F3BDFB212 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49FC3C70AF7169E7204B8C40 /* Preview Assets.xcassets */; };
 		B0C9EC4363E518EEE8AE7D9D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F998371340B70A54F021AA5 /* SettingsView.swift */; };
 		BBAE7225FF50544966B561E4 /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FE06CDD886582F8FBD0CCB /* ExploreViewModel.swift */; };
@@ -36,7 +37,9 @@
 		CCE87810F1F811DF76FEA9DD /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE7079E90295ED90F8F3E11 /* LibraryView.swift */; };
 		D0872D4ED65ADA562D6503F8 /* ReaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FE88A22354E0F8809EDA71 /* ReaderViewModel.swift */; };
 		D7E6BE1C562F9C2575DAF155 /* BookCoverStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F933A30EFAF472908B6541C7 /* BookCoverStrip.swift */; };
+		DCB389005DD92FF9661AA56E /* FilterButtonLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F34BC4C0F1766370B0DE788 /* FilterButtonLabel.swift */; };
 		DD6FA653F45F7A38B87075FA /* BookDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C5860719157E51C7792C5B /* BookDetail.swift */; };
+		DE256CDC9139F4EDA4DFD845 /* ExploreSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75BAC3F212F5296F2802103 /* ExploreSearchView.swift */; };
 		E00EB3FB22C3E88FA9BED3B2 /* ExploreViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2118C897BCDCB2D00C78782 /* ExploreViewModelTests.swift */; };
 		E4A9881EEE81F73B050C5F0C /* mock_book_details.json in Resources */ = {isa = PBXBuildFile; fileRef = E39489FFA86B304942A6A132 /* mock_book_details.json */; };
 		E5BF4763B2E57251F0B7E586 /* NovelDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F598B969AE3BF9447EF7DBDF /* NovelDetailViewModelTests.swift */; };
@@ -65,6 +68,7 @@
 		054F4BE566902193B9F4C6A8 /* CatalogRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogRepository.swift; sourceTree = "<group>"; };
 		1AEDDAC47E0A105891718066 /* mock_catalog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mock_catalog.json; sourceTree = "<group>"; };
 		2A2C5F76048A224EB3C8A7BD /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		35140A57C951EA7C2CC6DB7B /* LeftEdgeSwipeUpBackModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftEdgeSwipeUpBackModifier.swift; sourceTree = "<group>"; };
 		371DBC162060B6A9E5ED40EE /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		4738664FC7BB0770BF295434 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		49FC3C70AF7169E7204B8C40 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -75,6 +79,7 @@
 		559E5C50C690E1BA98A61FF2 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		6A42002DF1D3FDF8FBC1BAA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6E870B98B0CE23B563A68F81 /* BookDetailProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailProviding.swift; sourceTree = "<group>"; };
+		6F34BC4C0F1766370B0DE788 /* FilterButtonLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButtonLabel.swift; sourceTree = "<group>"; };
 		6FABCEA055173ECB5DFEF9E2 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 		73A4D77BB387ED2ABA900BB5 /* NovelDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NovelDetailViewModel.swift; sourceTree = "<group>"; };
 		73A9E38451BCEA71BC5D41BC /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
@@ -91,6 +96,7 @@
 		B554896B2A1DC7F6E4E03182 /* LoveNovelTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LoveNovelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6E80A51070E41E8FC1307B4 /* LoveNovelUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LoveNovelUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C36DD1539FECCD882B93453D /* BookDetailRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailRepository.swift; sourceTree = "<group>"; };
+		C75BAC3F212F5296F2802103 /* ExploreSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreSearchView.swift; sourceTree = "<group>"; };
 		D7718E28329D4118CBCB43E4 /* FeaturedBookCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedBookCard.swift; sourceTree = "<group>"; };
 		D82EB91B939D8D8FFAFEAFF8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E0C5860719157E51C7792C5B /* BookDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetail.swift; sourceTree = "<group>"; };
@@ -207,6 +213,7 @@
 		A7D07DAED1C51A59532B0F11 /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				C75BAC3F212F5296F2802103 /* ExploreSearchView.swift */,
 				73A9E38451BCEA71BC5D41BC /* ExploreView.swift */,
 				98FE06CDD886582F8FBD0CCB /* ExploreViewModel.swift */,
 				CD410C05040A6F7F32C70722 /* Components */,
@@ -226,6 +233,7 @@
 		CC805351D717D5CD8B0B3DEB /* App */ = {
 			isa = PBXGroup;
 			children = (
+				35140A57C951EA7C2CC6DB7B /* LeftEdgeSwipeUpBackModifier.swift */,
 				EF1B46587C222903D543D623 /* RootTabView.swift */,
 			);
 			path = App;
@@ -236,6 +244,7 @@
 			children = (
 				F933A30EFAF472908B6541C7 /* BookCoverStrip.swift */,
 				D7718E28329D4118CBCB43E4 /* FeaturedBookCard.swift */,
+				6F34BC4C0F1766370B0DE788 /* FilterButtonLabel.swift */,
 				559E5C50C690E1BA98A61FF2 /* SectionHeader.swift */,
 			);
 			path = Components;
@@ -415,10 +424,13 @@
 				698AB201B3975C39DE5F01A3 /* BookDetailRepository.swift in Sources */,
 				C143319A9A9879D2A76F189B /* CatalogProviding.swift in Sources */,
 				45A94CEF9C62394EAD6DACD9 /* CatalogRepository.swift in Sources */,
+				DE256CDC9139F4EDA4DFD845 /* ExploreSearchView.swift in Sources */,
 				FAF0D5D5BD9916DBBAA782A0 /* ExploreView.swift in Sources */,
 				BBAE7225FF50544966B561E4 /* ExploreViewModel.swift in Sources */,
 				1C73DA1DD398072DC43DE0A8 /* FeaturedBookCard.swift in Sources */,
+				DCB389005DD92FF9661AA56E /* FilterButtonLabel.swift in Sources */,
 				7301D38B497911978498DFE1 /* HomeFeed.swift in Sources */,
+				AAA022A1D94AD14218A579C4 /* LeftEdgeSwipeUpBackModifier.swift in Sources */,
 				CCE87810F1F811DF76FEA9DD /* LibraryView.swift in Sources */,
 				1692822D9C881A0202630BC9 /* LibraryViewModel.swift in Sources */,
 				0FBC13B1BB2E408B2D403AD1 /* LoveNovelApp.swift in Sources */,

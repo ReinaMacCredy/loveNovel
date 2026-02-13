@@ -52,6 +52,9 @@ struct ReaderView: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: viewModel.isControlPanelVisible)
+        .leftEdgeSwipeUpBackGesture {
+            closeReader()
+        }
         .alert(
             "Coming Soon",
             isPresented: Binding(
@@ -75,14 +78,18 @@ struct ReaderView: View {
         .navigationBarBackButtonHidden(true)
     }
 
+    private func closeReader() {
+        if let onClose {
+            onClose()
+        } else {
+            dismiss()
+        }
+    }
+
     private var topBar: some View {
         HStack(spacing: 10) {
             Button {
-                if let onClose {
-                    onClose()
-                } else {
-                    dismiss()
-                }
+                closeReader()
             } label: {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 20, weight: .regular))
