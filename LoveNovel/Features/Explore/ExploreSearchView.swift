@@ -34,7 +34,12 @@ struct ExploreSearchView: View {
         .task(id: query) {
             await runSearch()
         }
-        .onAppear {
+        .task {
+            try? await Task.sleep(for: .milliseconds(150))
+            guard !Task.isCancelled else {
+                return
+            }
+
             isSearchFieldFocused = true
         }
         .navigationBarBackButtonHidden(true)
@@ -63,8 +68,7 @@ struct ExploreSearchView: View {
             TextField("Tim", text: $query)
                 .font(.system(size: 20, weight: .regular))
                 .foregroundStyle(AppTheme.Colors.textSecondary)
-                .textInputAutocapitalization(.never)
-                .disableAutocorrection(true)
+                .keyboardType(.default)
                 .focused($isSearchFieldFocused)
                 .submitLabel(.search)
                 .accessibilityIdentifier("explore.search.input")

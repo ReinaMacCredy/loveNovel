@@ -659,8 +659,7 @@ struct NovelDetailView: View {
 
             TextField("Add a comment", text: $viewModel.draftComment)
                 .font(.system(size: 15, weight: .regular))
-                .textInputAutocapitalization(.sentences)
-                .disableAutocorrection(false)
+                .keyboardType(.default)
 
             Button {
                 viewModel.didTapSendComment()
