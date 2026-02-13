@@ -4,6 +4,7 @@ struct ExploreView: View {
     @StateObject private var viewModel: ExploreViewModel
     @State private var selectedBook: Book?
     @State private var isStoryModeSheetPresented: Bool = false
+    @State private var isShowingSearch: Bool = false
 
     init(viewModel: @autoclosure @escaping () -> ExploreViewModel = ExploreViewModel()) {
         _viewModel = StateObject(wrappedValue: viewModel())
@@ -52,6 +53,11 @@ struct ExploreView: View {
             .navigationDestination(item: $selectedBook) { book in
                 NovelDetailView(book: book)
             }
+            .navigationDestination(isPresented: $isShowingSearch) {
+                ExploreSearchView(viewModel: viewModel)
+            }
+            .toolbar(isShowingSearch ? .hidden : .automatic, for: .tabBar)
+            .animation(.smooth, value: isShowingSearch)
             .accessibilityIdentifier("screen.explore")
         }
     }
@@ -83,8 +89,8 @@ struct ExploreView: View {
             Spacer()
 
             HStack(spacing: 20) {
-                NavigationLink {
-                    ExploreSearchView(viewModel: viewModel)
+                Button {
+                    isShowingSearch = true
                 } label: {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 18, weight: .regular))

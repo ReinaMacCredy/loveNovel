@@ -44,7 +44,9 @@ struct ExploreSearchView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
-        .toolbar(.hidden, for: .tabBar)
+        .onDisappear {
+            isSearchFieldFocused = false
+        }
         .navigationDestination(item: $selectedBook) { book in
             NovelDetailView(book: book)
         }
@@ -55,6 +57,7 @@ struct ExploreSearchView: View {
     private var header: some View {
         HStack(spacing: 14) {
             Button {
+                isSearchFieldFocused = false
                 dismiss()
             } label: {
                 Image(systemName: "chevron.left")
