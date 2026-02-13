@@ -23,7 +23,7 @@ struct ProfileView: View {
                         SettingsView()
                     } label: {
                         menuRow(
-                            title: "Settings",
+                            titleKey: "Settings",
                             accessibilityIdentifier: "profile.row.settings"
                         )
                     }
@@ -36,7 +36,7 @@ struct ProfileView: View {
                         showLoginAlert = true
                     } label: {
                         menuRow(
-                            title: "Login",
+                            titleKey: "Login",
                             accessibilityIdentifier: "profile.row.login"
                         )
                     }
@@ -57,9 +57,9 @@ struct ProfileView: View {
         }
     }
 
-    private func menuRow(title: String, accessibilityIdentifier: String) -> some View {
+    private func menuRow(titleKey: String, accessibilityIdentifier: String) -> some View {
         HStack {
-            Text(title)
+            Text(LocalizedStringKey(titleKey))
                 .font(.system(size: 17, weight: .regular))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 

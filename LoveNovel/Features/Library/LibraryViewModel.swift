@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 
 @MainActor
 final class LibraryViewModel: ObservableObject {
@@ -9,10 +9,19 @@ final class LibraryViewModel: ObservableObject {
         var id: String {
             rawValue
         }
+
+        var titleKey: LocalizedStringKey {
+            LocalizedStringKey(rawValue)
+        }
     }
 
     @Published var selectedSegment: Segment = .history
 
-    let emptyLineOne: String = "All Books you have read would be here"
-    let emptyLineTwo: String = "Time to Explore"
+    var emptyLineOne: String {
+        AppLocalization.string("library.empty.line.one")
+    }
+
+    var emptyLineTwo: String {
+        AppLocalization.string("library.empty.line.two")
+    }
 }

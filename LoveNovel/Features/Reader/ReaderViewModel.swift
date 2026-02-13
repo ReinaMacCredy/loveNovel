@@ -1,5 +1,5 @@
 import CoreGraphics
-import Foundation
+import SwiftUI
 
 @MainActor
 final class ReaderViewModel: ObservableObject {
@@ -8,6 +8,10 @@ final class ReaderViewModel: ObservableObject {
         case settings = "Cài đặt"
 
         var id: Self { self }
+
+        var titleKey: LocalizedStringKey {
+            LocalizedStringKey(rawValue)
+        }
     }
 
     enum ReadingMode: String, CaseIterable, Identifiable {
@@ -15,6 +19,10 @@ final class ReaderViewModel: ObservableObject {
         case scrolling = "Cuộn đọc"
 
         var id: Self { self }
+
+        var titleKey: LocalizedStringKey {
+            LocalizedStringKey(rawValue)
+        }
     }
 
     enum ReaderThemeStyle: String, CaseIterable, Identifiable {
@@ -55,11 +63,11 @@ final class ReaderViewModel: ObservableObject {
     }
 
     var chapterTrailTitle: String {
-        "Chương \(paddedChapterIndex): \(book.title)"
+        AppLocalization.format("reader.chapter.trail_title", paddedChapterIndex, book.title)
     }
 
     var chapterTitle: String {
-        "Chương \(paddedChapterIndex): \(book.title)"
+        AppLocalization.format("reader.chapter.title", paddedChapterIndex, book.title)
     }
 
     var chapterProgressPercent: String {
@@ -146,7 +154,7 @@ final class ReaderViewModel: ObservableObject {
     }
 
     func didTapPanelAction(_ title: String) {
-        alertMessage = "\(title) sẽ có ở bản cập nhật sau."
+        alertMessage = AppLocalization.format("reader.panel.action.coming_soon", title)
     }
 
     func dismissAlert() {

@@ -10,6 +10,11 @@ private struct StubBookDetailProvider: BookDetailProviding {
 }
 
 final class NovelDetailViewModelTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        UserDefaults.standard.set(AppLanguageOption.english.rawValue, forKey: AppSettingsKey.preferredLanguage)
+    }
+
     func testLoadTransitionsIdleToLoadingToLoaded() async throws {
         let provider = StubBookDetailProvider { _ in
             try await Task.sleep(for: .milliseconds(120))

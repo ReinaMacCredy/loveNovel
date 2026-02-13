@@ -6,7 +6,7 @@ struct SectionHeader: View {
 
     var body: some View {
         HStack {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 20, weight: .bold, design: .default))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 

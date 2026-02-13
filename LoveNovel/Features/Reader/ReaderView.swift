@@ -193,7 +193,7 @@ struct ReaderView: View {
                             viewModel.setPanelTab(tab)
                         } label: {
                             VStack(spacing: 10) {
-                                Text(tab.rawValue)
+                                Text(tab.titleKey)
                                     .font(.system(size: 16, weight: viewModel.selectedPanelTab == tab ? .semibold : .regular))
                                     .foregroundStyle(viewModel.selectedPanelTab == tab ? AppTheme.Colors.textPrimary : AppTheme.Colors.textSecondary)
                                     .frame(maxWidth: .infinity)
@@ -336,7 +336,7 @@ struct ReaderView: View {
                             HStack(spacing: 5) {
                                 Image(systemName: mode == .paged ? "rectangle.grid.1x2" : "text.justify")
                                     .font(.system(size: 11, weight: .semibold))
-                                Text(mode.rawValue)
+                                Text(mode.titleKey)
                                     .font(.system(size: 11, weight: .medium))
                             }
                             .foregroundStyle(viewModel.selectedReadingMode == mode ? .white : AppTheme.Colors.accentBlue)
@@ -410,7 +410,11 @@ struct ReaderView: View {
                         }
                         .buttonStyle(.plain)
                         .accessibilityIdentifier("reader.theme.\(theme.rawValue)")
-                        .accessibilityValue(viewModel.selectedTheme == theme ? "selected" : "unselected")
+                        .accessibilityValue(
+                            viewModel.selectedTheme == theme
+                                ? AppLocalization.string("selected")
+                                : AppLocalization.string("unselected")
+                        )
                     }
                 }
 
@@ -457,14 +461,14 @@ struct ReaderView: View {
 
     private func quickAction(icon: String, title: String) -> some View {
         Button {
-            viewModel.didTapPanelAction(title)
+            viewModel.didTapPanelAction(AppLocalization.string(title))
         } label: {
             VStack(spacing: 8) {
                 Image(systemName: icon)
                     .font(.system(size: 30, weight: .regular))
                     .foregroundStyle(AppTheme.Colors.textPrimary)
 
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.system(size: 12, weight: .regular))
                     .foregroundStyle(AppTheme.Colors.textSecondary)
             }
@@ -475,7 +479,7 @@ struct ReaderView: View {
 
     private func panelActionRow(icon: String, title: String) -> some View {
         Button {
-            viewModel.didTapPanelAction(title)
+            viewModel.didTapPanelAction(AppLocalization.string(title))
         } label: {
             HStack(spacing: 18) {
                 Image(systemName: icon)
@@ -483,7 +487,7 @@ struct ReaderView: View {
                     .foregroundStyle(AppTheme.Colors.mutedIcon)
                     .frame(width: 30)
 
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.system(size: 18, weight: .regular))
                     .foregroundStyle(AppTheme.Colors.textPrimary)
 
@@ -538,7 +542,7 @@ struct ReaderView: View {
 
     private func tutorialLine(text: String, icon: String) -> some View {
         HStack(alignment: .top, spacing: 16) {
-            Text(text)
+            Text(LocalizedStringKey(text))
                 .font(.system(size: 18, weight: .regular))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
                 .lineSpacing(3)

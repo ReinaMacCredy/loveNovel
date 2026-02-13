@@ -183,7 +183,7 @@ private struct ExploreFilterSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            filterSection(title: "Sắp xếp") {
+            filterSection(titleKey: "Sắp xếp") {
                 VStack(alignment: .leading, spacing: 12) {
                     ForEach(sortRows, id: \.self) { row in
                         HStack(spacing: 16) {
@@ -200,7 +200,7 @@ private struct ExploreFilterSheet: View {
                 }
             }
 
-            filterSection(title: "Loại") {
+            filterSection(titleKey: "Loại") {
                 HStack(spacing: 16) {
                     ForEach(typeOptions, id: \.self) { option in
                         FilterTextButton(
@@ -213,7 +213,7 @@ private struct ExploreFilterSheet: View {
                 }
             }
 
-            filterSection(title: "Giới tính") {
+            filterSection(titleKey: "Giới tính") {
                 HStack(spacing: 16) {
                     ForEach(genderOptions, id: \.self) { option in
                         FilterTextButton(
@@ -226,7 +226,7 @@ private struct ExploreFilterSheet: View {
                 }
             }
 
-            filterSection(title: "Tình trạng") {
+            filterSection(titleKey: "Tình trạng") {
                 HStack(spacing: 16) {
                     ForEach(statusOptions, id: \.self) { option in
                         FilterTextButton(
@@ -266,9 +266,9 @@ private struct ExploreFilterSheet: View {
         .accessibilityIdentifier("explore.search.filter.sheet")
     }
 
-    private func filterSection<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
+    private func filterSection<Content: View>(titleKey: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title)
+            Text(LocalizedStringKey(titleKey))
                 .font(.system(size: 18, weight: .regular))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
             content()
@@ -293,7 +293,7 @@ private struct FilterTextButton: View {
         Button {
             onTap()
         } label: {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 15, weight: .regular))
                 .foregroundStyle(isSelected ? AppTheme.Colors.accentBlue : AppTheme.Colors.textSecondary)
                 .underline(isSelected, color: AppTheme.Colors.accentBlue)

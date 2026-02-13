@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LibraryView: View {
     @StateObject private var viewModel = LibraryViewModel()
+    @State private var showSortSettings: Bool = false
 
     var body: some View {
         ZStack {
@@ -35,6 +36,9 @@ struct LibraryView: View {
             .padding(.top, 24)
             .padding(.bottom, 36)
         }
+        .fullScreenCover(isPresented: $showSortSettings) {
+            LibrarySortSettingsView()
+        }
         .accessibilityIdentifier("screen.library")
     }
 
@@ -54,14 +58,18 @@ struct LibraryView: View {
                         .font(.system(size: 22, weight: .regular))
                         .foregroundStyle(AppTheme.Colors.textSecondary)
                 }
+                .accessibilityIdentifier("library.header.search")
+                .accessibilityLabel(Text("Library search"))
 
                 Button {
-                    // Placeholder action for v1.
+                    showSortSettings = true
                 } label: {
                     Image(systemName: "gearshape.fill")
                         .font(.system(size: 24, weight: .regular))
                         .foregroundStyle(AppTheme.Colors.textSecondary)
                 }
+                .accessibilityIdentifier("library.header.sort_settings")
+                .accessibilityLabel(Text("Library sort settings"))
             }
             .buttonStyle(.plain)
         }
@@ -74,7 +82,7 @@ struct LibraryView: View {
                     viewModel.selectedSegment = segment
                 } label: {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text(segment.rawValue)
+                        Text(segment.titleKey)
                             .font(.system(size: 17, weight: viewModel.selectedSegment == segment ? .semibold : .regular))
                             .foregroundStyle(viewModel.selectedSegment == segment ? AppTheme.Colors.textPrimary : AppTheme.Colors.textSecondary)
 

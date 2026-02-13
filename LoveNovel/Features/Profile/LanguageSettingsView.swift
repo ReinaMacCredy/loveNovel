@@ -10,7 +10,7 @@ struct LanguageSettingsView: View {
                 .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 0) {
-                header(title: "Settings")
+                header(titleKey: "Settings")
 
                 Divider()
 
@@ -26,7 +26,7 @@ struct LanguageSettingsView: View {
                             Button {
                                 preferredLanguageRawValue = option.rawValue
                             } label: {
-                                Text(option.title)
+                                Text(option.titleKey)
                                     .font(.system(size: 16, weight: .medium))
                                     .foregroundStyle(selectedLanguage == option ? .white : AppTheme.Colors.accentBlue)
                                     .frame(maxWidth: .infinity)
@@ -58,7 +58,7 @@ struct LanguageSettingsView: View {
         AppLanguageOption(rawValue: preferredLanguageRawValue) ?? .english
     }
 
-    private func header(title: String) -> some View {
+    private func header(titleKey: String) -> some View {
         HStack {
             Button {
                 dismiss()
@@ -73,7 +73,7 @@ struct LanguageSettingsView: View {
 
             Spacer()
 
-            Text(title)
+            Text(LocalizedStringKey(titleKey))
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 

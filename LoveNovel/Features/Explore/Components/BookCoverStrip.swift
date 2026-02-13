@@ -42,7 +42,7 @@ struct BookCoverStrip: View {
                         .buttonStyle(.plain)
                         .accessibilityIdentifier("book.cover.\(book.id)")
                         .accessibilityLabel(book.title)
-                        .accessibilityHint("Open story details")
+                        .accessibilityHint(Text("Open story details"))
 
                         if showTitle {
                             Text(book.title)

@@ -3,6 +3,7 @@ import SwiftUI
 struct ExploreView: View {
     @StateObject private var viewModel: ExploreViewModel
     @State private var selectedBook: Book?
+    @State private var isStoryModeSheetPresented: Bool = false
 
     init(viewModel: @autoclosure @escaping () -> ExploreViewModel = ExploreViewModel()) {
         _viewModel = StateObject(wrappedValue: viewModel())
@@ -22,6 +23,14 @@ struct ExploreView: View {
             .background(AppTheme.Colors.screenBackground.ignoresSafeArea())
             .task {
                 await viewModel.load()
+            }
+            .sheet(isPresented: $isStoryModeSheetPresented) {
+                ExploreStoryModeSheet(
+                    isPresented: $isStoryModeSheetPresented,
+                    selectedMode: storyModeBinding
+                )
+                .presentationDetents([.height(330)])
+                .presentationDragIndicator(.hidden)
             }
             .alert(
                 "Coming Soon",
@@ -55,10 +64,10 @@ struct ExploreView: View {
             }
 
             Button {
-                viewModel.showPlaceholder(message: "Story filters are coming in v2.")
+                isStoryModeSheetPresented = true
             } label: {
                 HStack(spacing: 8) {
-                    Text("All Stories")
+                    Text(viewModel.selectedStoryMode.headerTitle)
                         .font(.system(size: 18, weight: .regular))
                         .foregroundStyle(AppTheme.Colors.textPrimary)
                         .lineLimit(1)
@@ -69,6 +78,7 @@ struct ExploreView: View {
                 }
             }
             .buttonStyle(.plain)
+            .accessibilityIdentifier("explore.header.story_mode")
 
             Spacer()
 
@@ -83,7 +93,7 @@ struct ExploreView: View {
                 .accessibilityIdentifier("explore.header.search")
 
                 Button {
-                    viewModel.showPlaceholder(message: "Open search to use filters.")
+                    viewModel.showPlaceholder(message: AppLocalization.string("Open search to use filters."))
                 } label: {
                     FilterButtonLabel()
                 }
@@ -92,6 +102,15 @@ struct ExploreView: View {
             }
             .buttonStyle(.plain)
         }
+    }
+
+    private var storyModeBinding: Binding<ExploreViewModel.StoryMode> {
+        Binding(
+            get: { viewModel.selectedStoryMode },
+            set: { storyMode in
+                viewModel.setStoryMode(storyMode)
+            }
+        )
     }
 
     private func iconBubble(symbol: String, background: Color) -> some View {
@@ -145,7 +164,7 @@ struct ExploreView: View {
     private func loadedContent(_ feed: HomeFeed) -> some View {
         VStack(alignment: .leading, spacing: AppTheme.Layout.sectionSpacing) {
             SectionHeader(title: "Latest") {
-                viewModel.showPlaceholder(message: "Latest list actions are coming in v2.")
+                viewModel.showPlaceholder(message: AppLocalization.string("Latest list actions are coming in v2."))
             }
             BookCoverStrip(books: feed.latest, size: .compact, showTitle: false) { book in
                 selectedBook = book
@@ -165,14 +184,14 @@ struct ExploreView: View {
             )
 
             SectionHeader(title: "Recommended") {
-                viewModel.showPlaceholder(message: "Recommended actions are coming in v2.")
+                viewModel.showPlaceholder(message: AppLocalization.string("Recommended actions are coming in v2."))
             }
             BookCoverStrip(books: feed.recommended, size: .regular, showTitle: true) { book in
                 selectedBook = book
             }
 
             SectionHeader(title: "More Like This") {
-                viewModel.showPlaceholder(message: "More-like-this actions are coming in v2.")
+                viewModel.showPlaceholder(message: AppLocalization.string("More-like-this actions are coming in v2."))
             }
             BookCoverStrip(books: feed.moreLikeThis, size: .regular, showTitle: true) { book in
                 selectedBook = book

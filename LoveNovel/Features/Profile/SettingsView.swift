@@ -41,7 +41,7 @@ struct SettingsView: View {
                     LanguageSettingsView()
                 } label: {
                     settingsRow(
-                        title: "Languages",
+                        titleKey: "Languages",
                         accessibilityIdentifier: "settings.row.languages"
                     )
                 }
@@ -54,7 +54,7 @@ struct SettingsView: View {
                     DarkModeSettingsView()
                 } label: {
                     settingsRow(
-                        title: "Dark mode",
+                        titleKey: "Dark mode",
                         accessibilityIdentifier: "settings.row.dark_mode"
                     )
                 }
@@ -70,9 +70,9 @@ struct SettingsView: View {
         .accessibilityIdentifier("screen.settings")
     }
 
-    private func settingsRow(title: String, accessibilityIdentifier: String) -> some View {
+    private func settingsRow(titleKey: String, accessibilityIdentifier: String) -> some View {
         HStack {
-            Text(title)
+            Text(LocalizedStringKey(titleKey))
                 .font(.system(size: 17, weight: .regular))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 

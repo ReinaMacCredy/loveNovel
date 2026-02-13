@@ -12,7 +12,7 @@ struct DarkModeSettingsView: View {
                 .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 0) {
-                header(title: "Dark mode")
+                header(titleKey: "Dark mode")
 
                 Divider()
 
@@ -68,7 +68,7 @@ struct DarkModeSettingsView: View {
                     Button {
                         readerDarkModeRawValue = option.rawValue
                     } label: {
-                        Text(option.title)
+                        Text(option.titleKey)
                             .font(.system(size: 16, weight: .medium))
                             .foregroundStyle(selectedMode == option ? .white : AppTheme.Colors.accentBlue)
                             .frame(maxWidth: .infinity)
@@ -158,7 +158,7 @@ struct DarkModeSettingsView: View {
         }
     }
 
-    private func header(title: String) -> some View {
+    private func header(titleKey: String) -> some View {
         HStack {
             Button {
                 dismiss()
@@ -173,7 +173,7 @@ struct DarkModeSettingsView: View {
 
             Spacer()
 
-            Text(title)
+            Text(LocalizedStringKey(titleKey))
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 

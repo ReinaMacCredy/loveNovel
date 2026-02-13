@@ -239,7 +239,7 @@ struct NovelDetailView: View {
                     viewModel.setTab(tab)
                 } label: {
                     VStack(spacing: 10) {
-                        Text(tabTitle(for: tab))
+                        Text(tab.titleKey)
                             .font(.system(size: 16, weight: viewModel.selectedTab == tab ? .semibold : .regular))
                             .foregroundStyle(viewModel.selectedTab == tab ? AppTheme.Colors.textPrimary : AppTheme.Colors.textSecondary)
                             .frame(maxWidth: .infinity)
@@ -322,10 +322,15 @@ struct NovelDetailView: View {
             HStack(spacing: 0) {
                 statColumn(
                     value: "\(detail.chapterCount)",
-                    subtitle: "Chapters - \(detail.status == .ongoing ? "Ongoing" : "Completed")"
+                    subtitle: AppLocalization.format(
+                        "novel_detail.stats.chapters_status",
+                        detail.status == .ongoing
+                            ? AppLocalization.string("Ongoing")
+                            : AppLocalization.string("Completed")
+                    )
                 )
 
-                statColumn(value: detail.viewsLabel, subtitle: "Views")
+                statColumn(value: detail.viewsLabel, subtitle: AppLocalization.string("Views"))
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
@@ -337,11 +342,11 @@ struct NovelDetailView: View {
                 .lineSpacing(4)
                 .padding(.horizontal, AppTheme.Layout.horizontalInset)
 
-            chipSection(title: "Thể loại", values: detail.genres)
-            chipSection(title: "Nhãn", values: detail.tags)
+            chipSection(titleKey: "Thể loại", values: detail.genres)
+            chipSection(titleKey: "Nhãn", values: detail.tags)
 
             if !detail.sameAuthorBooks.isEmpty {
-                relatedSectionHeader(title: "Cùng tác giả")
+                relatedSectionHeader(title: AppLocalization.string("Cùng tác giả"))
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 14) {
                         ForEach(detail.sameAuthorBooks) { relatedBook in
@@ -353,7 +358,7 @@ struct NovelDetailView: View {
             }
 
             if !detail.sameUploaderBooks.isEmpty {
-                relatedSectionHeader(title: "Cùng đăng bởi \(detail.uploaderName)")
+                relatedSectionHeader(title: AppLocalization.format("novel_detail.related.same_uploader", detail.uploaderName))
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(alignment: .top, spacing: 12) {
                         ForEach(detail.sameUploaderBooks) { relatedBook in
@@ -365,7 +370,7 @@ struct NovelDetailView: View {
             }
 
             Button {
-                viewModel.alertMessage = "Report flow is coming in v2."
+                viewModel.alertMessage = AppLocalization.string("Report flow is coming in v2.")
             } label: {
                 HStack(spacing: 8) {
                     Image(systemName: "flag.fill")
@@ -450,7 +455,7 @@ struct NovelDetailView: View {
                     Button {
                         viewModel.setCommentSort(option)
                     } label: {
-                        Text(option.rawValue)
+                        Text(option.titleKey)
                             .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(viewModel.commentSort == option ? .white : AppTheme.Colors.accentBlue)
                             .frame(maxWidth: .infinity)
@@ -513,7 +518,7 @@ struct NovelDetailView: View {
     private func contentTab(_ detail: BookDetail) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text("Chapters (\(detail.chapterCount))")
+                Text(AppLocalization.format("novel_detail.chapters.count", detail.chapterCount))
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(AppTheme.Colors.textPrimary)
 
@@ -631,7 +636,7 @@ struct NovelDetailView: View {
             let detail = viewModel.detail,
             let chapter = viewModel.displayedChapters.first
         else {
-            viewModel.alertMessage = "Chapter list is still loading."
+            viewModel.alertMessage = AppLocalization.string("Chapter list is still loading.")
             return
         }
 
@@ -680,7 +685,7 @@ struct NovelDetailView: View {
 
     private var heroPrimaryGenre: String {
         guard let firstGenre = viewModel.detail?.genres.first, !firstGenre.isEmpty else {
-            return "Tiên Hiệp"
+            return AppLocalization.string("Tiên Hiệp")
         }
 
         return firstGenre
@@ -690,23 +695,10 @@ struct NovelDetailView: View {
         let reviewCount = viewModel.detail?.reviews.count ?? 0
 
         if reviewCount == 0 {
-            return "(chưa có đánh giá)"
+            return AppLocalization.string("(chưa có đánh giá)")
         }
 
-        return "(\(reviewCount) đánh giá)"
-    }
-
-    private func tabTitle(for tab: NovelDetailViewModel.Tab) -> String {
-        switch tab {
-        case .info:
-            return "Giới Thiệu"
-        case .review:
-            return "Đánh Giá"
-        case .comments:
-            return "Bình Luận"
-        case .content:
-            return "D.S Chương"
-        }
+        return AppLocalization.format("novel_detail.reviews.count", reviewCount)
     }
 
     private func tabIdentifier(for tab: NovelDetailViewModel.Tab) -> String {
@@ -735,9 +727,9 @@ struct NovelDetailView: View {
         .frame(maxWidth: .infinity)
     }
 
-    private func chipSection(title: String, values: [String]) -> some View {
+    private func chipSection(titleKey: String, values: [String]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title)
+            Text(LocalizedStringKey(titleKey))
                 .font(.system(size: 14, weight: .regular))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 

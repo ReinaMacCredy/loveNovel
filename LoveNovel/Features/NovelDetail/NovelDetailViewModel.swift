@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 
 @MainActor
 final class NovelDetailViewModel: ObservableObject {
@@ -16,6 +16,10 @@ final class NovelDetailViewModel: ObservableObject {
         case content = "Content"
 
         var id: Self { self }
+
+        var titleKey: LocalizedStringKey {
+            LocalizedStringKey(rawValue)
+        }
     }
 
     enum CommentSort: String, CaseIterable, Identifiable {
@@ -24,6 +28,10 @@ final class NovelDetailViewModel: ObservableObject {
         case liked = "Liked"
 
         var id: Self { self }
+
+        var titleKey: LocalizedStringKey {
+            LocalizedStringKey(rawValue)
+        }
     }
 
     enum ChapterOrder {
@@ -75,7 +83,7 @@ final class NovelDetailViewModel: ObservableObject {
             phase = .idle
         } catch {
             detail = nil
-            errorMessage = "Could not load story details."
+            errorMessage = AppLocalization.string("Could not load story details.")
             phase = .failed
         }
     }
@@ -101,7 +109,7 @@ final class NovelDetailViewModel: ObservableObject {
             BookChapter(
                 id: "\(detail.bookId)-chapter-\(index)",
                 index: index,
-                title: "Chapter \(index)",
+                title: AppLocalization.format("novel_detail.chapter.title", index),
                 timestampText: detail.chapterTimestamp
             )
         }
@@ -143,27 +151,27 @@ final class NovelDetailViewModel: ObservableObject {
     }
 
     func didTapRead() {
-        alertMessage = "Reader for \(book.title) is coming in v2."
+        alertMessage = AppLocalization.format("explore.placeholder.reader_for_book", book.title)
     }
 
     func didTapAddToLibrary() {
-        alertMessage = "\(book.title) was added as a demo action."
+        alertMessage = AppLocalization.format("explore.placeholder.book_added", book.title)
     }
 
     func didTapWriteReview() {
-        alertMessage = "Writing reviews is coming in v2."
+        alertMessage = AppLocalization.string("Writing reviews is coming in v2.")
     }
 
     func didTapSendComment() {
         let trimmedComment = draftComment.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if trimmedComment.isEmpty {
-            alertMessage = "Enter a comment before sending."
+            alertMessage = AppLocalization.string("Enter a comment before sending.")
             return
         }
 
         draftComment = ""
-        alertMessage = "Comment posted as a demo action."
+        alertMessage = AppLocalization.string("Comment posted as a demo action.")
     }
 
     func dismissAlert() {
