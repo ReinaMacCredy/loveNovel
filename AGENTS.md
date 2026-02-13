@@ -168,6 +168,14 @@ Use the `mcp__xcode__*` toolset as the preferred path for Xcode-aware build/test
    - Use `rg`, `sed`, `cat`, and `apply_patch` for local workspace edits
    - Prefer shell editing unless Xcode runtime/build context is required
 
+### Screenshot + Debug Quick Reference
+
+- `mcp__xcode__RenderPreview` is the primary tool for auto-capturing SwiftUI preview snapshots.
+- Use `mcp__xcode__BuildProject` + `mcp__xcode__GetBuildLog` for compile/debug loops.
+- Use `mcp__xcode__XcodeListNavigatorIssues` and `mcp__xcode__XcodeRefreshCodeIssuesInFile` for diagnostics.
+- Use `mcp__xcode__RunSomeTests` / `mcp__xcode__RunAllTests` and `mcp__xcode__ExecuteSnippet` for runtime debugging.
+- There is no direct Xcode MCP tool for live simulator screen capture; use shell fallback: `xcrun simctl io booted screenshot <output-path>`.
+
 ### Always-Use Rules
 
 - **Always use the iPhone 17 Pro simulator** for build, test, and run workflows. Do not use any other simulator device unless explicitly requested.
