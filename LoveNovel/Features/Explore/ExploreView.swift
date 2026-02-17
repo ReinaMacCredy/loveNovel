@@ -7,6 +7,7 @@ struct ExploreView: View {
     @State private var isShowingSearch: Bool = false
     @State private var isShowingAllStories: Bool = false
     @State private var selectedBannerID: Book.ID?
+    @State private var isBannerDragging: Bool = false
     private let bannerAutoScrollTimer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     init(viewModel: @autoclosure @escaping () -> ExploreViewModel = ExploreViewModel()) {
@@ -251,26 +252,33 @@ struct ExploreView: View {
             let cardWidth = proxy.size.width
 
             VStack(spacing: 8) {
-                ScrollView(.horizontal) {
-                    LazyHStack(spacing: 12) {
-                        ForEach(books) { book in
-                            Button {
-                                selectedBook = book
-                            } label: {
-                                ExploreBannerCard(book: book)
-                                    .frame(width: cardWidth, height: 196)
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityIdentifier("book.cover.\(book.id)")
+                TabView(selection: $selectedBannerID) {
+                    ForEach(books) { book in
+                        Button {
+                            selectedBook = book
+                        } label: {
+                            ExploreBannerCard(book: book)
+                                .frame(width: cardWidth, height: 196)
                         }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("book.cover.\(book.id)")
+                        .tag(Optional(book.id))
                     }
-                    .scrollTargetLayout()
                 }
-                .scrollTargetBehavior(.viewAligned)
-                .scrollIndicators(.hidden)
-                .scrollClipDisabled()
-                .scrollPosition(id: $selectedBannerID)
                 .frame(height: 196)
+                .clipShape(.rect(cornerRadius: 14, style: .continuous))
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 2)
+                        .onChanged { _ in
+                            if !isBannerDragging {
+                                isBannerDragging = true
+                            }
+                        }
+                        .onEnded { _ in
+                            isBannerDragging = false
+                        }
+                )
                 .onAppear {
                     if selectedBannerID == nil {
                         selectedBannerID = books.first?.id
@@ -278,6 +286,7 @@ struct ExploreView: View {
                 }
                 .onReceive(bannerAutoScrollTimer) { _ in
                     guard books.count > 1,
+                          !isBannerDragging,
                           let currentID = selectedBannerID,
                           let currentIndex = books.firstIndex(where: { $0.id == currentID })
                     else { return }
