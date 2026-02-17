@@ -29,6 +29,7 @@ struct RootTabView: View {
                     Label("Profile", systemImage: "person.2.circle")
                 }
         }
+        .tabBarMinimizeBehavior(.onScrollDown)
         .tint(AppTheme.Colors.tabActive)
         .background {
             AppTheme.Colors.screenBackground
