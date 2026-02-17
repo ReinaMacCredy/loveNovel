@@ -485,21 +485,31 @@ Use the `mcp__xcode__*` toolset as the first choice for Xcode-aware validation w
 
 ## Skill Auto-Load Policy
 
-Load `swift-concurrency` at the start of every new chat in this repo.
+Load `swift-concurrency`, `swiftui-expert-skill`, and `core-data-expert` at the start of every new chat in this repo.
 
-- Skill path: `.agents/skills/swift-concurrency/SKILL.md`
+- Skill paths:
+  - `.agents/skills/swift-concurrency/SKILL.md`
+  - `~/.agents/skills/swiftui-expert-skill/SKILL.md`
+  - `~/.agents/skills/core-data-expert/SKILL.md`
 - Default behavior:
-  - Read and apply its guidance before making Swift code changes.
+  - Read and apply all three skills before making Swift code changes.
+  - Apply skill guidance in this order:
+    1. Domain skill first (`swiftui-expert-skill` for SwiftUI work, `core-data-expert` for Core Data work).
+    2. `swift-concurrency` for isolation and Sendable safety.
+    3. MCP validation (`BuildProject`, tests, diagnostics).
   - Confirm concurrency settings from `project.yml` first (`SWIFT_VERSION`, `SWIFT_STRICT_CONCURRENCY`) before proposing migration-sensitive fixes.
   - If needed, verify generated settings in `LoveNovel.xcodeproj/project.pbxproj`.
   - Keep Swift 6 strict concurrency compliance (`Sendable`, actor isolation, `@MainActor`, cancellation handling).
   - Treat concurrency safety as a non-optional quality gate.
-- Trigger expansion: If a task mentions `async/await`, actors, data races, `Sendable`, `@MainActor`, or Swift 6 migration, apply the skill rules strictly and explicitly in implementation.
+- Trigger expansion:
+  - For SwiftUI features/reviews/refactors, apply `swiftui-expert-skill` rules strictly and explicitly.
+  - For Core Data setup/threading/migrations/performance/CloudKit work, apply `core-data-expert` rules strictly and explicitly.
+  - If a task mentions `async/await`, actors, data races, `Sendable`, `@MainActor`, or Swift 6 migration, apply `swift-concurrency` rules strictly and explicitly.
 
 ### Skill + MCP Coordination Rules
 
 1. Skills decide workflow; MCP executes validation. Do not treat skills as reference-only docs.
-2. For Swift code changes, load `swift-concurrency` first, then run MCP validation (`BuildProject`, diagnostics, targeted tests).
+2. For Swift code changes, load `swiftui-expert-skill` + `core-data-expert` (as applicable) before `swift-concurrency`, then run MCP validation (`BuildProject`, diagnostics, targeted tests).
 3. For API adoption questions, combine skill guidance with `mcp__xcode__DocumentationSearch` before implementing.
 4. For UI changes, combine feature/domain skill guidance with `RenderPreview` and relevant UI tests.
 5. For PR/CI tasks, use `gh-address-comments` or `gh-fix-ci` for issue intake, then confirm fixes locally with MCP build/tests.
@@ -509,8 +519,9 @@ Load `swift-concurrency` at the start of every new chat in this repo.
 
 | Scenario | Skill | Required MCP checks |
 |----------|-------|---------------------|
-| Swift concurrency change | `swift-concurrency` | `BuildProject`, `XcodeRefreshCodeIssuesInFile`, targeted `RunSomeTests` |
-| SwiftUI UI update | relevant feature skill + `swift-concurrency` (if state/isolation affected) | `BuildProject`, `RenderPreview`, targeted UI tests |
+| Swift concurrency change | `swift-concurrency` (+ domain skill when applicable) | `BuildProject`, `XcodeRefreshCodeIssuesInFile`, targeted `RunSomeTests` |
+| SwiftUI UI update | `swiftui-expert-skill` + `swift-concurrency` | `BuildProject`, `RenderPreview`, targeted UI tests |
+| Core Data change | `core-data-expert` + `swift-concurrency` | `BuildProject`, `XcodeRefreshCodeIssuesInFile`, targeted `RunSomeTests` |
 | New framework/API usage | `swift-concurrency` when async/isolation is involved | `DocumentationSearch`, `BuildProject`, targeted tests |
 | PR comment fixes | `gh-address-comments` | `BuildProject`, targeted `RunSomeTests`, `XcodeListNavigatorIssues` |
 | Failing GitHub Actions checks | `gh-fix-ci` | Reproduce locally with `BuildProject` + scoped tests before finalizing |

@@ -121,6 +121,44 @@ final class NovelDetailNavigationUITests: XCTestCase {
         XCTAssertTrue(app.buttons["novel_detail.back"].waitForExistence(timeout: 3))
     }
 
+    func testReaderChapterListQuickActionOpensAndSelectsChapter() {
+        let app = XCUIApplication()
+        app.launch()
+
+        openRiceTeaDetail(in: app)
+
+        let contentTab = app.buttons["novel_detail.tab.content"]
+        XCTAssertTrue(contentTab.waitForExistence(timeout: 4))
+        contentTab.tap()
+
+        let chapterRow = app.buttons.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@", "novel_detail.chapter_row.")
+        ).firstMatch
+        XCTAssertTrue(chapterRow.waitForExistence(timeout: 4))
+        let selectedChapterIndex = chapterRow.identifier.components(separatedBy: ".").last ?? "1"
+        chapterRow.tap()
+
+        let tutorialDismiss = app.buttons["reader.tutorial.dismiss"]
+        if tutorialDismiss.waitForExistence(timeout: 1.5) {
+            tutorialDismiss.tap()
+        }
+
+        let readerContent = app.scrollViews["reader.content"]
+        XCTAssertTrue(readerContent.waitForExistence(timeout: 4))
+        readerContent.tap()
+
+        let chapterListAction = app.buttons["reader.quick.chapter_list"]
+        XCTAssertTrue(chapterListAction.waitForExistence(timeout: 3))
+        chapterListAction.tap()
+
+        let selectedChapterRow = app.buttons["reader.chapter_list.row.\(selectedChapterIndex)"]
+        XCTAssertTrue(selectedChapterRow.waitForExistence(timeout: 3))
+        selectedChapterRow.tap()
+
+        XCTAssertFalse(app.buttons["reader.quick.chapter_list"].waitForExistence(timeout: 1))
+        XCTAssertTrue(app.buttons["reader.top.settings"].waitForExistence(timeout: 2))
+    }
+
     private func openRiceTeaDetail(in app: XCUIApplication) {
         activateExploreTab(in: app)
 

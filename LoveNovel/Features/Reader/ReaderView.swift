@@ -14,7 +14,13 @@ struct ReaderView: View {
     @StateObject private var viewModel: ReaderViewModel
     private let onClose: (() -> Void)?
 
-    init(book: Book, initialChapter: BookChapter, chapterCount: Int, onClose: (() -> Void)? = nil) {
+    init(
+        book: Book,
+        initialChapter: BookChapter,
+        chapterCount: Int,
+        chapterList: [BookChapter] = [],
+        onClose: (() -> Void)? = nil
+    ) {
         let hasSeenTutorial = UserDefaults.standard.bool(forKey: ReaderStorageKey.didShowTutorial)
         self.onClose = onClose
         _viewModel = StateObject(
@@ -22,6 +28,7 @@ struct ReaderView: View {
                 book: book,
                 initialChapter: initialChapter,
                 chapterCount: chapterCount,
+                chapters: chapterList,
                 shouldShowTutorial: !hasSeenTutorial
             )
         )
@@ -46,16 +53,23 @@ struct ReaderView: View {
                     .zIndex(2)
             }
 
+            if viewModel.isChapterListVisible {
+                chapterListOverlay
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                    .zIndex(5)
+            }
+
             if viewModel.isTutorialVisible {
                 Color.black.opacity(0.5)
                     .ignoresSafeArea()
-                    .zIndex(3)
+                    .zIndex(6)
 
                 tutorialOverlay
-                    .zIndex(4)
+                    .zIndex(7)
             }
         }
         .animation(.easeInOut(duration: 0.2), value: viewModel.isControlPanelVisible)
+        .animation(.easeInOut(duration: 0.2), value: viewModel.isChapterListVisible)
         .leftEdgeSwipeUpBackGesture {
             closeReader()
         }
@@ -295,10 +309,36 @@ struct ReaderView: View {
                 }
 
                 HStack(spacing: 28) {
-                    quickAction(icon: "list.bullet", title: "D.S Chương")
-                    quickAction(icon: "textformat", title: "Tự động")
-                    quickAction(icon: "bookmark", title: "Đánh dấu")
-                    quickAction(icon: "headphones", title: "Nghe")
+                    quickAction(
+                        icon: "list.bullet",
+                        title: "D.S Chương",
+                        accessibilityIdentifier: "reader.quick.chapter_list"
+                    ) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            viewModel.showChapterList()
+                        }
+                    }
+                    quickAction(
+                        icon: "textformat",
+                        title: "Tự động",
+                        accessibilityIdentifier: "reader.quick.auto"
+                    ) {
+                        viewModel.didTapPanelAction(AppLocalization.string("Tự động"))
+                    }
+                    quickAction(
+                        icon: "bookmark",
+                        title: "Đánh dấu",
+                        accessibilityIdentifier: "reader.quick.bookmark"
+                    ) {
+                        viewModel.didTapPanelAction(AppLocalization.string("Đánh dấu"))
+                    }
+                    quickAction(
+                        icon: "headphones",
+                        title: "Nghe",
+                        accessibilityIdentifier: "reader.quick.listen"
+                    ) {
+                        viewModel.didTapPanelAction(AppLocalization.string("Nghe"))
+                    }
                 }
             }
             .padding(.horizontal, 18)
@@ -459,9 +499,33 @@ struct ReaderView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
-    private func quickAction(icon: String, title: String) -> some View {
+    private var chapterListOverlay: some View {
+        ReaderChapterListOverlay(
+            chapters: viewModel.chapterList,
+            currentChapterIndex: viewModel.currentChapterIndex,
+            onBack: {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    viewModel.dismissChapterList()
+                }
+            },
+            onReload: {
+                viewModel.didTapPanelAction(AppLocalization.string("Tải lại nội dung"))
+            },
+            onSelectChapter: { chapterIndex in
+                viewModel.jumpToChapter(chapterIndex)
+            }
+        )
+        .accessibilityIdentifier("screen.reader.chapter_list")
+    }
+
+    private func quickAction(
+        icon: String,
+        title: String,
+        accessibilityIdentifier: String,
+        action: @escaping () -> Void
+    ) -> some View {
         Button {
-            viewModel.didTapPanelAction(AppLocalization.string(title))
+            action()
         } label: {
             VStack(spacing: 8) {
                 Image(systemName: icon)
@@ -475,6 +539,7 @@ struct ReaderView: View {
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(accessibilityIdentifier)
     }
 
     private func panelActionRow(icon: String, title: String) -> some View {
@@ -670,6 +735,118 @@ struct ReaderView: View {
     }
 }
 
+private struct ReaderChapterListOverlay: View {
+    let chapters: [BookChapter]
+    let currentChapterIndex: Int
+    let onBack: () -> Void
+    let onReload: () -> Void
+    let onSelectChapter: (Int) -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            header
+            content
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background(AppTheme.Colors.screenBackground.ignoresSafeArea())
+    }
+
+    private var header: some View {
+        HStack {
+            Button(action: onBack) {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 20, weight: .regular))
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
+                    .frame(width: 32, height: 32)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("reader.chapter_list.back")
+
+            Spacer()
+
+            Button(action: onReload) {
+                Image(systemName: "arrow.clockwise")
+                    .font(.system(size: 20, weight: .regular))
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .frame(width: 32, height: 32)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("reader.chapter_list.reload")
+        }
+        .overlay {
+            Text(LocalizedStringKey("D.S Chương"))
+                .font(.system(size: 28, weight: .regular))
+                .foregroundStyle(AppTheme.Colors.textPrimary)
+                .lineLimit(1)
+        }
+        .padding(.horizontal, AppTheme.Layout.horizontalInset)
+        .safeAreaPadding(.top, 8)
+        .padding(.bottom, 8)
+    }
+
+    private var content: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    ForEach(chapters) { chapter in
+                        row(for: chapter)
+                            .id(chapter.index)
+                    }
+                }
+                .padding(.top, 8)
+                .padding(.bottom, 24)
+            }
+            .onAppear {
+                proxy.scrollTo(currentChapterIndex, anchor: .center)
+            }
+        }
+    }
+
+    private func row(for chapter: BookChapter) -> some View {
+        let isCurrentChapter = chapter.index == currentChapterIndex
+
+        return Button {
+            onSelectChapter(chapter.index)
+        } label: {
+            HStack(alignment: .top, spacing: 16) {
+                Text("\(chapter.index)")
+                    .font(.system(size: 15, weight: isCurrentChapter ? .medium : .regular))
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .frame(width: 34, alignment: .leading)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(chapter.title)
+                        .font(.system(size: 16, weight: isCurrentChapter ? .medium : .regular))
+                        .foregroundStyle(
+                            isCurrentChapter
+                                ? AppTheme.Colors.textPrimary
+                                : AppTheme.Colors.textSecondary
+                        )
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+
+                    Text("(\(chapter.timestampText))")
+                        .font(.system(size: 13, weight: .regular))
+                        .foregroundStyle(AppTheme.Colors.textSecondary.opacity(0.9))
+                        .lineLimit(1)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                Spacer(minLength: 0)
+            }
+            .padding(.vertical, 6)
+            .padding(.horizontal, AppTheme.Layout.horizontalInset)
+            .background(
+                isCurrentChapter
+                    ? AppTheme.Colors.textPrimary.opacity(0.06)
+                    : .clear
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("reader.chapter_list.row.\(chapter.index)")
+    }
+}
+
 #Preview {
     NavigationStack {
         ReaderView(
@@ -690,4 +867,21 @@ struct ReaderView: View {
             chapterCount: 55
         )
     }
+}
+
+#Preview("Reader Chapter List") {
+    ReaderChapterListOverlay(
+        chapters: (60...75).map { index in
+            BookChapter(
+                id: "rice-tea-chapter-\(index)",
+                index: index,
+                title: "Chương \(index): Tiểu Bạch tới giờ uống thuốc rồi",
+                timestampText: "2023-01-04 21:12"
+            )
+        },
+        currentChapterIndex: 66,
+        onBack: {},
+        onReload: {},
+        onSelectChapter: { _ in }
+    )
 }

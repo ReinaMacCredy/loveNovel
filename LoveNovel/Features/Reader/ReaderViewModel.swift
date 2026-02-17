@@ -39,6 +39,7 @@ final class ReaderViewModel: ObservableObject {
     }
 
     @Published private(set) var isControlPanelVisible: Bool = false
+    @Published private(set) var isChapterListVisible: Bool = false
     @Published private(set) var isTutorialVisible: Bool
     @Published var selectedPanelTab: PanelTab = .info
     @Published var selectedReadingMode: ReadingMode = .scrolling
@@ -53,13 +54,36 @@ final class ReaderViewModel: ObservableObject {
     let totalChapters: Int
     let availableFonts: [String] = ["Avenir Next", "Arial", "Helvetica", "Palatino"]
     private let chapterTimestampText: String
+    private let providedChaptersByIndex: [Int: BookChapter]?
 
-    init(book: Book, initialChapter: BookChapter, chapterCount: Int, shouldShowTutorial: Bool) {
+    init(
+        book: Book,
+        initialChapter: BookChapter,
+        chapterCount: Int,
+        chapters: [BookChapter] = [],
+        shouldShowTutorial: Bool
+    ) {
         self.book = book
-        self.totalChapters = max(chapterCount, 1)
+        let maxProvidedChapterIndex = chapters.map(\.index).max() ?? 0
+        let normalizedTotalChapters = max(chapterCount, maxProvidedChapterIndex, 1)
+        self.totalChapters = normalizedTotalChapters
         self.chapterTimestampText = initialChapter.timestampText
-        self.currentChapterIndex = Self.clampChapterIndex(initialChapter.index, total: max(chapterCount, 1))
+        self.currentChapterIndex = Self.clampChapterIndex(initialChapter.index, total: normalizedTotalChapters)
         self.isTutorialVisible = shouldShowTutorial
+
+        let validProvidedChapters = chapters
+            .filter { chapter in
+                chapter.index >= 1 && chapter.index <= normalizedTotalChapters
+            }
+            .reduce(into: [Int: BookChapter]()) { partialResult, chapter in
+                partialResult[chapter.index] = chapter
+            }
+
+        if validProvidedChapters.isEmpty {
+            self.providedChaptersByIndex = nil
+        } else {
+            self.providedChaptersByIndex = validProvidedChapters
+        }
     }
 
     var chapterTrailTitle: String {
@@ -80,12 +104,7 @@ final class ReaderViewModel: ObservableObject {
     }
 
     var currentChapter: BookChapter {
-        BookChapter(
-            id: "\(book.id)-chapter-\(currentChapterIndex)",
-            index: currentChapterIndex,
-            title: chapterTitle,
-            timestampText: chapterTimestampText
-        )
+        chapter(for: currentChapterIndex)
     }
 
     var readingParagraphs: [String] {
@@ -97,6 +116,10 @@ final class ReaderViewModel: ObservableObject {
             "Đến khi bản đồ số mở ra trước mắt, Bạch Mục mới nhận ra tuyến đường thoát duy nhất nằm ngay giữa vùng cấm. Nếu chậm thêm một nhịp, mọi dữ liệu sẽ bị xóa sạch.",
             "Cậu đứng dậy, siết chặt chiếc máy phát tín hiệu, rồi bước vào màn đêm. Phía trước là một thành phố đang ngủ, phía sau là toàn bộ bí mật vừa được đánh thức."
         ]
+    }
+
+    var chapterList: [BookChapter] {
+        (1...totalChapters).map(chapter(for:))
     }
 
     func toggleControlPanelFromCenterTap() {
@@ -123,6 +146,19 @@ final class ReaderViewModel: ObservableObject {
 
     func dismissControlPanel() {
         isControlPanelVisible = false
+    }
+
+    func showChapterList() {
+        guard !isTutorialVisible else {
+            return
+        }
+
+        isControlPanelVisible = false
+        isChapterListVisible = true
+    }
+
+    func dismissChapterList() {
+        isChapterListVisible = false
     }
 
     func setPanelTab(_ tab: PanelTab) {
@@ -153,6 +189,11 @@ final class ReaderViewModel: ObservableObject {
         currentChapterIndex = Self.clampChapterIndex(currentChapterIndex + step, total: totalChapters)
     }
 
+    func jumpToChapter(_ chapterIndex: Int) {
+        currentChapterIndex = Self.clampChapterIndex(chapterIndex, total: totalChapters)
+        isChapterListVisible = false
+    }
+
     func didTapPanelAction(_ title: String) {
         alertMessage = AppLocalization.format("reader.panel.action.coming_soon", title)
     }
@@ -163,6 +204,19 @@ final class ReaderViewModel: ObservableObject {
 
     private var paddedChapterIndex: String {
         String(format: "%02d", currentChapterIndex)
+    }
+
+    private func chapter(for index: Int) -> BookChapter {
+        if let providedChapter = providedChaptersByIndex?[index] {
+            return providedChapter
+        }
+
+        return BookChapter(
+            id: "\(book.id)-chapter-\(index)",
+            index: index,
+            title: AppLocalization.format("novel_detail.chapter.title", index),
+            timestampText: chapterTimestampText
+        )
     }
 
     private static func clampChapterIndex(_ value: Int, total: Int) -> Int {

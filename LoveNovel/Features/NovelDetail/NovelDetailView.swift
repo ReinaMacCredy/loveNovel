@@ -60,6 +60,7 @@ struct NovelDetailView: View {
                     book: destination.book,
                     initialChapter: destination.chapter,
                     chapterCount: destination.chapterCount,
+                    chapterList: destination.chapters,
                     onClose: {
                         readerDestination = nil
                     }
@@ -647,7 +648,10 @@ struct NovelDetailView: View {
         readerDestination = ReaderDestination(
             book: viewModel.book,
             chapter: chapter,
-            chapterCount: chapterCount
+            chapterCount: chapterCount,
+            chapters: viewModel.displayedChapters.sorted { lhs, rhs in
+                lhs.index < rhs.index
+            }
         )
     }
 
@@ -783,6 +787,7 @@ private struct ReaderDestination: Identifiable, Hashable {
     let book: Book
     let chapter: BookChapter
     let chapterCount: Int
+    let chapters: [BookChapter]
 
     var id: String {
         "\(book.id)-\(chapter.id)-\(chapterCount)"

@@ -49,7 +49,55 @@ final class ReaderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentChapterIndex, 55)
     }
 
-    private static func makeViewModel(shouldShowTutorial: Bool) -> ReaderViewModel {
+    func testShowChapterListHidesPanel() {
+        let viewModel = Self.makeViewModel(shouldShowTutorial: false)
+
+        viewModel.toggleControlPanelFromCenterTap()
+        XCTAssertTrue(viewModel.isControlPanelVisible)
+
+        viewModel.showChapterList()
+
+        XCTAssertFalse(viewModel.isControlPanelVisible)
+        XCTAssertTrue(viewModel.isChapterListVisible)
+    }
+
+    func testJumpToChapterClampsAndDismissesChapterList() {
+        let viewModel = Self.makeViewModel(shouldShowTutorial: false)
+
+        viewModel.showChapterList()
+        XCTAssertTrue(viewModel.isChapterListVisible)
+
+        viewModel.jumpToChapter(999)
+
+        XCTAssertEqual(viewModel.currentChapterIndex, 55)
+        XCTAssertFalse(viewModel.isChapterListVisible)
+    }
+
+    func testProvidedChapterListOverridesGeneratedChapterMetadata() {
+        let chapters = [
+            BookChapter(
+                id: "rice-tea-chapter-1",
+                index: 1,
+                title: "Chương 1: Mở màn",
+                timestampText: "2026-02-17 13:12"
+            )
+        ]
+
+        let viewModel = Self.makeViewModel(
+            shouldShowTutorial: false,
+            chapterCount: 3,
+            chapters: chapters
+        )
+
+        XCTAssertEqual(viewModel.chapterList.first?.title, "Chương 1: Mở màn")
+        XCTAssertEqual(viewModel.chapterList.first?.timestampText, "2026-02-17 13:12")
+    }
+
+    private static func makeViewModel(
+        shouldShowTutorial: Bool,
+        chapterCount: Int = 55,
+        chapters: [BookChapter] = []
+    ) -> ReaderViewModel {
         ReaderViewModel(
             book: Book(
                 id: "rice-tea",
@@ -65,7 +113,8 @@ final class ReaderViewModelTests: XCTestCase {
                 title: "Chapter 3",
                 timestampText: "2020-04-02 00:58"
             ),
-            chapterCount: 55,
+            chapterCount: chapterCount,
+            chapters: chapters,
             shouldShowTutorial: shouldShowTutorial
         )
     }
