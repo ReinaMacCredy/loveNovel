@@ -7,17 +7,17 @@ final class TabNavigationUITests: XCTestCase {
     }
 
     func testAppLaunchesOnExploreTab() {
-        let app = launchConfiguredApp()
+        let app = UITestLaunchConfiguration.launchConfiguredApp()
 
         activateExploreTab(in: app)
-        XCTAssertTrue(app.buttons["All Stories"].waitForExistence(timeout: 4))
+        XCTAssertTrue(app.buttons["All Stories"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
     }
 
     func testTabBarNavigationOrderAndLabels() {
-        let app = launchConfiguredApp()
+        let app = UITestLaunchConfiguration.launchConfiguredApp()
 
         let tabBar = app.tabBars.firstMatch
-        XCTAssertTrue(tabBar.waitForExistence(timeout: 2))
+        XCTAssertTrue(tabBar.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
         XCTAssertEqual(app.tabBars.count, 1)
 
         let libraryTab = tabBar.buttons["Library"]
@@ -29,17 +29,17 @@ final class TabNavigationUITests: XCTestCase {
         XCTAssertTrue(profileTab.exists)
 
         libraryTab.tap()
-        XCTAssertTrue(app.buttons["History"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.buttons["History"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
 
         profileTab.tap()
-        XCTAssertTrue(app.buttons["Settings"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.buttons["Settings"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
 
         exploreTab.tap()
-        XCTAssertTrue(app.buttons["All Stories"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.buttons["All Stories"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
     }
 
     func testAllStoriesButtonShowsStoryModeSheetAndAppliesSelection() {
-        let app = launchConfiguredApp()
+        let app = UITestLaunchConfiguration.launchConfiguredApp()
 
         activateExploreTab(in: app)
 
@@ -49,86 +49,86 @@ final class TabNavigationUITests: XCTestCase {
         let storyModeButton = storyModeButtonByIdentifier.exists
             ? storyModeButtonByIdentifier
             : (storyModeButtonByEnglishLabel.exists ? storyModeButtonByEnglishLabel : storyModeButtonByVietnameseLabel)
-        XCTAssertTrue(storyModeButton.waitForExistence(timeout: 4))
+        XCTAssertTrue(storyModeButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         storyModeButton.tap()
 
         let femaleOption = app.buttons.matching(
             NSPredicate(format: "label IN %@", ["Female Stories", "Truyện Nữ"])
         ).firstMatch
-        XCTAssertTrue(femaleOption.waitForExistence(timeout: 3))
+        XCTAssertTrue(femaleOption.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.sheet))
         femaleOption.tap()
 
         let submitButton = app.buttons.matching(
             NSPredicate(format: "label IN %@", ["Submit", "Gửi"])
         ).firstMatch
-        XCTAssertTrue(submitButton.waitForExistence(timeout: 2))
+        XCTAssertTrue(submitButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
         submitButton.tap()
 
         let submitButtonAfterDismiss = app.buttons.matching(
             NSPredicate(format: "label IN %@", ["Submit", "Gửi"])
         ).firstMatch
-        XCTAssertFalse(submitButtonAfterDismiss.waitForExistence(timeout: 1))
+        XCTAssertFalse(submitButtonAfterDismiss.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief))
 
         let updatedStoryModeButton = app.buttons["explore.header.story_mode"].exists
             ? app.buttons["explore.header.story_mode"]
             : app.buttons["All Stories"]
-        XCTAssertTrue(updatedStoryModeButton.waitForExistence(timeout: 2))
+        XCTAssertTrue(updatedStoryModeButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
         XCTAssertFalse(updatedStoryModeButton.label.isEmpty)
     }
 
     func testLibrarySortSettingsScreenOpensFromGearButton() {
-        let app = launchConfiguredApp()
+        let app = UITestLaunchConfiguration.launchConfiguredApp()
 
         let tabBar = app.tabBars.firstMatch
-        XCTAssertTrue(tabBar.waitForExistence(timeout: 2))
+        XCTAssertTrue(tabBar.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
 
         tabBar.buttons["Library"].tap()
 
         let sortSettingsButton = app.buttons["Library sort settings"]
-        XCTAssertTrue(sortSettingsButton.waitForExistence(timeout: 2))
+        XCTAssertTrue(sortSettingsButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
         sortSettingsButton.tap()
 
         let recentReadOption = app.buttons.matching(
             NSPredicate(format: "label IN %@", ["Recently read", "Mới đọc"])
         ).firstMatch
-        XCTAssertTrue(recentReadOption.waitForExistence(timeout: 2))
+        XCTAssertTrue(recentReadOption.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
 
         let recentSavedOption = app.buttons.matching(
             NSPredicate(format: "label IN %@", ["Recently saved", "Mới lưu"])
         ).firstMatch
-        XCTAssertTrue(recentSavedOption.waitForExistence(timeout: 2))
+        XCTAssertTrue(recentSavedOption.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
 
         let backButton = app.buttons["Library sort back"]
-        XCTAssertTrue(backButton.waitForExistence(timeout: 2))
+        XCTAssertTrue(backButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
 
         backButton.tap()
 
-        XCTAssertTrue(app.buttons["History"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.buttons["History"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
     }
 
     func testExploreFilterButtonOpensAllStoriesListAndNavigatesToDetail() {
-        let app = launchConfiguredApp()
+        let app = UITestLaunchConfiguration.launchConfiguredApp()
 
         activateExploreTab(in: app)
 
         let filterButton = app.buttons["explore.header.filter"]
-        XCTAssertTrue(filterButton.waitForExistence(timeout: 4))
+        XCTAssertTrue(filterButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         filterButton.tap()
 
         let firstRow = app.buttons.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "explore.all_stories.row.")
         ).firstMatch
-        XCTAssertTrue(firstRow.waitForExistence(timeout: 6))
+        XCTAssertTrue(firstRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.list))
         firstRow.tap()
 
-        XCTAssertTrue(app.scrollViews["screen.novel_detail"].waitForExistence(timeout: 4))
+        XCTAssertTrue(app.scrollViews["screen.novel_detail"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
     }
 
     func testDarkModeSettingSyncsToReaderCenterTapPanel() {
-        let app = launchConfiguredApp()
+        let app = UITestLaunchConfiguration.launchConfiguredApp()
 
         let tabBar = app.tabBars.firstMatch
-        XCTAssertTrue(tabBar.waitForExistence(timeout: 2))
+        XCTAssertTrue(tabBar.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
 
         tabBar.buttons["Profile"].tap()
         let settingsRow = app.buttons["profile.row.settings"].exists
@@ -136,7 +136,7 @@ final class TabNavigationUITests: XCTestCase {
             : app.buttons.matching(
                 NSPredicate(format: "label IN %@", ["Settings", "Cài đặt"])
             ).firstMatch
-        XCTAssertTrue(settingsRow.waitForExistence(timeout: 4))
+        XCTAssertTrue(settingsRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         settingsRow.tap()
 
         let darkModeRow = app.buttons["settings.row.dark_mode"].exists
@@ -144,7 +144,7 @@ final class TabNavigationUITests: XCTestCase {
             : app.buttons.matching(
                 NSPredicate(format: "label IN %@", ["Dark mode", "Chế độ tối"])
             ).firstMatch
-        XCTAssertTrue(darkModeRow.waitForExistence(timeout: 4))
+        XCTAssertTrue(darkModeRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         darkModeRow.tap()
 
         let modeOn = app.buttons["settings.dark_mode.mode.on"].exists
@@ -152,43 +152,43 @@ final class TabNavigationUITests: XCTestCase {
             : app.buttons.matching(
                 NSPredicate(format: "label IN %@", ["On", "Bật"])
             ).firstMatch
-        XCTAssertTrue(modeOn.waitForExistence(timeout: 4))
+        XCTAssertTrue(modeOn.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         modeOn.tap()
         let darkThemeCharcoal = app.buttons["settings.dark_mode.dark_theme.charcoal"]
-        if darkThemeCharcoal.waitForExistence(timeout: 1) {
+        if darkThemeCharcoal.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief) {
             darkThemeCharcoal.tap()
         }
 
         tabBar.buttons["Explore"].tap()
         let riceTeaCover = app.buttons.matching(identifier: "book.cover.rice-tea").firstMatch
-        XCTAssertTrue(riceTeaCover.waitForExistence(timeout: 8))
+        XCTAssertTrue(riceTeaCover.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.long))
         riceTeaCover.tap()
 
         let contentTab = app.buttons["novel_detail.tab.content"]
-        XCTAssertTrue(contentTab.waitForExistence(timeout: 4))
+        XCTAssertTrue(contentTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         contentTab.tap()
 
         let chapterRow = app.buttons.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "novel_detail.chapter_row.")
         ).firstMatch
-        XCTAssertTrue(chapterRow.waitForExistence(timeout: 4))
+        XCTAssertTrue(chapterRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         chapterRow.tap()
 
         let tutorialDismiss = app.buttons["reader.tutorial.dismiss"]
-        if tutorialDismiss.waitForExistence(timeout: 1.5) {
+        if tutorialDismiss.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.tutorial) {
             tutorialDismiss.tap()
         }
 
         let readerContent = app.scrollViews["reader.content"]
-        XCTAssertTrue(readerContent.waitForExistence(timeout: 4))
+        XCTAssertTrue(readerContent.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         readerContent.tap()
 
         let settingsTab = app.buttons["reader.panel.tab.settings"]
-        XCTAssertTrue(settingsTab.waitForExistence(timeout: 4))
+        XCTAssertTrue(settingsTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         settingsTab.tap()
 
         let lightThemeButton = app.buttons["reader.theme.light"]
-        XCTAssertTrue(lightThemeButton.waitForExistence(timeout: 3))
+        XCTAssertTrue(lightThemeButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.sheet))
 
         let selectedThemes = app.buttons.matching(
             NSPredicate(
@@ -200,22 +200,9 @@ final class TabNavigationUITests: XCTestCase {
         XCTAssertGreaterThan(selectedThemes.count, 0)
     }
 
-    private func launchConfiguredApp() -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchArguments += [
-            "-settings.preferredLanguage", "english",
-            "-settings.readerDarkMode", "auto",
-            "-settings.readerLightTheme", "light",
-            "-settings.readerDarkTheme", "charcoal",
-            "-reader.didShowTutorial", "1"
-        ]
-        app.launch()
-        return app
-    }
-
     private func activateExploreTab(in app: XCUIApplication) {
         let exploreTab = app.tabBars.buttons["Explore"]
-        if exploreTab.waitForExistence(timeout: 2) {
+        if exploreTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short) {
             exploreTab.tap()
         }
     }

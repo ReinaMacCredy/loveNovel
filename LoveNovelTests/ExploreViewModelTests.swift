@@ -1,4 +1,6 @@
-import XCTest
+import CoreGraphics
+import Foundation
+import Testing
 @testable import LoveNovel
 
 private struct StubCatalogProvider: CatalogProviding {
@@ -17,182 +19,169 @@ private struct StubBookDetailProvider: BookDetailProviding {
     }
 }
 
-final class ExploreViewModelTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-        UserDefaults.standard.set(AppLanguageOption.english.rawValue, forKey: AppSettingsKey.preferredLanguage)
-    }
-
-    func testLoadTransitionsIdleToLoadingToLoaded() async throws {
+@MainActor
+@Suite("Explore view model tests", .tags(.viewModel, .asyncLoad))
+struct ExploreViewModelTests {
+    @Test("Load transitions idle to loading to loaded")
+    func loadTransitionsIdleToLoadingToLoaded() async {
+        let gate = AsyncGate()
         let provider = StubCatalogProvider {
-            try await Task.sleep(for: .milliseconds(120))
+            await gate.wait()
             return Self.sampleFeed
         }
 
-        let viewModel = await MainActor.run {
-            ExploreViewModel(catalog: provider)
-        }
+        let viewModel = ExploreViewModel(catalog: provider)
 
         let loadTask = Task {
             await viewModel.load()
         }
 
-        try await Task.sleep(for: .milliseconds(20))
+        await gate.waitUntilArrived()
+        #expect(viewModel.phase == .loading)
 
-        let loadingPhase = await MainActor.run { viewModel.phase }
-        XCTAssertEqual(loadingPhase, .loading)
-
+        await gate.open()
         await loadTask.value
 
-        let loadedPhase = await MainActor.run { viewModel.phase }
-        XCTAssertEqual(loadedPhase, .loaded)
-
-        let feed = await MainActor.run { viewModel.feed }
-        XCTAssertEqual(feed?.featured.title, "Mutabilis")
+        #expect(viewModel.phase == .loaded)
+        #expect(viewModel.feed?.featured.title == "Mutabilis")
     }
 
-    func testLoadFailureSetsFailedPhaseAndError() async {
+    @Test("Load failure sets failed phase and error")
+    func loadFailureSetsFailedPhaseAndError() async {
         struct TestFailure: Error {}
 
         let provider = StubCatalogProvider {
             throw TestFailure()
         }
 
-        let viewModel = await MainActor.run {
-            ExploreViewModel(catalog: provider)
-        }
+        let viewModel = ExploreViewModel(catalog: provider)
 
         await viewModel.load()
 
-        let failedPhase = await MainActor.run { viewModel.phase }
-        let message = await MainActor.run { viewModel.errorMessage }
-
-        XCTAssertEqual(failedPhase, .failed)
-        XCTAssertEqual(message, "Could not load stories.")
+        #expect(viewModel.phase == .failed)
+        let message = viewModel.errorMessage ?? ""
+        #expect(message.isEmpty == false)
     }
 
-    func testSearchBooksReturnsMatchesAcrossFieldsAndDeduplicates() async {
+    @Test("Search books returns matches across fields and deduplicates")
+    func searchBooksReturnsMatchesAcrossFieldsAndDeduplicates() async {
         let provider = StubCatalogProvider {
             Self.sampleFeed
         }
 
-        let viewModel = await MainActor.run {
-            ExploreViewModel(catalog: provider)
-        }
+        let viewModel = ExploreViewModel(catalog: provider)
 
         let titleMatches = await viewModel.searchBooks(matching: "mutabilis")
-        XCTAssertEqual(titleMatches.map(\.id), ["mutabilis"])
+        #expect(titleMatches.map(\.id) == ["mutabilis"])
 
         let authorMatches = await viewModel.searchBooks(matching: "julien")
-        XCTAssertEqual(authorMatches.map(\.id), ["rice-tea"])
+        #expect(authorMatches.map(\.id) == ["rice-tea"])
 
         let summaryMatches = await viewModel.searchBooks(matching: "underground")
-        XCTAssertEqual(summaryMatches.map(\.id), ["rice-tea"])
+        #expect(summaryMatches.map(\.id) == ["rice-tea"])
     }
 
-    func testSearchBooksWithWhitespaceQueryReturnsEmpty() async {
+    @Test("Search books with whitespace query returns empty")
+    func searchBooksWithWhitespaceQueryReturnsEmpty() async {
         let provider = StubCatalogProvider {
             Self.sampleFeed
         }
 
-        let viewModel = await MainActor.run {
-            ExploreViewModel(catalog: provider)
-        }
+        let viewModel = ExploreViewModel(catalog: provider)
 
         let matches = await viewModel.searchBooks(matching: "   ")
-        XCTAssertTrue(matches.isEmpty)
+        #expect(matches.isEmpty)
     }
 
-    func testSearchBooksWaitsForInFlightLoadBeforeReturningResults() async {
+    @Test("Search books waits for in-flight load before returning results")
+    func searchBooksWaitsForInFlightLoadBeforeReturningResults() async {
+        let gate = AsyncGate()
         let provider = StubCatalogProvider {
-            try await Task.sleep(for: .milliseconds(120))
+            await gate.wait()
             return Self.sampleFeed
         }
 
-        let viewModel = await MainActor.run {
-            ExploreViewModel(catalog: provider)
-        }
+        let viewModel = ExploreViewModel(catalog: provider)
 
         let loadTask = Task {
             await viewModel.load()
         }
-        await Task.yield()
 
-        let loadingPhase = await MainActor.run { viewModel.phase }
-        XCTAssertEqual(loadingPhase, .loading)
+        await gate.waitUntilArrived()
+        #expect(viewModel.phase == .loading)
 
-        let matches = await viewModel.searchBooks(matching: "mutabilis")
-        XCTAssertEqual(matches.map(\.id), ["mutabilis"])
+        let searchTask = Task {
+            await viewModel.searchBooks(matching: "mutabilis")
+        }
 
+        await gate.open()
+        let matches = await searchTask.value
         await loadTask.value
 
-        let finalPhase = await MainActor.run { viewModel.phase }
-        XCTAssertEqual(finalPhase, .loaded)
+        #expect(matches.map(\.id) == ["mutabilis"])
+        #expect(viewModel.phase == .loaded)
     }
 
-    func testAllStoriesListItemsReturnsOrderedDeduplicatedRows() async {
+    @Test("All stories list items returns ordered deduplicated rows")
+    func allStoriesListItemsReturnsOrderedDeduplicatedRows() async throws {
         let provider = StubCatalogProvider {
             Self.sampleFeed
         }
+
         let detailProvider = StubBookDetailProvider { book in
             Self.sampleDetail(for: book, chapterCount: book.id == "mutabilis" ? 42 : 21, genre: "Đô Thị")
         }
 
-        let viewModel = await MainActor.run {
-            ExploreViewModel(catalog: provider, bookDetails: detailProvider)
-        }
+        let viewModel = ExploreViewModel(catalog: provider, bookDetails: detailProvider)
 
         let rows = await viewModel.allStoriesListItems()
 
-        XCTAssertEqual(rows.map(\.book.id), ["mutabilis", "rice-tea", "corvus"])
-        XCTAssertEqual(rows.first?.categoryTag, "#ĐÔ THỊ")
-        XCTAssertEqual(rows.first?.rankTag, "#1508")
-        XCTAssertEqual(rows.first?.chapterCount, 42)
+        #expect(rows.map(\.book.id) == ["mutabilis", "rice-tea", "corvus"])
+        let firstRow = try #require(rows.first)
+        #expect(firstRow.categoryTag == "#ĐÔ THỊ")
+        #expect(firstRow.rankTag == "#1508")
+        #expect(firstRow.chapterCount == 42)
     }
 
-    func testAllStoriesListItemsFallsBackWhenDetailProviderFails() async {
+    @Test("All stories list items falls back when detail provider fails")
+    func allStoriesListItemsFallsBackWhenDetailProviderFails() async throws {
         struct TestFailure: Error {}
 
         let provider = StubCatalogProvider {
             Self.sampleFeed
         }
+
         let detailProvider = StubBookDetailProvider { _ in
             throw TestFailure()
         }
 
-        let viewModel = await MainActor.run {
-            ExploreViewModel(catalog: provider, bookDetails: detailProvider)
-        }
+        let viewModel = ExploreViewModel(catalog: provider, bookDetails: detailProvider)
 
         let rows = await viewModel.allStoriesListItems()
 
-        XCTAssertEqual(rows.count, 3)
-        XCTAssertEqual(rows.first?.categoryTag, "#NOVEL")
-        XCTAssertEqual(rows.first?.chapterCount, 0)
-        XCTAssertEqual(rows.first?.viewsLabel, "0")
+        #expect(rows.count == 3)
+        let firstRow = try #require(rows.first)
+        #expect(firstRow.categoryTag == "#NOVEL")
+        #expect(firstRow.chapterCount == 0)
+        #expect(firstRow.viewsLabel == "0")
     }
 
-    func testSetStoryModeUpdatesSelectedStoryMode() async {
+    @Test("Set story mode updates selected story mode")
+    func setStoryModeUpdatesSelectedStoryMode() {
         let provider = StubCatalogProvider {
             Self.sampleFeed
         }
 
-        let viewModel = await MainActor.run {
-            ExploreViewModel(catalog: provider)
-        }
+        let viewModel = ExploreViewModel(catalog: provider)
 
-        let initialMode = await MainActor.run { viewModel.selectedStoryMode }
-        XCTAssertEqual(initialMode, .all)
+        #expect(viewModel.selectedStoryMode == .all)
 
-        await MainActor.run {
-            viewModel.setStoryMode(.female)
-        }
+        viewModel.setStoryMode(.female)
 
-        let updatedMode = await MainActor.run { viewModel.selectedStoryMode }
-        XCTAssertEqual(updatedMode, .female)
+        #expect(viewModel.selectedStoryMode == .female)
     }
 
-    private static let sampleFeed = HomeFeed(
+    nonisolated private static let sampleFeed = HomeFeed(
         latest: [
             Book(
                 id: "mutabilis",
@@ -233,7 +222,7 @@ final class ExploreViewModelTests: XCTestCase {
         ]
     )
 
-    private static func sampleDetail(for book: Book, chapterCount: Int, genre: String) -> BookDetail {
+    nonisolated private static func sampleDetail(for book: Book, chapterCount: Int, genre: String) -> BookDetail {
         BookDetail(
             bookId: book.id,
             longDescription: book.summary,
@@ -252,60 +241,47 @@ final class ExploreViewModelTests: XCTestCase {
     }
 }
 
-final class LeftEdgeSwipeUpBackGestureEvaluatorTests: XCTestCase {
+@Suite("Left-edge swipe-up back gesture evaluator tests", .tags(.fast, .gesture))
+struct LeftEdgeSwipeUpBackGestureEvaluatorTests {
+    struct GestureCase: Sendable {
+        let startX: Double
+        let startY: Double
+        let endX: Double
+        let endY: Double
+        let translationWidth: Double
+        let translationHeight: Double
+    }
+
     private let evaluator = LeftEdgeSwipeUpBackGestureEvaluator(
         edgeWidth: 14,
         minimumVerticalTravel: 80,
         maximumHorizontalDrift: 24
     )
 
-    func testShouldTriggerRejectsGestureStartingOutsideEdge() {
+    @Test("Should trigger rejects invalid gesture vectors", arguments: [
+        GestureCase(startX: 15, startY: 460, endX: 10, endY: 340, translationWidth: -5, translationHeight: -120),
+        GestureCase(startX: 10, startY: 460, endX: 16, endY: 350, translationWidth: 6, translationHeight: -110),
+        GestureCase(startX: 9, startY: 420, endX: 7, endY: 360, translationWidth: -2, translationHeight: -60),
+        GestureCase(startX: 8, startY: 430, endX: 12, endY: 320, translationWidth: 28, translationHeight: -110)
+    ])
+    func shouldTriggerRejectsInvalidGestureVectors(scenario: GestureCase) {
         let shouldTrigger = evaluator.shouldTrigger(
-            startLocation: CGPoint(x: 15, y: 460),
-            endLocation: CGPoint(x: 10, y: 340),
-            translation: CGSize(width: -5, height: -120)
+            startLocation: CGPoint(x: scenario.startX, y: scenario.startY),
+            endLocation: CGPoint(x: scenario.endX, y: scenario.endY),
+            translation: CGSize(width: scenario.translationWidth, height: scenario.translationHeight)
         )
 
-        XCTAssertFalse(shouldTrigger)
+        #expect(shouldTrigger == false)
     }
 
-    func testShouldTriggerRejectsGestureEndingOutsideEdge() {
-        let shouldTrigger = evaluator.shouldTrigger(
-            startLocation: CGPoint(x: 10, y: 460),
-            endLocation: CGPoint(x: 16, y: 350),
-            translation: CGSize(width: 6, height: -110)
-        )
-
-        XCTAssertFalse(shouldTrigger)
-    }
-
-    func testShouldTriggerRejectsGestureWithShortVerticalTravel() {
-        let shouldTrigger = evaluator.shouldTrigger(
-            startLocation: CGPoint(x: 9, y: 420),
-            endLocation: CGPoint(x: 7, y: 360),
-            translation: CGSize(width: -2, height: -60)
-        )
-
-        XCTAssertFalse(shouldTrigger)
-    }
-
-    func testShouldTriggerRejectsGestureWithLargeHorizontalDrift() {
-        let shouldTrigger = evaluator.shouldTrigger(
-            startLocation: CGPoint(x: 8, y: 430),
-            endLocation: CGPoint(x: 12, y: 320),
-            translation: CGSize(width: 28, height: -110)
-        )
-
-        XCTAssertFalse(shouldTrigger)
-    }
-
-    func testShouldTriggerAcceptsIntentionalEdgeSwipeUp() {
+    @Test("Should trigger accepts intentional edge swipe up")
+    func shouldTriggerAcceptsIntentionalEdgeSwipeUp() {
         let shouldTrigger = evaluator.shouldTrigger(
             startLocation: CGPoint(x: 6, y: 430),
             endLocation: CGPoint(x: 8, y: 310),
             translation: CGSize(width: 2, height: -120)
         )
 
-        XCTAssertTrue(shouldTrigger)
+        #expect(shouldTrigger)
     }
 }

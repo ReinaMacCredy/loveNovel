@@ -1,79 +1,92 @@
-import XCTest
+import Testing
 @testable import LoveNovel
 
 @MainActor
-final class ReaderViewModelTests: XCTestCase {
-    func testInitCanShowTutorial() {
+@Suite("Reader view model tests", .tags(.viewModel, .fast))
+struct ReaderViewModelTests {
+    @Test("Init can show tutorial")
+    func initCanShowTutorial() {
         let viewModel = Self.makeViewModel(shouldShowTutorial: true)
 
-        XCTAssertTrue(viewModel.isTutorialVisible)
-        XCTAssertEqual(viewModel.currentChapterIndex, 3)
-        XCTAssertEqual(viewModel.totalChapters, 55)
+        #expect(viewModel.isTutorialVisible)
+        #expect(viewModel.currentChapterIndex == 3)
+        #expect(viewModel.totalChapters == 55)
     }
 
-    func testAcknowledgeTutorialHidesOverlay() {
+    @Test("Acknowledge tutorial hides overlay")
+    func acknowledgeTutorialHidesOverlay() {
         let viewModel = Self.makeViewModel(shouldShowTutorial: true)
 
         viewModel.acknowledgeTutorial()
 
-        XCTAssertFalse(viewModel.isTutorialVisible)
+        #expect(viewModel.isTutorialVisible == false)
     }
 
-    func testSettingsButtonFlowShowsSettingsPanel() {
+    @Test("Settings button flow shows settings panel")
+    func settingsButtonFlowShowsSettingsPanel() {
         let viewModel = Self.makeViewModel(shouldShowTutorial: false)
 
         viewModel.showSettingsPanel()
 
-        XCTAssertTrue(viewModel.isControlPanelVisible)
-        XCTAssertEqual(viewModel.selectedPanelTab, .settings)
+        #expect(viewModel.isControlPanelVisible)
+        #expect(viewModel.selectedPanelTab == .settings)
     }
 
-    func testCenterTapOpensInfoPanelAndSecondTapCloses() {
+    @Test("Center tap opens info panel and second tap closes")
+    func centerTapOpensInfoPanelAndSecondTapCloses() {
         let viewModel = Self.makeViewModel(shouldShowTutorial: false)
 
         viewModel.toggleControlPanelFromCenterTap()
-        XCTAssertTrue(viewModel.isControlPanelVisible)
-        XCTAssertEqual(viewModel.selectedPanelTab, .info)
+        #expect(viewModel.isControlPanelVisible)
+        #expect(viewModel.selectedPanelTab == .info)
 
         viewModel.toggleControlPanelFromCenterTap()
-        XCTAssertFalse(viewModel.isControlPanelVisible)
+        #expect(viewModel.isControlPanelVisible == false)
     }
 
-    func testChapterSliderClampsToBounds() {
+    @Test(
+        "Chapter slider clamps to bounds",
+        arguments: zip([0.0, 999.0], [1, 55])
+    )
+    func chapterSliderClampsToBounds(input: Double, expectedChapter: Int) {
         let viewModel = Self.makeViewModel(shouldShowTutorial: false)
 
-        viewModel.updateChapterSlider(to: 0)
-        XCTAssertEqual(viewModel.currentChapterIndex, 1)
+        viewModel.updateChapterSlider(to: input)
 
-        viewModel.updateChapterSlider(to: 999)
-        XCTAssertEqual(viewModel.currentChapterIndex, 55)
+        #expect(viewModel.currentChapterIndex == expectedChapter)
     }
 
-    func testShowChapterListHidesPanel() {
+    @Test("Show chapter list hides panel")
+    func showChapterListHidesPanel() {
         let viewModel = Self.makeViewModel(shouldShowTutorial: false)
 
         viewModel.toggleControlPanelFromCenterTap()
-        XCTAssertTrue(viewModel.isControlPanelVisible)
+        #expect(viewModel.isControlPanelVisible)
 
         viewModel.showChapterList()
 
-        XCTAssertFalse(viewModel.isControlPanelVisible)
-        XCTAssertTrue(viewModel.isChapterListVisible)
+        #expect(viewModel.isControlPanelVisible == false)
+        #expect(viewModel.isChapterListVisible)
     }
 
-    func testJumpToChapterClampsAndDismissesChapterList() {
+    @Test(
+        "Jump to chapter clamps and dismisses chapter list",
+        arguments: zip([0, 999], [1, 55])
+    )
+    func jumpToChapterClampsAndDismissesChapterList(input: Int, expectedChapter: Int) {
         let viewModel = Self.makeViewModel(shouldShowTutorial: false)
 
         viewModel.showChapterList()
-        XCTAssertTrue(viewModel.isChapterListVisible)
+        #expect(viewModel.isChapterListVisible)
 
-        viewModel.jumpToChapter(999)
+        viewModel.jumpToChapter(input)
 
-        XCTAssertEqual(viewModel.currentChapterIndex, 55)
-        XCTAssertFalse(viewModel.isChapterListVisible)
+        #expect(viewModel.currentChapterIndex == expectedChapter)
+        #expect(viewModel.isChapterListVisible == false)
     }
 
-    func testProvidedChapterListOverridesGeneratedChapterMetadata() {
+    @Test("Provided chapter list overrides generated chapter metadata")
+    func providedChapterListOverridesGeneratedChapterMetadata() throws {
         let chapters = [
             BookChapter(
                 id: "rice-tea-chapter-1",
@@ -89,8 +102,9 @@ final class ReaderViewModelTests: XCTestCase {
             chapters: chapters
         )
 
-        XCTAssertEqual(viewModel.chapterList.first?.title, "Chương 1: Mở màn")
-        XCTAssertEqual(viewModel.chapterList.first?.timestampText, "2026-02-17 13:12")
+        let firstChapter = try #require(viewModel.chapterList.first)
+        #expect(firstChapter.title == "Chương 1: Mở màn")
+        #expect(firstChapter.timestampText == "2026-02-17 13:12")
     }
 
     private static func makeViewModel(

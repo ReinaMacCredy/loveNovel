@@ -1,43 +1,75 @@
-import XCTest
+import Foundation
+import Testing
 @testable import LoveNovel
 
-final class BookDetailRepositoryTests: XCTestCase {
-    func testFetchDetailDecodesKnownBook() async throws {
+@Suite("Book detail repository tests", .tags(.repository, .fast))
+struct BookDetailRepositoryTests {
+    enum KnownDetailField: CaseIterable, Sendable {
+        case bookID
+        case chapterCount
+        case viewsLabel
+        case status
+    }
+
+    enum FallbackDetailField: CaseIterable, Sendable {
+        case chapterCount
+        case viewsLabel
+        case reviews
+        case comments
+    }
+
+    @Test("Fetch detail decodes known book", arguments: KnownDetailField.allCases)
+    func fetchDetailDecodesKnownBook(field: KnownDetailField) async throws {
         let repository = BookDetailRepository(source: .rawData(Self.sampleJSON))
 
         let detail = try await repository.fetchDetail(for: Self.riceTeaBook)
 
-        XCTAssertEqual(detail.bookId, "rice-tea")
-        XCTAssertEqual(detail.chapterCount, 55)
-        XCTAssertEqual(detail.viewsLabel, "1K")
-        XCTAssertEqual(detail.status, .ongoing)
+        switch field {
+        case .bookID:
+            #expect(detail.bookId == "rice-tea")
+        case .chapterCount:
+            #expect(detail.chapterCount == 55)
+        case .viewsLabel:
+            #expect(detail.viewsLabel == "1K")
+        case .status:
+            #expect(detail.status == .ongoing)
+        }
     }
 
-    func testFetchDetailCachesDecodedPayloadAcrossCalls() async throws {
+    @Test("Fetch detail caches decoded payload across calls")
+    func fetchDetailCachesDecodedPayloadAcrossCalls() async throws {
         let repository = BookDetailRepository(source: .rawData(Self.sampleJSON))
 
         let first = try await repository.fetchDetail(for: Self.riceTeaBook)
         let second = try await repository.fetchDetail(for: Self.mutabilisBook)
 
-        XCTAssertEqual(first.bookId, "rice-tea")
-        XCTAssertEqual(second.bookId, "mutabilis")
+        #expect(first.bookId == "rice-tea")
+        #expect(second.bookId == "mutabilis")
 
         #if DEBUG
         let loadCount = await repository.debugLoadCount()
-        XCTAssertEqual(loadCount, 1)
+        #expect(loadCount == 1)
         #endif
     }
 
-    func testFetchDetailReturnsFallbackForUnknownBook() async throws {
+    @Test("Fetch detail returns fallback for unknown book", arguments: FallbackDetailField.allCases)
+    func fetchDetailReturnsFallbackForUnknownBook(field: FallbackDetailField) async throws {
         let repository = BookDetailRepository(source: .rawData(Self.sampleJSON))
 
         let detail = try await repository.fetchDetail(for: Self.unknownBook)
 
-        XCTAssertEqual(detail.bookId, "unknown-id")
-        XCTAssertEqual(detail.chapterCount, 12)
-        XCTAssertEqual(detail.viewsLabel, "0")
-        XCTAssertEqual(detail.reviews, [])
-        XCTAssertEqual(detail.comments, [])
+        #expect(detail.bookId == "unknown-id")
+
+        switch field {
+        case .chapterCount:
+            #expect(detail.chapterCount == 12)
+        case .viewsLabel:
+            #expect(detail.viewsLabel == "0")
+        case .reviews:
+            #expect(detail.reviews == [])
+        case .comments:
+            #expect(detail.comments == [])
+        }
     }
 
     private static let riceTeaBook = Book(

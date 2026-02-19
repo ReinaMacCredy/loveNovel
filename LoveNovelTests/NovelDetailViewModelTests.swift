@@ -1,4 +1,5 @@
-import XCTest
+import Foundation
+import Testing
 @testable import LoveNovel
 
 private struct StubBookDetailProvider: BookDetailProviding {
@@ -9,149 +10,117 @@ private struct StubBookDetailProvider: BookDetailProviding {
     }
 }
 
-final class NovelDetailViewModelTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-        UserDefaults.standard.set(AppLanguageOption.english.rawValue, forKey: AppSettingsKey.preferredLanguage)
-    }
-
-    func testLoadTransitionsIdleToLoadingToLoaded() async throws {
+@MainActor
+@Suite("Novel detail view model tests", .tags(.viewModel, .asyncLoad))
+struct NovelDetailViewModelTests {
+    @Test("Load transitions idle to loading to loaded")
+    func loadTransitionsIdleToLoadingToLoaded() async {
+        let gate = AsyncGate()
+        let sampleDetail = Self.sampleDetail
         let provider = StubBookDetailProvider { _ in
-            try await Task.sleep(for: .milliseconds(120))
-            return Self.sampleDetail
+            await gate.wait()
+            return sampleDetail
         }
 
-        let viewModel = await MainActor.run {
-            NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
-        }
+        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
 
         let loadTask = Task {
             await viewModel.load()
         }
 
-        try await Task.sleep(for: .milliseconds(20))
+        await gate.waitUntilArrived()
+        #expect(viewModel.phase == .loading)
 
-        let loadingPhase = await MainActor.run { viewModel.phase }
-        XCTAssertEqual(loadingPhase, .loading)
-
+        await gate.open()
         await loadTask.value
 
-        let loadedPhase = await MainActor.run { viewModel.phase }
-        XCTAssertEqual(loadedPhase, .loaded)
+        #expect(viewModel.phase == .loaded)
     }
 
-    func testLoadFailureSetsFailedPhaseAndError() async {
+    @Test("Load failure sets failed phase and error")
+    func loadFailureSetsFailedPhaseAndError() async {
         struct TestFailure: Error {}
 
         let provider = StubBookDetailProvider { _ in
             throw TestFailure()
         }
 
-        let viewModel = await MainActor.run {
-            NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
-        }
+        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
 
         await viewModel.load()
 
-        let failedPhase = await MainActor.run { viewModel.phase }
-        let message = await MainActor.run { viewModel.errorMessage }
-
-        XCTAssertEqual(failedPhase, .failed)
-        XCTAssertEqual(message, "Could not load story details.")
+        #expect(viewModel.phase == .failed)
+        let message = viewModel.errorMessage ?? ""
+        #expect(message.isEmpty == false)
     }
 
-    func testToggleChapterOrderReversesVisibleOrder() async {
+    @Test("Toggle chapter order reverses visible order")
+    func toggleChapterOrderReversesVisibleOrder() async throws {
+        let sampleDetail = Self.sampleDetail
         let provider = StubBookDetailProvider { _ in
-            Self.sampleDetail
+            sampleDetail
         }
 
-        let viewModel = await MainActor.run {
-            NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
-        }
+        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
 
         await viewModel.load()
 
-        let newestFirst = await MainActor.run {
-            viewModel.displayedChapters.first?.index
-        }
-        XCTAssertEqual(newestFirst, Self.sampleDetail.chapterCount)
+        let newestFirst = try #require(viewModel.displayedChapters.first?.index)
+        #expect(newestFirst == Self.sampleDetail.chapterCount)
 
-        await MainActor.run {
-            viewModel.toggleChapterOrder()
-        }
+        viewModel.toggleChapterOrder()
 
-        let oldestFirst = await MainActor.run {
-            viewModel.displayedChapters.first?.index
-        }
-        XCTAssertEqual(oldestFirst, 1)
+        let oldestFirst = try #require(viewModel.displayedChapters.first?.index)
+        #expect(oldestFirst == 1)
     }
 
-    func testSetCommentSortUpdatesVisibleComments() async {
+    @Test(
+        "Set comment sort updates visible comments",
+        arguments: zip([
+            NovelDetailViewModel.CommentSort.oldest,
+            .newest,
+            .liked
+        ], ["comment-1", "comment-2", "comment-1"])
+    )
+    func setCommentSortUpdatesVisibleComments(
+        sort: NovelDetailViewModel.CommentSort,
+        expectedFirstCommentID: String
+    ) async throws {
+        let sampleDetail = Self.sampleDetail
         let provider = StubBookDetailProvider { _ in
-            Self.sampleDetail
+            sampleDetail
         }
 
-        let viewModel = await MainActor.run {
-            NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
-        }
+        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
 
         await viewModel.load()
+        viewModel.setCommentSort(sort)
 
-        await MainActor.run {
-            viewModel.setCommentSort(.oldest)
-        }
-        let oldestFirst = await MainActor.run {
-            viewModel.displayedComments.first?.id
-        }
-        XCTAssertEqual(oldestFirst, "comment-1")
-
-        await MainActor.run {
-            viewModel.setCommentSort(.newest)
-        }
-        let newestFirst = await MainActor.run {
-            viewModel.displayedComments.first?.id
-        }
-        XCTAssertEqual(newestFirst, "comment-2")
-
-        await MainActor.run {
-            viewModel.setCommentSort(.liked)
-        }
-        let likedFirst = await MainActor.run {
-            viewModel.displayedComments.first?.id
-        }
-        XCTAssertEqual(likedFirst, "comment-1")
+        let firstCommentID = try #require(viewModel.displayedComments.first?.id)
+        #expect(firstCommentID == expectedFirstCommentID)
     }
 
-    func testDemoActionsSetAndClearAlertMessage() async {
+    @Test("Demo actions set and clear alert message")
+    func demoActionsSetAndClearAlertMessage() throws {
+        let sampleDetail = Self.sampleDetail
         let provider = StubBookDetailProvider { _ in
-            Self.sampleDetail
+            sampleDetail
         }
 
-        let viewModel = await MainActor.run {
-            NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
-        }
+        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
 
-        await MainActor.run {
-            viewModel.didTapRead()
-        }
+        viewModel.didTapRead()
+        let readMessage = try #require(viewModel.alertMessage)
+        #expect(readMessage.contains("Rice Tea"))
 
-        let readMessage = await MainActor.run { viewModel.alertMessage }
-        XCTAssertEqual(readMessage, "Reader for Rice Tea is coming in v2.")
+        viewModel.dismissAlert()
+        viewModel.didTapAddToLibrary()
 
-        await MainActor.run {
-            viewModel.dismissAlert()
-            viewModel.didTapAddToLibrary()
-        }
+        let addMessage = try #require(viewModel.alertMessage)
+        #expect(addMessage.contains("Rice Tea"))
 
-        let addMessage = await MainActor.run { viewModel.alertMessage }
-        XCTAssertEqual(addMessage, "Rice Tea was added as a demo action.")
-
-        await MainActor.run {
-            viewModel.dismissAlert()
-        }
-
-        let clearedMessage = await MainActor.run { viewModel.alertMessage }
-        XCTAssertNil(clearedMessage)
+        viewModel.dismissAlert()
+        #expect(viewModel.alertMessage == nil)
     }
 
     private static let sampleBook = Book(

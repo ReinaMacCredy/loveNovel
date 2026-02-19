@@ -1,29 +1,63 @@
-import XCTest
+import Foundation
+import Testing
 @testable import LoveNovel
 
-final class CatalogRepositoryTests: XCTestCase {
-    func testDecodesCatalogAndReturnsExpectedCounts() async throws {
+@Suite("Catalog repository tests", .tags(.repository, .fast))
+struct CatalogRepositoryTests {
+    enum FeedSection: Sendable {
+        case latest
+        case recommended
+        case moreLikeThis
+
+        func count(in feed: HomeFeed) -> Int {
+            switch self {
+            case .latest:
+                return feed.latest.count
+            case .recommended:
+                return feed.recommended.count
+            case .moreLikeThis:
+                return feed.moreLikeThis.count
+            }
+        }
+    }
+
+    @Test(
+        "Decodes catalog and returns expected section counts",
+        arguments: zip([
+            FeedSection.latest,
+            .recommended,
+            .moreLikeThis
+        ], [2, 1, 1])
+    )
+    func decodesCatalogAndReturnsExpectedSectionCounts(section: FeedSection, expectedCount: Int) async throws {
         let repository = CatalogRepository(source: .rawData(Self.sampleJSON))
 
         let feed = try await repository.fetchHomeFeed()
 
-        XCTAssertEqual(feed.latest.count, 2)
-        XCTAssertEqual(feed.recommended.count, 1)
-        XCTAssertEqual(feed.moreLikeThis.count, 1)
-        XCTAssertEqual(feed.featured.title, "Mutabilis")
+        #expect(section.count(in: feed) == expectedCount)
     }
 
-    func testCachingReturnsStableResultAcrossCalls() async throws {
+    @Test("Decodes featured book title")
+    func decodesFeaturedBookTitle() async throws {
+        let repository = CatalogRepository(source: .rawData(Self.sampleJSON))
+
+        let feed = try await repository.fetchHomeFeed()
+
+        #expect(feed.featured.title == "Mutabilis")
+    }
+
+    @Test("Caching returns stable result across calls")
+    func cachingReturnsStableResultAcrossCalls() async throws {
         let repository = CatalogRepository(source: .rawData(Self.sampleJSON))
 
         let first = try await repository.fetchHomeFeed()
         let second = try await repository.fetchHomeFeed()
 
-        XCTAssertEqual(first, second)
+        #expect(first == second)
 
         #if DEBUG
         let loadCount = await repository.debugLoadCount()
-        XCTAssertEqual(loadCount, 1)
+        #expect(loadCount == 1)
         #endif
     }
 
