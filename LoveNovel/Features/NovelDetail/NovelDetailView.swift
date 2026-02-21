@@ -2,6 +2,7 @@ import SwiftUI
 
 struct NovelDetailView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var libraryStore: LibraryCollectionStore
     @StateObject private var viewModel: NovelDetailViewModel
     @State private var readerDestination: ReaderDestination?
     private let scrollSpaceName = "novel_detail.scroll"
@@ -61,7 +62,16 @@ struct NovelDetailView: View {
                     initialChapter: destination.chapter,
                     chapterCount: destination.chapterCount,
                     chapterList: destination.chapters,
+                    onProgressChange: { chapterIndex, totalChapters in
+                        libraryStore.updateReadingProgress(
+                            for: destination.book,
+                            chapterIndex: chapterIndex,
+                            chapterCount: totalChapters,
+                            persistence: .debounced
+                        )
+                    },
                     onClose: {
+                        libraryStore.flushPendingPersistence()
                         readerDestination = nil
                     }
                 )
@@ -200,7 +210,7 @@ struct NovelDetailView: View {
                         .buttonStyle(.plain)
 
                         Button {
-                            viewModel.didTapAddToLibrary()
+                            addCurrentBookToLibrary()
                         } label: {
                             HStack(spacing: 8) {
                                 Image(systemName: "plus")
@@ -216,6 +226,9 @@ struct NovelDetailView: View {
                             }
                         }
                         .buttonStyle(.plain)
+                        .disabled(!canAddCurrentBookToLibrary)
+                        .opacity(canAddCurrentBookToLibrary ? 1 : 0.7)
+                        .accessibilityIdentifier("novel_detail.add_to_library")
 
                         Spacer(minLength: 0)
                     }
@@ -613,7 +626,7 @@ struct NovelDetailView: View {
             .buttonStyle(.plain)
 
             Button {
-                viewModel.didTapAddToLibrary()
+                addCurrentBookToLibrary()
             } label: {
                 Image(systemName: "plus")
                     .font(.system(size: 18, weight: .regular))
@@ -622,6 +635,9 @@ struct NovelDetailView: View {
                     .background(Circle().fill(AppTheme.Colors.accentBlue))
             }
             .buttonStyle(.plain)
+            .disabled(!canAddCurrentBookToLibrary)
+            .opacity(canAddCurrentBookToLibrary ? 1 : 0.75)
+            .accessibilityIdentifier("novel_detail.add_to_library")
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 12)
@@ -653,6 +669,27 @@ struct NovelDetailView: View {
                 lhs.index < rhs.index
             }
         )
+    }
+
+    private var currentBookChapterCountForLibrary: Int? {
+        viewModel.chapterCountForLibrary
+    }
+
+    private var canAddCurrentBookToLibrary: Bool {
+        currentBookChapterCountForLibrary != nil
+    }
+
+    private func addCurrentBookToLibrary() {
+        guard let chapterCount = currentBookChapterCountForLibrary else {
+            viewModel.alertMessage = AppLocalization.string("Chapter list is still loading.")
+            return
+        }
+
+        let addResult = libraryStore.add(
+            book: viewModel.book,
+            chapterCount: chapterCount
+        )
+        viewModel.didTapAddToLibrary(alreadyExists: addResult == .alreadyExists)
     }
 
     private var commentComposerBar: some View {
@@ -959,4 +996,18 @@ private struct UploaderRelatedBookCard: View {
             )
         )
     }
+    .environmentObject(makeNovelDetailPreviewStore())
+}
+
+@MainActor
+private func makeNovelDetailPreviewStore() -> LibraryCollectionStore {
+    guard let defaults = UserDefaults(suiteName: "NovelDetailView.preview") else {
+        return LibraryCollectionStore(storageKey: "NovelDetailView.preview.collection")
+    }
+
+    defaults.removePersistentDomain(forName: "NovelDetailView.preview")
+    return LibraryCollectionStore(
+        userDefaults: defaults,
+        storageKey: "NovelDetailView.preview.collection"
+    )
 }

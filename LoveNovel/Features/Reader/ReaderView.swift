@@ -12,6 +12,7 @@ struct ReaderView: View {
     @AppStorage(AppSettingsKey.readerLightTheme) private var readerLightThemeRawValue: String = ReaderViewModel.ReaderThemeStyle.light.rawValue
     @AppStorage(AppSettingsKey.readerDarkTheme) private var readerDarkThemeRawValue: String = ReaderViewModel.ReaderThemeStyle.charcoal.rawValue
     @StateObject private var viewModel: ReaderViewModel
+    private let onProgressChange: ((_ chapterIndex: Int, _ totalChapters: Int) -> Void)?
     private let onClose: (() -> Void)?
 
     init(
@@ -19,9 +20,11 @@ struct ReaderView: View {
         initialChapter: BookChapter,
         chapterCount: Int,
         chapterList: [BookChapter] = [],
+        onProgressChange: ((_ chapterIndex: Int, _ totalChapters: Int) -> Void)? = nil,
         onClose: (() -> Void)? = nil
     ) {
         let hasSeenTutorial = UserDefaults.standard.bool(forKey: ReaderStorageKey.didShowTutorial)
+        self.onProgressChange = onProgressChange
         self.onClose = onClose
         _viewModel = StateObject(
             wrappedValue: ReaderViewModel(
@@ -96,6 +99,7 @@ struct ReaderView: View {
         .navigationBarBackButtonHidden(true)
         .onAppear {
             applyThemeFromSettings()
+            reportCurrentProgress()
         }
         .onChange(of: colorScheme) { _, _ in
             guard selectedDarkMode == .auto else {
@@ -115,6 +119,9 @@ struct ReaderView: View {
         }
         .onChange(of: viewModel.selectedTheme) { _, updatedTheme in
             persistThemeSelection(updatedTheme)
+        }
+        .onChange(of: viewModel.currentChapterIndex) { _, _ in
+            reportCurrentProgress()
         }
     }
 
@@ -663,6 +670,10 @@ struct ReaderView: View {
         if readerLightThemeRawValue != theme.rawValue {
             readerLightThemeRawValue = theme.rawValue
         }
+    }
+
+    private func reportCurrentProgress() {
+        onProgressChange?(viewModel.currentChapterIndex, viewModel.totalChapters)
     }
 
     private var readerBackgroundColor: Color {

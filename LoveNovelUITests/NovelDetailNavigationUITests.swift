@@ -2,6 +2,10 @@ import XCTest
 
 @MainActor
 final class NovelDetailNavigationUITests: XCTestCase {
+    private enum TestData {
+        static let riceTeaLatestChapterIdentifier = "novel_detail.chapter_row.460"
+    }
+
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
@@ -34,10 +38,7 @@ final class NovelDetailNavigationUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["novel_detail.empty.comments"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
 
         contentTab.tap()
-        let chapterRows = app.buttons.matching(
-            NSPredicate(format: "identifier BEGINSWITH %@", "novel_detail.chapter_row.")
-        )
-        XCTAssertTrue(chapterRows.firstMatch.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.sheet))
+        XCTAssertTrue(app.buttons[TestData.riceTeaLatestChapterIdentifier].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.sheet))
 
         app.buttons["novel_detail.back"].tap()
         XCTAssertTrue(app.buttons["All Stories"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.sheet))
@@ -55,14 +56,12 @@ final class NovelDetailNavigationUITests: XCTestCase {
         XCTAssertTrue(contentTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         contentTab.tap()
 
-        let chapterRow = app.buttons.matching(
-            NSPredicate(format: "identifier BEGINSWITH %@", "novel_detail.chapter_row.")
-        ).firstMatch
+        let chapterRow = app.buttons[TestData.riceTeaLatestChapterIdentifier]
         XCTAssertTrue(chapterRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         chapterRow.tap()
 
         let tutorialDismiss = app.buttons["reader.tutorial.dismiss"]
-        if tutorialDismiss.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.tutorial) {
+        if appears(tutorialDismiss, within: UITestLaunchConfiguration.Timeout.tutorial) {
             tutorialDismiss.tap()
         }
 
@@ -100,14 +99,12 @@ final class NovelDetailNavigationUITests: XCTestCase {
         XCTAssertTrue(contentTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         contentTab.tap()
 
-        let chapterRow = app.buttons.matching(
-            NSPredicate(format: "identifier BEGINSWITH %@", "novel_detail.chapter_row.")
-        ).firstMatch
+        let chapterRow = app.buttons[TestData.riceTeaLatestChapterIdentifier]
         XCTAssertTrue(chapterRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         chapterRow.tap()
 
         let tutorialDismiss = app.buttons["reader.tutorial.dismiss"]
-        if tutorialDismiss.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.tutorial) {
+        if appears(tutorialDismiss, within: UITestLaunchConfiguration.Timeout.tutorial) {
             tutorialDismiss.tap()
         }
 
@@ -126,15 +123,12 @@ final class NovelDetailNavigationUITests: XCTestCase {
         XCTAssertTrue(contentTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         contentTab.tap()
 
-        let chapterRow = app.buttons.matching(
-            NSPredicate(format: "identifier BEGINSWITH %@", "novel_detail.chapter_row.")
-        ).firstMatch
+        let chapterRow = app.buttons[TestData.riceTeaLatestChapterIdentifier]
         XCTAssertTrue(chapterRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
-        let selectedChapterIndex = chapterRow.identifier.components(separatedBy: ".").last ?? "1"
         chapterRow.tap()
 
         let tutorialDismiss = app.buttons["reader.tutorial.dismiss"]
-        if tutorialDismiss.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.tutorial) {
+        if appears(tutorialDismiss, within: UITestLaunchConfiguration.Timeout.tutorial) {
             tutorialDismiss.tap()
         }
 
@@ -146,11 +140,11 @@ final class NovelDetailNavigationUITests: XCTestCase {
         XCTAssertTrue(chapterListAction.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.sheet))
         chapterListAction.tap()
 
-        let selectedChapterRow = app.buttons["reader.chapter_list.row.\(selectedChapterIndex)"]
+        let selectedChapterRow = app.buttons["reader.chapter_list.row.460"]
         XCTAssertTrue(selectedChapterRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.sheet))
         selectedChapterRow.tap()
 
-        XCTAssertFalse(app.buttons["reader.quick.chapter_list"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief))
+        XCTAssertFalse(appears(app.buttons["reader.quick.chapter_list"], within: UITestLaunchConfiguration.Timeout.brief))
         XCTAssertTrue(app.buttons["reader.top.settings"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
     }
 
@@ -177,5 +171,18 @@ final class NovelDetailNavigationUITests: XCTestCase {
         let start = window.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.78))
         let end = window.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.30))
         start.press(forDuration: 0.05, thenDragTo: end)
+    }
+
+    private func appears(_ element: XCUIElement, within timeout: TimeInterval, pollInterval: TimeInterval = 0.1) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+
+        while Date() < deadline {
+            if element.exists {
+                return true
+            }
+            Thread.sleep(forTimeInterval: pollInterval)
+        }
+
+        return element.exists
     }
 }

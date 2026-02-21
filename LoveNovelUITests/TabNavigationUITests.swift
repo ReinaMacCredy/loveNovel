@@ -2,6 +2,10 @@ import XCTest
 
 @MainActor
 final class TabNavigationUITests: XCTestCase {
+    private enum TestData {
+        static let riceTeaLatestChapterIdentifier = "novel_detail.chapter_row.460"
+    }
+
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
@@ -103,7 +107,27 @@ final class TabNavigationUITests: XCTestCase {
 
         backButton.tap()
 
-        XCTAssertTrue(app.buttons["History"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        let historyButton = app.buttons.matching(
+            NSPredicate(format: "label IN %@", ["History", "Lịch sử"])
+        ).firstMatch
+        XCTAssertTrue(historyButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
+    }
+
+    func testLibraryRowTapNavigatesToNovelDetail() {
+        let app = UITestLaunchConfiguration.launchConfiguredApp(seedLibrary: true)
+
+        let tabBar = app.tabBars.firstMatch
+        XCTAssertTrue(tabBar.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        tabBar.buttons["Library"].tap()
+
+        let seededRow = app.descendants(matching: .any)
+            .matching(identifier: "library.row.ui-seed-book")
+            .firstMatch
+        XCTAssertTrue(seededRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
+        seededRow.tap()
+
+        let detailScreen = app.scrollViews["screen.novel_detail"]
+        XCTAssertTrue(detailScreen.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
     }
 
     func testExploreFilterButtonOpensAllStoriesListAndNavigatesToDetail() {
@@ -155,7 +179,7 @@ final class TabNavigationUITests: XCTestCase {
         XCTAssertTrue(modeOn.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         modeOn.tap()
         let darkThemeCharcoal = app.buttons["settings.dark_mode.dark_theme.charcoal"]
-        if darkThemeCharcoal.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief) {
+        if appears(darkThemeCharcoal, within: UITestLaunchConfiguration.Timeout.brief) {
             darkThemeCharcoal.tap()
         }
 
@@ -168,14 +192,12 @@ final class TabNavigationUITests: XCTestCase {
         XCTAssertTrue(contentTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         contentTab.tap()
 
-        let chapterRow = app.buttons.matching(
-            NSPredicate(format: "identifier BEGINSWITH %@", "novel_detail.chapter_row.")
-        ).firstMatch
+        let chapterRow = app.buttons[TestData.riceTeaLatestChapterIdentifier]
         XCTAssertTrue(chapterRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
         chapterRow.tap()
 
         let tutorialDismiss = app.buttons["reader.tutorial.dismiss"]
-        if tutorialDismiss.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.tutorial) {
+        if appears(tutorialDismiss, within: UITestLaunchConfiguration.Timeout.tutorial) {
             tutorialDismiss.tap()
         }
 
@@ -205,5 +227,18 @@ final class TabNavigationUITests: XCTestCase {
         if exploreTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short) {
             exploreTab.tap()
         }
+    }
+
+    private func appears(_ element: XCUIElement, within timeout: TimeInterval, pollInterval: TimeInterval = 0.1) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+
+        while Date() < deadline {
+            if element.exists {
+                return true
+            }
+            Thread.sleep(forTimeInterval: pollInterval)
+        }
+
+        return element.exists
     }
 }

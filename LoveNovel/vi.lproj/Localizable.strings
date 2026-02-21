@@ -19,8 +19,16 @@
 
 "History" = "Lịch sử";
 "Bookmark" = "Đánh dấu";
+"library.title.bookshelf" = "Tủ Truyện";
 "library.empty.line.one" = "Tất cả truyện bạn đã đọc sẽ hiển thị ở đây";
 "library.empty.line.two" = "Đã đến lúc khám phá";
+"library.progress.read" = "Đã đọc %d/%d";
+"library.add.success" = "Đã thêm %@ vào Tủ Truyện.";
+"library.add.already_exists" = "%@ đã có trong Tủ Truyện.";
+"library.menu.download" = "Tải truyện";
+"library.menu.remove" = "Xóa khỏi Tủ Truyện";
+"library.menu.notifications" = "Nhận thông báo";
+"library.menu.download.coming_soon" = "Tính năng tải truyện sẽ có trong bản cập nhật sau.";
 "Library search" = "Tìm kiếm thư viện";
 "Library sort settings" = "Cài đặt sắp xếp thư viện";
 "Library sort back" = "Quay lại sắp xếp thư viện";

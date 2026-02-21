@@ -8,6 +8,7 @@ enum AppTab: Hashable {
 
 struct RootTabView: View {
     @State private var selectedTab: AppTab = .explore
+    @StateObject private var libraryStore = LibraryCollectionStore()
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -35,6 +36,7 @@ struct RootTabView: View {
             AppTheme.Colors.screenBackground
                 .ignoresSafeArea()
         }
+        .environmentObject(libraryStore)
     }
 }
 

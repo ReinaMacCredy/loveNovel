@@ -150,12 +150,24 @@ final class NovelDetailViewModel: ObservableObject {
         detail?.reviews ?? []
     }
 
+    var chapterCountForLibrary: Int? {
+        guard let chapterCount = detail?.chapterCount, chapterCount > 0 else {
+            return nil
+        }
+
+        return chapterCount
+    }
+
     func didTapRead() {
         alertMessage = AppLocalization.format("explore.placeholder.reader_for_book", book.title)
     }
 
-    func didTapAddToLibrary() {
-        alertMessage = AppLocalization.format("explore.placeholder.book_added", book.title)
+    func didTapAddToLibrary(alreadyExists: Bool) {
+        if alreadyExists {
+            alertMessage = AppLocalization.format("library.add.already_exists", book.title)
+        } else {
+            alertMessage = AppLocalization.format("library.add.success", book.title)
+        }
     }
 
     func didTapWriteReview() {

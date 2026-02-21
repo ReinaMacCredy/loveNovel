@@ -12,22 +12,27 @@ enum UITestLaunchConfiguration {
         static let longest: TimeInterval = 10
     }
 
-    static func launchConfiguredApp() -> XCUIApplication {
+    static func launchConfiguredApp(seedLibrary: Bool = false) -> XCUIApplication {
         let app = XCUIApplication()
-        apply(to: app)
+        apply(to: app, seedLibrary: seedLibrary)
         app.launch()
         return app
     }
 
-    static func apply(to app: XCUIApplication) {
+    static func apply(to app: XCUIApplication, seedLibrary: Bool = false) {
         app.launchArguments += [
             "-AppleLanguages", "(en)",
             "-AppleLocale", "en_US",
+            "-uitest.resetLibrary",
             "-settings.preferredLanguage", "english",
             "-settings.readerDarkMode", "auto",
             "-settings.readerLightTheme", "light",
             "-settings.readerDarkTheme", "charcoal",
             "-reader.didShowTutorial", "1"
         ]
+
+        if seedLibrary {
+            app.launchArguments += ["-uitest.seedLibrary"]
+        }
     }
 }

@@ -4,6 +4,10 @@ import SwiftUI
 struct LoveNovelApp: App {
     @AppStorage(AppSettingsKey.preferredLanguage) private var preferredLanguageRawValue: String = AppLanguageOption.english.rawValue
 
+    init() {
+        UITestBootstrap.applyIfNeeded()
+    }
+
     var body: some Scene {
         WindowGroup {
             RootTabView()

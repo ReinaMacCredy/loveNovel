@@ -54,6 +54,21 @@ struct NovelDetailViewModelTests {
         #expect(message.isEmpty == false)
     }
 
+    @Test("Chapter count for library is unavailable until detail is loaded")
+    func chapterCountForLibraryIsUnavailableUntilDetailIsLoaded() async {
+        let sampleDetail = Self.sampleDetail
+        let provider = StubBookDetailProvider { _ in
+            sampleDetail
+        }
+
+        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
+        #expect(viewModel.chapterCountForLibrary == nil)
+
+        await viewModel.load()
+
+        #expect(viewModel.chapterCountForLibrary == sampleDetail.chapterCount)
+    }
+
     @Test("Toggle chapter order reverses visible order")
     func toggleChapterOrderReversesVisibleOrder() async throws {
         let sampleDetail = Self.sampleDetail
@@ -114,10 +129,17 @@ struct NovelDetailViewModelTests {
         #expect(readMessage.contains("Rice Tea"))
 
         viewModel.dismissAlert()
-        viewModel.didTapAddToLibrary()
+        viewModel.didTapAddToLibrary(alreadyExists: false)
 
         let addMessage = try #require(viewModel.alertMessage)
         #expect(addMessage.contains("Rice Tea"))
+
+        viewModel.dismissAlert()
+        viewModel.didTapAddToLibrary(alreadyExists: true)
+
+        let duplicateMessage = try #require(viewModel.alertMessage)
+        #expect(duplicateMessage.contains("Rice Tea"))
+        #expect(duplicateMessage != addMessage)
 
         viewModel.dismissAlert()
         #expect(viewModel.alertMessage == nil)

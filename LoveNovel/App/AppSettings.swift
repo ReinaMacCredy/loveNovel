@@ -7,6 +7,7 @@ enum AppSettingsKey {
     static let readerDarkTheme = "settings.reader.darkTheme"
     static let libraryHistorySort = "settings.library.historySort"
     static let libraryBookmarkSort = "settings.library.bookmarkSort"
+    static let libraryCollectionState = "settings.library.collectionState"
 }
 
 enum AppLanguageOption: String, CaseIterable, Identifiable {

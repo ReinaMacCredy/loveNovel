@@ -19,8 +19,16 @@
 
 "History" = "History";
 "Bookmark" = "Bookmark";
+"library.title.bookshelf" = "Library";
 "library.empty.line.one" = "All Books you have read would be here";
 "library.empty.line.two" = "Time to Explore";
+"library.progress.read" = "Read %d/%d";
+"library.add.success" = "%@ was added to Library.";
+"library.add.already_exists" = "%@ is already in Library.";
+"library.menu.download" = "Download story";
+"library.menu.remove" = "Remove from Library";
+"library.menu.notifications" = "Notifications";
+"library.menu.download.coming_soon" = "Download is coming in a future update.";
 "Library search" = "Library search";
 "Library sort settings" = "Library sort settings";
 "Library sort back" = "Library sort back";
