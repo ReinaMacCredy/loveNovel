@@ -7,6 +7,7 @@
 "Login" = "Login";
 "Coming Soon" = "Coming Soon";
 "OK" = "OK";
+"Cancel" = "Cancel";
 "Login screen is planned for v2." = "Login screen is planned for v2.";
 "English" = "English";
 "Vietnamese" = "Vietnamese";
@@ -23,8 +24,6 @@
 "library.empty.line.one" = "All Books you have read would be here";
 "library.empty.line.two" = "Time to Explore";
 "library.progress.read" = "Read %d/%d";
-"library.add.success" = "%@ was added to Library.";
-"library.add.already_exists" = "%@ is already in Library.";
 "library.menu.download" = "Download story";
 "library.menu.remove" = "Remove from Library";
 "library.menu.notifications" = "Notifications";
@@ -98,6 +97,9 @@
 
 "Đọc truyện" = "Read story";
 "Thêm vào\nTủ Truyện" = "Add to\nLibrary";
+"novel_detail.library.added_label" = "In\nLibrary";
+"novel_detail.library.remove.confirm.title" = "Remove from Library?";
+"novel_detail.library.remove.confirm.message" = "Do you want to remove %@ from your Library?";
 "Loading story details..." = "Loading story details...";
 "Could not load story details." = "Could not load story details.";
 "Ongoing" = "Ongoing";

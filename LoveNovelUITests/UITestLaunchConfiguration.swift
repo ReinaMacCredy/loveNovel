@@ -1,5 +1,6 @@
 import XCTest
 
+@MainActor
 enum UITestLaunchConfiguration {
     enum Timeout {
         static let brief: TimeInterval = 1.5

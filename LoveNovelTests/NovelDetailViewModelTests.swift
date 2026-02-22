@@ -129,19 +129,6 @@ struct NovelDetailViewModelTests {
         #expect(readMessage.contains("Rice Tea"))
 
         viewModel.dismissAlert()
-        viewModel.didTapAddToLibrary(alreadyExists: false)
-
-        let addMessage = try #require(viewModel.alertMessage)
-        #expect(addMessage.contains("Rice Tea"))
-
-        viewModel.dismissAlert()
-        viewModel.didTapAddToLibrary(alreadyExists: true)
-
-        let duplicateMessage = try #require(viewModel.alertMessage)
-        #expect(duplicateMessage.contains("Rice Tea"))
-        #expect(duplicateMessage != addMessage)
-
-        viewModel.dismissAlert()
         #expect(viewModel.alertMessage == nil)
     }
 

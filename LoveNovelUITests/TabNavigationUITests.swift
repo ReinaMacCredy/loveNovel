@@ -187,6 +187,7 @@ final class TabNavigationUITests: XCTestCase {
         let riceTeaCover = app.buttons.matching(identifier: "book.cover.rice-tea").firstMatch
         XCTAssertTrue(riceTeaCover.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.long))
         riceTeaCover.tap()
+        waitForDetailLoadingToFinish(in: app)
 
         let contentTab = app.buttons["novel_detail.tab.content"]
         XCTAssertTrue(contentTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
@@ -229,16 +230,22 @@ final class TabNavigationUITests: XCTestCase {
         }
     }
 
-    private func appears(_ element: XCUIElement, within timeout: TimeInterval, pollInterval: TimeInterval = 0.2) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
+    private func appears(_ element: XCUIElement, within timeout: TimeInterval) -> Bool {
+        element.waitForExistence(timeout: timeout)
+    }
 
-        while Date() < deadline {
-            if element.exists {
-                return true
-            }
-            Thread.sleep(forTimeInterval: pollInterval)
+    private func waitForDetailLoadingToFinish(in app: XCUIApplication) {
+        let loadingView = app.otherElements["novel_detail.loading"]
+        guard loadingView.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief) else {
+            return
         }
 
-        return element.exists
+        XCTAssertTrue(waitForDisappearance(of: loadingView, within: UITestLaunchConfiguration.Timeout.long))
+    }
+
+    private func waitForDisappearance(of element: XCUIElement, within timeout: TimeInterval) -> Bool {
+        let predicate = NSPredicate(format: "exists == false")
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: element)
+        return XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed
     }
 }

@@ -7,6 +7,7 @@
 "Login" = "Đăng nhập";
 "Coming Soon" = "Sắp ra mắt";
 "OK" = "OK";
+"Cancel" = "Hủy";
 "Login screen is planned for v2." = "Màn hình đăng nhập dự kiến ở phiên bản v2.";
 "English" = "Tiếng Anh";
 "Vietnamese" = "Tiếng Việt";
@@ -23,8 +24,6 @@
 "library.empty.line.one" = "Tất cả truyện bạn đã đọc sẽ hiển thị ở đây";
 "library.empty.line.two" = "Đã đến lúc khám phá";
 "library.progress.read" = "Đã đọc %d/%d";
-"library.add.success" = "Đã thêm %@ vào Tủ Truyện.";
-"library.add.already_exists" = "%@ đã có trong Tủ Truyện.";
 "library.menu.download" = "Tải truyện";
 "library.menu.remove" = "Xóa khỏi Tủ Truyện";
 "library.menu.notifications" = "Nhận thông báo";
@@ -98,6 +97,9 @@
 
 "Đọc truyện" = "Đọc truyện";
 "Thêm vào\nTủ Truyện" = "Thêm vào\nTủ Truyện";
+"novel_detail.library.added_label" = "Đã thêm\nTủ Truyện";
+"novel_detail.library.remove.confirm.title" = "Xóa khỏi Tủ Truyện?";
+"novel_detail.library.remove.confirm.message" = "Bạn có muốn xóa %@ khỏi Tủ Truyện không?";
 "Loading story details..." = "Đang tải chi tiết truyện...";
 "Could not load story details." = "Không thể tải chi tiết truyện.";
 "Ongoing" = "Đang ra";

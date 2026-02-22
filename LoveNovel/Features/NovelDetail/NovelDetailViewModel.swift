@@ -162,14 +162,6 @@ final class NovelDetailViewModel: ObservableObject {
         alertMessage = AppLocalization.format("explore.placeholder.reader_for_book", book.title)
     }
 
-    func didTapAddToLibrary(alreadyExists: Bool) {
-        if alreadyExists {
-            alertMessage = AppLocalization.format("library.add.already_exists", book.title)
-        } else {
-            alertMessage = AppLocalization.format("library.add.success", book.title)
-        }
-    }
-
     func didTapWriteReview() {
         alertMessage = AppLocalization.string("Writing reviews is coming in v2.")
     }

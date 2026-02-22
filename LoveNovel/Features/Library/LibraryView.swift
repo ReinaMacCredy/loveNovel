@@ -9,6 +9,7 @@ struct LibraryView: View {
     @State private var selectedBook: Book?
     @State private var showSortSettings: Bool = false
     @State private var menuEntry: LibraryShelfEntry?
+    @State private var entryPendingRemoval: LibraryShelfEntry?
     @State private var alertMessage: String?
 
     @AppStorage(AppSettingsKey.libraryHistorySort)
@@ -90,7 +91,7 @@ struct LibraryView: View {
                     alertMessage = AppLocalization.string("library.menu.download.coming_soon")
                 },
                 onRemove: {
-                    libraryStore.remove(bookID: selectedEntry.id)
+                    entryPendingRemoval = currentEntry(for: selectedEntry.id) ?? selectedEntry
                     menuEntry = nil
                 }
             )
@@ -114,6 +115,34 @@ struct LibraryView: View {
             }
         } message: {
             Text(alertMessage ?? "")
+        }
+        .confirmationDialog(
+            AppLocalization.string("novel_detail.library.remove.confirm.title"),
+            isPresented: Binding(
+                get: { entryPendingRemoval != nil },
+                set: { isPresented in
+                    if !isPresented {
+                        entryPendingRemoval = nil
+                    }
+                }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button(AppLocalization.string("library.menu.remove"), role: .destructive) {
+                if let entry = entryPendingRemoval {
+                    libraryStore.remove(bookID: entry.id)
+                }
+                entryPendingRemoval = nil
+            }
+
+            Button(AppLocalization.string("Cancel"), role: .cancel) {
+                entryPendingRemoval = nil
+            }
+        } message: {
+            Text(AppLocalization.format(
+                "novel_detail.library.remove.confirm.message",
+                entryPendingRemoval?.book.title ?? ""
+            ))
         }
         .accessibilityIdentifier("screen.library")
     }

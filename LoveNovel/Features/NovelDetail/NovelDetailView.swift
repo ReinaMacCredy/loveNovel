@@ -5,6 +5,8 @@ struct NovelDetailView: View {
     @EnvironmentObject private var libraryStore: LibraryCollectionStore
     @StateObject private var viewModel: NovelDetailViewModel
     @State private var readerDestination: ReaderDestination?
+    @State private var libraryToggleAnimationValue: Int = 0
+    @State private var showRemoveFromLibraryConfirmation: Bool = false
     private let scrollSpaceName = "novel_detail.scroll"
 
     init(book: Book) {
@@ -55,6 +57,19 @@ struct NovelDetailView: View {
                 }
             } message: {
                 Text(viewModel.alertMessage ?? "")
+            }
+            .confirmationDialog(
+                AppLocalization.string("novel_detail.library.remove.confirm.title"),
+                isPresented: $showRemoveFromLibraryConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button(AppLocalization.string("library.menu.remove"), role: .destructive) {
+                    confirmRemoveCurrentBookFromLibrary()
+                }
+
+                Button(AppLocalization.string("Cancel"), role: .cancel) {}
+            } message: {
+                Text(AppLocalization.format("novel_detail.library.remove.confirm.message", viewModel.book.title))
             }
             .navigationDestination(item: $readerDestination) { destination in
                 ReaderView(
@@ -210,24 +225,25 @@ struct NovelDetailView: View {
                         .buttonStyle(.plain)
 
                         Button {
-                            addCurrentBookToLibrary()
+                            toggleCurrentBookInLibrary()
                         } label: {
                             HStack(spacing: 8) {
-                                Image(systemName: "plus")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundStyle(AppTheme.Colors.accentBlue)
-                                    .frame(width: 40, height: 40)
-                                    .background(Circle().fill(.white))
+                                libraryToggleIcon(
+                                    iconSize: 16,
+                                    containerSize: 40,
+                                    foregroundStyle: AppTheme.Colors.accentBlue,
+                                    backgroundStyle: .white
+                                )
 
-                                Text("Thêm vào\nTủ Truyện")
+                                Text(libraryToggleHeroTitle)
                                     .font(.system(size: 10, weight: .regular))
                                     .multilineTextAlignment(.leading)
                                     .foregroundStyle(.white.opacity(0.92))
                             }
                         }
                         .buttonStyle(.plain)
-                        .disabled(!canAddCurrentBookToLibrary)
-                        .opacity(canAddCurrentBookToLibrary ? 1 : 0.7)
+                        .disabled(!canToggleCurrentBookInLibrary)
+                        .opacity(canToggleCurrentBookInLibrary ? 1 : 0.7)
                         .accessibilityIdentifier("novel_detail.add_to_library")
 
                         Spacer(minLength: 0)
@@ -290,6 +306,7 @@ struct NovelDetailView: View {
                     .font(.system(size: 16, weight: .regular))
                     .foregroundStyle(AppTheme.Colors.textSecondary)
             }
+            .accessibilityIdentifier("novel_detail.loading")
             .frame(maxWidth: .infinity)
             .padding(.top, 80)
 
@@ -551,7 +568,7 @@ struct NovelDetailView: View {
             .padding(.horizontal, AppTheme.Layout.horizontalInset)
             .padding(.top, 12)
 
-            VStack(alignment: .leading, spacing: 18) {
+            LazyVStack(alignment: .leading, spacing: 18) {
                 ForEach(viewModel.displayedChapters) { chapter in
                     Button {
                         openReader(chapter: chapter, chapterCount: detail.chapterCount)
@@ -626,17 +643,18 @@ struct NovelDetailView: View {
             .buttonStyle(.plain)
 
             Button {
-                addCurrentBookToLibrary()
+                toggleCurrentBookInLibrary()
             } label: {
-                Image(systemName: "plus")
-                    .font(.system(size: 18, weight: .regular))
-                    .foregroundStyle(.white)
-                    .frame(width: 42, height: 42)
-                    .background(Circle().fill(AppTheme.Colors.accentBlue))
+                libraryToggleIcon(
+                    iconSize: 18,
+                    containerSize: 42,
+                    foregroundStyle: .white,
+                    backgroundStyle: AppTheme.Colors.accentBlue
+                )
             }
             .buttonStyle(.plain)
-            .disabled(!canAddCurrentBookToLibrary)
-            .opacity(canAddCurrentBookToLibrary ? 1 : 0.75)
+            .disabled(!canToggleCurrentBookInLibrary)
+            .opacity(canToggleCurrentBookInLibrary ? 1 : 0.75)
             .accessibilityIdentifier("novel_detail.add_to_library")
         }
         .padding(.vertical, 8)
@@ -679,17 +697,79 @@ struct NovelDetailView: View {
         currentBookChapterCountForLibrary != nil
     }
 
-    private func addCurrentBookToLibrary() {
-        guard let chapterCount = currentBookChapterCountForLibrary else {
-            viewModel.alertMessage = AppLocalization.string("Chapter list is still loading.")
+    private var isCurrentBookInLibrary: Bool {
+        libraryStore.entry(for: viewModel.book.id) != nil
+    }
+
+    private var canToggleCurrentBookInLibrary: Bool {
+        viewModel.phase == .loaded && (isCurrentBookInLibrary || canAddCurrentBookToLibrary)
+    }
+
+    private var libraryToggleIconName: String {
+        isCurrentBookInLibrary ? "checkmark" : "plus"
+    }
+
+    private var libraryToggleHeroTitle: String {
+        AppLocalization.string(
+            isCurrentBookInLibrary
+                ? "novel_detail.library.added_label"
+                : "Thêm vào\nTủ Truyện"
+        )
+    }
+
+    private func toggleCurrentBookInLibrary() {
+        guard canToggleCurrentBookInLibrary else {
             return
         }
 
-        let addResult = libraryStore.add(
+        if isCurrentBookInLibrary {
+            showRemoveFromLibraryConfirmation = true
+            return
+        }
+
+        addCurrentBookToLibrary()
+    }
+
+    private func confirmRemoveCurrentBookFromLibrary() {
+        guard isCurrentBookInLibrary else {
+            return
+        }
+
+        libraryStore.remove(bookID: viewModel.book.id)
+        animateLibraryToggleIcon()
+    }
+
+    private func addCurrentBookToLibrary() {
+        guard let chapterCount = currentBookChapterCountForLibrary else {
+            return
+        }
+
+        _ = libraryStore.add(
             book: viewModel.book,
             chapterCount: chapterCount
         )
-        viewModel.didTapAddToLibrary(alreadyExists: addResult == .alreadyExists)
+        animateLibraryToggleIcon()
+    }
+
+    @ViewBuilder
+    private func libraryToggleIcon(
+        iconSize: CGFloat,
+        containerSize: CGFloat,
+        foregroundStyle: Color,
+        backgroundStyle: Color
+    ) -> some View {
+        Image(systemName: libraryToggleIconName)
+            .font(.system(size: iconSize, weight: .semibold))
+            .foregroundStyle(foregroundStyle)
+            .frame(width: containerSize, height: containerSize)
+            .background(Circle().fill(backgroundStyle))
+            .contentTransition(.symbolEffect(.replace))
+            .symbolEffect(.bounce, value: libraryToggleAnimationValue)
+            .animation(.spring(response: 0.28, dampingFraction: 0.76), value: isCurrentBookInLibrary)
+    }
+
+    private func animateLibraryToggleIcon() {
+        libraryToggleAnimationValue += 1
     }
 
     private var commentComposerBar: some View {
