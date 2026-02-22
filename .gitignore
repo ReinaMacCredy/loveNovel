@@ -5,3 +5,4 @@ DerivedData/
 *.xcworkspace/xcuserdata/
 *.xcodeproj/xcuserdata/
 .maestro
+.artifacts/
