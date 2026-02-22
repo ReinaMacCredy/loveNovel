@@ -90,7 +90,7 @@ struct LibrarySortSettingsView: View {
                 Capsule()
                     .stroke(AppTheme.Colors.accentBlue.opacity(0.8), lineWidth: 1.1)
             }
-            .clipShape(Capsule())
+            .clipShape(.capsule)
         }
     }
 
@@ -117,7 +117,7 @@ struct LibrarySortSettingsView: View {
                 Capsule()
                     .stroke(AppTheme.Colors.accentBlue.opacity(0.8), lineWidth: 1.1)
             }
-            .clipShape(Capsule())
+            .clipShape(.capsule)
         }
     }
 

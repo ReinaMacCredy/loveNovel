@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ExploreView: View {
+    @EnvironmentObject private var libraryStore: LibraryCollectionStore
     @StateObject private var viewModel: ExploreViewModel
     @State private var selectedBook: Book?
     @State private var isStoryModeSheetPresented: Bool = false
@@ -36,23 +37,6 @@ struct ExploreView: View {
                 )
                 .presentationDetents([.height(330)])
                 .presentationDragIndicator(.hidden)
-            }
-            .alert(
-                "Coming Soon",
-                isPresented: Binding(
-                    get: { viewModel.placeholderMessage != nil },
-                    set: { isPresented in
-                        if !isPresented {
-                            viewModel.dismissPlaceholder()
-                        }
-                    }
-                )
-            ) {
-                Button("OK", role: .cancel) {
-                    viewModel.dismissPlaceholder()
-                }
-            } message: {
-                Text(viewModel.placeholderMessage ?? "")
             }
             .navigationDestination(item: $selectedBook) { book in
                 NovelDetailView(book: book)
@@ -195,7 +179,7 @@ struct ExploreView: View {
 
             if !latestBooks.isEmpty {
                 SectionHeader(title: "Mới nhất") {
-                    viewModel.showPlaceholder(message: AppLocalization.string("Latest list actions are coming in v2."))
+                    isShowingAllStories = true
                 }
 
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -218,7 +202,7 @@ struct ExploreView: View {
 
             if !recommendedBooks.isEmpty {
                 SectionHeader(title: "Đề cử") {
-                    viewModel.showPlaceholder(message: AppLocalization.string("Recommended actions are coming in v2."))
+                    isShowingAllStories = true
                 }
 
                 recommendedSection(books: recommendedBooks)
@@ -226,7 +210,7 @@ struct ExploreView: View {
 
             if !realtimeBooks.isEmpty {
                 SectionHeader(title: "Thời gian thực") {
-                    viewModel.showPlaceholder(message: AppLocalization.string("More-like-this actions are coming in v2."))
+                    isShowingAllStories = true
                 }
 
                 realtimeSection(books: realtimeBooks, allBooks: allBooks)
@@ -239,7 +223,7 @@ struct ExploreView: View {
 
             if !completedBooks.isEmpty {
                 SectionHeader(title: "Mới hoàn thành") {
-                    viewModel.showPlaceholder(message: AppLocalization.string("More-like-this actions are coming in v2."))
+                    isShowingAllStories = true
                 }
 
                 completedSection(books: completedBooks, allBooks: allBooks)
@@ -299,7 +283,11 @@ struct ExploreView: View {
                 HStack(spacing: 8) {
                     ForEach(books) { book in
                         Capsule()
-                            .fill(book.id == selectedBannerID ? Color.black.opacity(0.42) : Color.black.opacity(0.18))
+                            .fill(
+                                book.id == selectedBannerID
+                                    ? AppTheme.Colors.textPrimary.opacity(0.42)
+                                    : AppTheme.Colors.textPrimary.opacity(0.18)
+                            )
                             .frame(width: book.id == selectedBannerID ? 18 : 10, height: 4)
                     }
                 }
@@ -329,28 +317,31 @@ struct ExploreView: View {
 
                 HStack(spacing: 12) {
                     Button {
-                        viewModel.didTapRead(book)
+                        selectedBook = book
                     } label: {
                         Text(AppLocalization.string("Đọc"))
                             .font(.system(size: 16, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(AppTheme.Colors.emphasizedText)
                             .frame(minWidth: 84)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
-                            .background(Capsule().fill(Color.black))
+                            .background(Capsule().fill(AppTheme.Colors.emphasizedSurface))
                     }
                     .buttonStyle(.plain)
 
                     Button {
-                        viewModel.didTapAdd(book)
+                        addBookToLibrary(book)
                     } label: {
-                        Image(systemName: "plus")
+                        Image(systemName: isBookInLibrary(book) ? "checkmark" : "plus")
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(.white)
                             .frame(width: 36, height: 36)
                             .background(Circle().fill(AppTheme.Colors.accentBlue))
                     }
                     .buttonStyle(.plain)
+                    .disabled(!canAddBookToLibrary(book))
+                    .opacity(canAddBookToLibrary(book) ? 1 : 0.74)
+                    .accessibilityIdentifier("explore.featured.add.\(book.id)")
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -408,7 +399,7 @@ struct ExploreView: View {
 
                         Text("\(viewsText(for: book)) \(AppLocalization.string("Đang đọc"))")
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(Color.black.opacity(0.7))
+                            .foregroundStyle(AppTheme.Colors.textSecondary)
                             .lineLimit(1)
                     }
 
@@ -436,7 +427,7 @@ struct ExploreView: View {
                 Spacer()
 
                 Button {
-                    viewModel.showPlaceholder(message: AppLocalization.string("More-like-this actions are coming in v2."))
+                    isShowingAllStories = true
                 } label: {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 16, weight: .semibold))
@@ -577,6 +568,25 @@ struct ExploreView: View {
     private func viewsText(for book: Book) -> String {
         viewModel.detailsByBookID[book.id]?.viewsLabel ?? "0"
     }
+
+    private func isBookInLibrary(_ book: Book) -> Bool {
+        libraryStore.entry(for: book.id) != nil
+    }
+
+    private func canAddBookToLibrary(_ book: Book) -> Bool {
+        !isBookInLibrary(book) && viewModel.chapterCountForLibrary(for: book) != nil
+    }
+
+    private func addBookToLibrary(_ book: Book) {
+        guard
+            !isBookInLibrary(book),
+            let chapterCount = viewModel.chapterCountForLibrary(for: book)
+        else {
+            return
+        }
+
+        _ = libraryStore.add(book: book, chapterCount: chapterCount)
+    }
 }
 
 private struct ExploreBannerCard: View {
@@ -675,7 +685,7 @@ private struct StarRatingRow: View {
                     .foregroundStyle(AppTheme.Colors.star)
             }
 
-            Text(String(format: "%.1f", rating))
+            Text(rating, format: .number.precision(.fractionLength(1)))
                 .font(.system(size: max(starSize + 1, 13), weight: .regular))
                 .foregroundStyle(AppTheme.Colors.textSecondary)
                 .padding(.leading, 6)

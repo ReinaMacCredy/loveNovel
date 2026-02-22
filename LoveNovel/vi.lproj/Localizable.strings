@@ -28,6 +28,10 @@
 "library.menu.remove" = "Xóa khỏi Tủ Truyện";
 "library.menu.notifications" = "Nhận thông báo";
 "library.menu.download.coming_soon" = "Tính năng tải truyện sẽ có trong bản cập nhật sau.";
+"library.menu.download.unavailable_reason" = "Tải xuống cần tài khoản đã kết nối và đồng bộ máy chủ.";
+"library.search.placeholder" = "Tìm trong Tủ Truyện";
+"library.search.no_results.title" = "Không tìm thấy truyện";
+"library.search.no_results.message" = "Không có kết quả cho \"%@\" trong Tủ Truyện.";
 "Library search" = "Tìm kiếm thư viện";
 "Library sort settings" = "Cài đặt sắp xếp thư viện";
 "Library sort back" = "Quay lại sắp xếp thư viện";
@@ -48,6 +52,7 @@
 "Tùy chọn chế độ đọc" = "Tùy chọn chế độ đọc";
 "Gửi" = "Gửi";
 "Open search to use filters." = "Mở tìm kiếm để dùng bộ lọc.";
+"explore.search.filter.unavailable_reason" = "Bộ lọc tạm tắt cho đến khi có lọc danh mục trực tuyến.";
 "Loading stories..." = "Đang tải truyện...";
 "Could not load stories." = "Không thể tải truyện.";
 "Try Again" = "Thử lại";
@@ -100,6 +105,7 @@
 "novel_detail.library.added_label" = "Đã thêm\nTủ Truyện";
 "novel_detail.library.remove.confirm.title" = "Xóa khỏi Tủ Truyện?";
 "novel_detail.library.remove.confirm.message" = "Bạn có muốn xóa %@ khỏi Tủ Truyện không?";
+"novel_detail.notice.title" = "Thông báo";
 "Loading story details..." = "Đang tải chi tiết truyện...";
 "Could not load story details." = "Không thể tải chi tiết truyện.";
 "Ongoing" = "Đang ra";
@@ -110,9 +116,12 @@
 "Cùng tác giả" = "Cùng tác giả";
 "novel_detail.related.same_uploader" = "Cùng đăng bởi %@";
 "Report flow is coming in v2." = "Luồng báo lỗi sẽ có trong v2.";
+"novel_detail.report.unavailable_reason" = "Gửi báo lỗi tạm chưa khả dụng cho đến khi dịch vụ kiểm duyệt hoạt động.";
 "Báo lỗi" = "Báo lỗi";
 "No Reviews" = "Không có đánh giá";
 "No Comments" = "Không có bình luận";
+"novel_detail.review.unavailable_reason" = "Đăng đánh giá cần backend xác thực tài khoản.";
+"novel_detail.comments.post.unavailable_reason" = "Đăng bình luận cần backend xác thực tài khoản.";
 "novel_detail.chapters.count" = "Danh sách chương (%d)";
 "Đọc" = "Đọc";
 "Chapter list is still loading." = "Danh sách chương đang tải.";

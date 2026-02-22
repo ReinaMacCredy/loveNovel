@@ -181,6 +181,45 @@ struct ExploreViewModelTests {
         #expect(viewModel.selectedStoryMode == .female)
     }
 
+    @Test("Chapter count for library uses preloaded details")
+    func chapterCountForLibraryUsesPreloadedDetails() async {
+        let provider = StubCatalogProvider {
+            Self.sampleFeed
+        }
+
+        let detailProvider = StubBookDetailProvider { book in
+            Self.sampleDetail(for: book, chapterCount: 77, genre: "Đô Thị")
+        }
+
+        let viewModel = ExploreViewModel(catalog: provider, bookDetails: detailProvider)
+        let featuredBook = Self.sampleFeed.featured
+
+        #expect(viewModel.chapterCountForLibrary(for: featuredBook) == nil)
+
+        await viewModel.load()
+
+        #expect(viewModel.chapterCountForLibrary(for: featuredBook) == 77)
+    }
+
+    @Test("Chapter count for library returns nil when detail is unavailable")
+    func chapterCountForLibraryReturnsNilWhenDetailIsUnavailable() async {
+        struct TestFailure: Error {}
+
+        let provider = StubCatalogProvider {
+            Self.sampleFeed
+        }
+
+        let detailProvider = StubBookDetailProvider { _ in
+            throw TestFailure()
+        }
+
+        let viewModel = ExploreViewModel(catalog: provider, bookDetails: detailProvider)
+
+        await viewModel.load()
+
+        #expect(viewModel.chapterCountForLibrary(for: Self.sampleFeed.featured) == nil)
+    }
+
     nonisolated private static let sampleFeed = HomeFeed(
         latest: [
             Book(

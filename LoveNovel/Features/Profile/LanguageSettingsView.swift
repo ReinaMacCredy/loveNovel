@@ -42,7 +42,7 @@ struct LanguageSettingsView: View {
                         Capsule()
                             .stroke(AppTheme.Colors.accentBlue.opacity(0.8), lineWidth: 1.1)
                     )
-                    .clipShape(Capsule())
+                    .clipShape(.capsule)
                 }
                 .padding(.horizontal, AppTheme.Layout.horizontalInset)
                 .padding(.top, 16)

@@ -158,24 +158,28 @@ final class NovelDetailViewModel: ObservableObject {
         return chapterCount
     }
 
-    func didTapRead() {
-        alertMessage = AppLocalization.format("explore.placeholder.reader_for_book", book.title)
+    var isReportEnabled: Bool {
+        false
     }
 
-    func didTapWriteReview() {
-        alertMessage = AppLocalization.string("Writing reviews is coming in v2.")
+    var reportUnavailableReason: String {
+        AppLocalization.string("novel_detail.report.unavailable_reason")
     }
 
-    func didTapSendComment() {
-        let trimmedComment = draftComment.trimmingCharacters(in: .whitespacesAndNewlines)
+    var isReviewSubmissionEnabled: Bool {
+        false
+    }
 
-        if trimmedComment.isEmpty {
-            alertMessage = AppLocalization.string("Enter a comment before sending.")
-            return
-        }
+    var reviewSubmissionUnavailableReason: String {
+        AppLocalization.string("novel_detail.review.unavailable_reason")
+    }
 
-        draftComment = ""
-        alertMessage = AppLocalization.string("Comment posted as a demo action.")
+    var isCommentSubmissionEnabled: Bool {
+        false
+    }
+
+    var commentSubmissionUnavailableReason: String {
+        AppLocalization.string("novel_detail.comments.post.unavailable_reason")
     }
 
     func dismissAlert() {

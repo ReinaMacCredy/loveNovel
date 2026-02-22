@@ -1,19 +1,25 @@
 import SwiftUI
+import UIKit
 
 enum AppTheme {
     enum Colors {
-        static let screenBackground = Color(red: 0.95, green: 0.95, blue: 0.96)
-        static let textPrimary = Color.black.opacity(0.9)
-        static let textSecondary = Color.black.opacity(0.45)
-        static let cardShadow = Color.black.opacity(0.07)
+        static let screenBackground = Color(uiColor: .systemGroupedBackground)
+        static let surfaceBackground = Color(uiColor: .secondarySystemGroupedBackground)
+        static let elevatedSurfaceBackground = Color(uiColor: .tertiarySystemGroupedBackground)
+        static let translucentSurfaceBackground = Color(uiColor: .systemBackground).opacity(0.84)
+        static let textPrimary = Color(uiColor: .label)
+        static let textSecondary = Color(uiColor: .secondaryLabel)
+        static let cardShadow = Color.black.opacity(0.12)
         static let accentBlue = Color(red: 0.16, green: 0.44, blue: 0.64)
-        static let tabActive = Color.black
+        static let tabActive = Color(uiColor: .label)
         static let star = Color(red: 0.98, green: 0.75, blue: 0.14)
         static let heroOverlay = Color.black.opacity(0.34)
-        static let detailDivider = Color.black.opacity(0.08)
+        static let detailDivider = Color(uiColor: .separator).opacity(0.55)
         static let pillBorder = Color(red: 0.16, green: 0.44, blue: 0.64)
-        static let mutedIcon = Color.black.opacity(0.32)
-        static let readerBackground = Color(red: 0.96, green: 0.96, blue: 0.97)
+        static let mutedIcon = Color(uiColor: .tertiaryLabel)
+        static let readerBackground = Color(uiColor: .systemBackground)
+        static let emphasizedSurface = Color(uiColor: .label)
+        static let emphasizedText = Color(uiColor: .systemBackground)
     }
 
     enum Layout {

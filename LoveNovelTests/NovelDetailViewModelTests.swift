@@ -115,8 +115,8 @@ struct NovelDetailViewModelTests {
         #expect(firstCommentID == expectedFirstCommentID)
     }
 
-    @Test("Demo actions set and clear alert message")
-    func demoActionsSetAndClearAlertMessage() throws {
+    @Test("No-backend actions are disabled with reasons")
+    func noBackendActionsAreDisabledWithReasons() {
         let sampleDetail = Self.sampleDetail
         let provider = StubBookDetailProvider { _ in
             sampleDetail
@@ -124,12 +124,12 @@ struct NovelDetailViewModelTests {
 
         let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
 
-        viewModel.didTapRead()
-        let readMessage = try #require(viewModel.alertMessage)
-        #expect(readMessage.contains("Rice Tea"))
-
-        viewModel.dismissAlert()
-        #expect(viewModel.alertMessage == nil)
+        #expect(viewModel.isReportEnabled == false)
+        #expect(viewModel.isReviewSubmissionEnabled == false)
+        #expect(viewModel.isCommentSubmissionEnabled == false)
+        #expect(viewModel.reportUnavailableReason.isEmpty == false)
+        #expect(viewModel.reviewSubmissionUnavailableReason.isEmpty == false)
+        #expect(viewModel.commentSubmissionUnavailableReason.isEmpty == false)
     }
 
     private static let sampleBook = Book(
