@@ -28,6 +28,10 @@
 "library.menu.remove" = "Remove from Library";
 "library.menu.notifications" = "Notifications";
 "library.menu.download.coming_soon" = "Download is coming in a future update.";
+"library.menu.download.unavailable_reason" = "Downloads require a connected account and server sync.";
+"library.search.placeholder" = "Search in Library";
+"library.search.no_results.title" = "No books found";
+"library.search.no_results.message" = "No result for \"%@\" in your Library.";
 "Library search" = "Library search";
 "Library sort settings" = "Library sort settings";
 "Library sort back" = "Library sort back";
@@ -48,6 +52,7 @@
 "Tùy chọn chế độ đọc" = "Story mode options";
 "Gửi" = "Submit";
 "Open search to use filters." = "Open search to use filters.";
+"explore.search.filter.unavailable_reason" = "Filters are disabled until online catalog filtering is available.";
 "Loading stories..." = "Loading stories...";
 "Could not load stories." = "Could not load stories.";
 "Try Again" = "Try Again";
@@ -100,6 +105,7 @@
 "novel_detail.library.added_label" = "In\nLibrary";
 "novel_detail.library.remove.confirm.title" = "Remove from Library?";
 "novel_detail.library.remove.confirm.message" = "Do you want to remove %@ from your Library?";
+"novel_detail.notice.title" = "Notice";
 "Loading story details..." = "Loading story details...";
 "Could not load story details." = "Could not load story details.";
 "Ongoing" = "Ongoing";
@@ -110,9 +116,12 @@
 "Cùng tác giả" = "Same author";
 "novel_detail.related.same_uploader" = "Uploaded by %@";
 "Report flow is coming in v2." = "Report flow is coming in v2.";
+"novel_detail.report.unavailable_reason" = "Report submission is unavailable until moderation services are online.";
 "Báo lỗi" = "Report";
 "No Reviews" = "No Reviews";
 "No Comments" = "No Comments";
+"novel_detail.review.unavailable_reason" = "Review posting requires an authenticated backend.";
+"novel_detail.comments.post.unavailable_reason" = "Comment posting requires an authenticated backend.";
 "novel_detail.chapters.count" = "Chapters (%d)";
 "Đọc" = "Read";
 "Chapter list is still loading." = "Chapter list is still loading.";

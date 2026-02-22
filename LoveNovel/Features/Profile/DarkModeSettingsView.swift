@@ -84,7 +84,7 @@ struct DarkModeSettingsView: View {
                 Capsule()
                     .stroke(AppTheme.Colors.accentBlue.opacity(0.8), lineWidth: 1.1)
             )
-            .clipShape(Capsule())
+            .clipShape(.capsule)
         }
         .padding(.horizontal, AppTheme.Layout.horizontalInset)
     }
@@ -117,7 +117,7 @@ struct DarkModeSettingsView: View {
                             .frame(width: 36, height: 36)
 
                         Circle()
-                            .stroke(Color.black.opacity(0.18), lineWidth: 0.5)
+                            .stroke(AppTheme.Colors.detailDivider, lineWidth: 0.5)
                             .frame(width: 36, height: 36)
 
                         if selectedTheme == theme {

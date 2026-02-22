@@ -8,27 +8,20 @@ struct ExploreSearchView: View {
     @State private var query: String = ""
     @State private var selectedBook: Book?
     @State private var searchPhase: SearchPhase = .idle
-    @State private var showFilterSheet: Bool = false
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            VStack(spacing: 0) {
-                header
-                Divider()
-                    .overlay(AppTheme.Colors.detailDivider)
-                searchContent
-            }
-
-            if showFilterSheet {
-                Color.black.opacity(0.42)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        showFilterSheet = false
-                    }
-
-                ExploreFilterSheet(isPresented: $showFilterSheet)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
+        VStack(spacing: 0) {
+            header
+            Divider()
+                .overlay(AppTheme.Colors.detailDivider)
+            Text("explore.search.filter.unavailable_reason")
+                .font(.system(size: 12, weight: .regular))
+                .foregroundStyle(AppTheme.Colors.textSecondary)
+                .padding(.horizontal, AppTheme.Layout.horizontalInset)
+                .padding(.top, 8)
+                .padding(.bottom, 6)
+                .accessibilityIdentifier("explore.search.filter.unavailable_reason")
+            searchContent
         }
         .background(AppTheme.Colors.screenBackground.ignoresSafeArea())
         .task(id: query) {
@@ -50,7 +43,6 @@ struct ExploreSearchView: View {
         .navigationDestination(item: $selectedBook) { book in
             NovelDetailView(book: book)
         }
-        .animation(.easeInOut(duration: 0.2), value: showFilterSheet)
         .accessibilityIdentifier("screen.explore.search")
     }
 
@@ -82,13 +74,12 @@ struct ExploreSearchView: View {
                 .frame(width: 24, height: 24)
                 .accessibilityIdentifier("explore.search.submit")
 
-            Button {
-                isSearchFieldFocused = false
-                showFilterSheet = true
-            } label: {
+            Button(action: {}) {
                 FilterButtonLabel()
             }
             .buttonStyle(.plain)
+            .disabled(true)
+            .opacity(0.45)
             .accessibilityIdentifier("explore.search.filter")
         }
         .padding(.horizontal, AppTheme.Layout.horizontalInset)

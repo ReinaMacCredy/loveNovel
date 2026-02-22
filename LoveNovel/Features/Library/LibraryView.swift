@@ -10,7 +10,9 @@ struct LibraryView: View {
     @State private var showSortSettings: Bool = false
     @State private var menuEntry: LibraryShelfEntry?
     @State private var entryPendingRemoval: LibraryShelfEntry?
-    @State private var alertMessage: String?
+    @State private var isSearchVisible: Bool = false
+    @State private var searchQuery: String = ""
+    @FocusState private var isSearchFieldFocused: Bool
 
     @AppStorage(AppSettingsKey.libraryHistorySort)
     private var historySortRawValue: String = LibraryHistorySortOption.lastRead.rawValue
@@ -23,23 +25,23 @@ struct LibraryView: View {
     }
 
     private var pageBackground: Color {
-        usesDarkPalette ? Color(red: 0.16, green: 0.17, blue: 0.19) : AppTheme.Colors.screenBackground
+        AppTheme.Colors.screenBackground
     }
 
     private var primaryTextColor: Color {
-        usesDarkPalette ? Color.white.opacity(0.94) : AppTheme.Colors.textPrimary
+        AppTheme.Colors.textPrimary
     }
 
     private var secondaryTextColor: Color {
-        usesDarkPalette ? Color.white.opacity(0.58) : AppTheme.Colors.textSecondary
+        AppTheme.Colors.textSecondary
     }
 
     private var segmentInactiveTextColor: Color {
-        usesDarkPalette ? Color.white.opacity(0.36) : AppTheme.Colors.textSecondary.opacity(0.82)
+        AppTheme.Colors.textSecondary.opacity(0.82)
     }
 
     private var rowDividerColor: Color {
-        usesDarkPalette ? Color.white.opacity(0.06) : AppTheme.Colors.detailDivider
+        AppTheme.Colors.detailDivider
     }
 
     private var historySort: LibraryHistorySortOption {
@@ -50,13 +52,25 @@ struct LibraryView: View {
         LibraryBookmarkSortOption(rawValue: bookmarkSortRawValue) ?? .newestSaved
     }
 
-    private var displayedEntries: [LibraryShelfEntry] {
+    private var baseEntries: [LibraryShelfEntry] {
         viewModel.displayedEntries(
             historyEntries: libraryStore.historyEntries,
             bookmarkEntries: libraryStore.bookmarkEntries,
             historySort: historySort,
             bookmarkSort: bookmarkSort
         )
+    }
+
+    private var displayedEntries: [LibraryShelfEntry] {
+        viewModel.filteredEntries(baseEntries, matching: searchQuery)
+    }
+
+    private var trimmedSearchQuery: String {
+        searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var hasActiveSearch: Bool {
+        !trimmedSearchQuery.isEmpty
     }
 
     var body: some View {
@@ -87,9 +101,6 @@ struct LibraryView: View {
                 entry: currentEntry(for: selectedEntry.id) ?? selectedEntry,
                 usesDarkPalette: usesDarkPalette,
                 notificationEnabled: notificationBinding(for: selectedEntry.id),
-                onDownload: {
-                    alertMessage = AppLocalization.string("library.menu.download.coming_soon")
-                },
                 onRemove: {
                     entryPendingRemoval = currentEntry(for: selectedEntry.id) ?? selectedEntry
                     menuEntry = nil
@@ -97,24 +108,7 @@ struct LibraryView: View {
             )
             .presentationDetents([.height(260)])
             .presentationDragIndicator(.hidden)
-            .presentationBackground(usesDarkPalette ? Color(red: 0.22, green: 0.22, blue: 0.24) : Color(.systemBackground))
-        }
-        .alert(
-            "Coming Soon",
-            isPresented: Binding(
-                get: { alertMessage != nil },
-                set: { isPresented in
-                    if !isPresented {
-                        alertMessage = nil
-                    }
-                }
-            )
-        ) {
-            Button("OK", role: .cancel) {
-                alertMessage = nil
-            }
-        } message: {
-            Text(alertMessage ?? "")
+            .presentationBackground(AppTheme.Colors.surfaceBackground)
         }
         .confirmationDialog(
             AppLocalization.string("novel_detail.library.remove.confirm.title"),
@@ -148,37 +142,53 @@ struct LibraryView: View {
     }
 
     private var header: some View {
-        HStack {
-            Text("library.title.bookshelf")
-                .font(.system(size: 28, weight: .regular))
-                .foregroundStyle(primaryTextColor)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("library.title.bookshelf")
+                    .font(.system(size: 28, weight: .regular))
+                    .foregroundStyle(primaryTextColor)
 
-            Spacer(minLength: 0)
+                Spacer(minLength: 0)
 
-            HStack(spacing: 18) {
-                Button {
-                    // Search is planned for v2.
-                } label: {
-                    Image(systemName: "magnifyingglass")
-                        .font(.system(size: 20, weight: .regular))
-                        .foregroundStyle(primaryTextColor)
+                HStack(spacing: 18) {
+                    Button {
+                        toggleSearchVisibility()
+                    } label: {
+                        Image(systemName: isSearchVisible ? "xmark.circle.fill" : "magnifyingglass")
+                            .font(.system(size: 20, weight: .regular))
+                            .foregroundStyle(primaryTextColor)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("library.header.search")
+                    .accessibilityLabel(Text("Library search"))
+
+                    Button {
+                        showSortSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                            .font(.system(size: 19, weight: .regular))
+                            .foregroundStyle(primaryTextColor)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("library.header.sort_settings")
+                    .accessibilityLabel(Text("Library sort settings"))
                 }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("library.header.search")
-                .accessibilityLabel(Text("Library search"))
+            }
 
-                Button {
-                    showSortSettings = true
-                } label: {
-                    Image(systemName: "gearshape.fill")
-                        .font(.system(size: 19, weight: .regular))
-                        .foregroundStyle(primaryTextColor)
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("library.header.sort_settings")
-                .accessibilityLabel(Text("Library sort settings"))
+            if isSearchVisible {
+                searchField
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
+    }
+
+    private var searchField: some View {
+        LibrarySearchField(
+            query: $searchQuery,
+            primaryTextColor: primaryTextColor,
+            secondaryTextColor: secondaryTextColor,
+            isFocused: $isSearchFieldFocused
+        )
     }
 
     private var segmentControl: some View {
@@ -206,7 +216,7 @@ struct LibraryView: View {
 
     @ViewBuilder
     private var content: some View {
-        if displayedEntries.isEmpty {
+        if baseEntries.isEmpty {
             VStack(spacing: 14) {
                 Image(systemName: "books.vertical")
                     .font(.system(size: 74, weight: .regular))
@@ -221,6 +231,15 @@ struct LibraryView: View {
                 .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.top, 52)
+        } else if displayedEntries.isEmpty && hasActiveSearch {
+            LibrarySearchNoResultsView(
+                query: trimmedSearchQuery,
+                primaryTextColor: primaryTextColor,
+                secondaryTextColor: secondaryTextColor
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.horizontal, 22)
             .padding(.top, 52)
         } else {
             ScrollView {
@@ -290,6 +309,7 @@ struct LibraryView: View {
         .onTapGesture {
             selectedBook = entry.book
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("library.row.\(entry.id)")
     }
 
@@ -309,6 +329,87 @@ struct LibraryView: View {
                 libraryStore.setNotificationEnabled(isEnabled, for: bookID)
             }
         )
+    }
+
+    private func toggleSearchVisibility() {
+        withAnimation(.easeInOut(duration: 0.18)) {
+            isSearchVisible.toggle()
+        }
+
+        if isSearchVisible {
+            isSearchFieldFocused = true
+            return
+        }
+
+        searchQuery = ""
+        isSearchFieldFocused = false
+    }
+}
+
+private struct LibrarySearchField: View {
+    @Binding var query: String
+    let primaryTextColor: Color
+    let secondaryTextColor: Color
+    let isFocused: FocusState<Bool>.Binding
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 15, weight: .regular))
+                .foregroundStyle(secondaryTextColor)
+
+            TextField("library.search.placeholder", text: $query)
+                .font(.system(size: 16, weight: .regular))
+                .foregroundStyle(primaryTextColor)
+                .focused(isFocused)
+                .submitLabel(.search)
+                .accessibilityIdentifier("library.search.input")
+
+            if !query.isEmpty {
+                Button {
+                    query = ""
+                    isFocused.wrappedValue = true
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 15, weight: .regular))
+                        .foregroundStyle(secondaryTextColor)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("library.search.clear")
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(AppTheme.Colors.translucentSurfaceBackground)
+        )
+    }
+}
+
+private struct LibrarySearchNoResultsView: View {
+    let query: String
+    let primaryTextColor: Color
+    let secondaryTextColor: Color
+
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 44, weight: .regular))
+                .foregroundStyle(secondaryTextColor.opacity(0.76))
+
+            Text("library.search.no_results.title")
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(primaryTextColor)
+                .multilineTextAlignment(.center)
+                .accessibilityIdentifier("library.search.no_results.title")
+
+            Text(AppLocalization.format("library.search.no_results.message", query))
+                .font(.system(size: 14, weight: .regular))
+                .foregroundStyle(secondaryTextColor)
+                .multilineTextAlignment(.center)
+                .accessibilityIdentifier("library.search.no_results.message")
+        }
     }
 }
 
@@ -361,8 +462,8 @@ private struct LibraryBookCover: View {
             }
         }
         .frame(width: size.width, height: size.height)
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        .shadow(color: Color.black.opacity(0.22), radius: 5, y: 2)
+        .clipShape(.rect(cornerRadius: cornerRadius))
+        .shadow(color: AppTheme.Colors.cardShadow, radius: 5, y: 2)
     }
 
     private var remoteCoverURL: URL? {
@@ -374,23 +475,26 @@ private struct LibraryRowMenuSheet: View {
     let entry: LibraryShelfEntry
     let usesDarkPalette: Bool
     @Binding var notificationEnabled: Bool
-    let onDownload: () -> Void
     let onRemove: () -> Void
 
     private var titleColor: Color {
-        usesDarkPalette ? Color.white.opacity(0.92) : AppTheme.Colors.textPrimary
+        AppTheme.Colors.textPrimary
     }
 
     private var subtitleColor: Color {
-        usesDarkPalette ? Color.white.opacity(0.62) : AppTheme.Colors.textSecondary
+        AppTheme.Colors.textSecondary
     }
 
     private var iconColor: Color {
-        usesDarkPalette ? Color.white.opacity(0.64) : AppTheme.Colors.textSecondary
+        AppTheme.Colors.textSecondary
     }
 
     private var dividerColor: Color {
-        usesDarkPalette ? Color.white.opacity(0.08) : AppTheme.Colors.detailDivider
+        AppTheme.Colors.detailDivider
+    }
+
+    private var disabledSubtitleColor: Color {
+        AppTheme.Colors.textSecondary.opacity(0.74)
     }
 
     var body: some View {
@@ -415,10 +519,10 @@ private struct LibraryRowMenuSheet: View {
                 .fill(dividerColor)
                 .frame(height: 1)
 
-            actionButton(
+            disabledActionRow(
                 iconName: "icloud.and.arrow.down",
                 labelKey: "library.menu.download",
-                action: onDownload
+                reasonKey: "library.menu.download.unavailable_reason"
             )
 
             actionButton(
@@ -441,7 +545,7 @@ private struct LibraryRowMenuSheet: View {
 
                 Toggle("", isOn: $notificationEnabled)
                     .labelsHidden()
-                    .tint(usesDarkPalette ? Color.white.opacity(0.35) : AppTheme.Colors.accentBlue.opacity(0.5))
+                    .tint(AppTheme.Colors.accentBlue.opacity(usesDarkPalette ? 0.65 : 0.5))
             }
             .padding(.horizontal, AppTheme.Layout.horizontalInset)
             .padding(.vertical, 12)
@@ -474,6 +578,37 @@ private struct LibraryRowMenuSheet: View {
         .buttonStyle(.plain)
         .accessibilityIdentifier(labelKey)
     }
+
+    private func disabledActionRow(
+        iconName: String,
+        labelKey: String,
+        reasonKey: String
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack(spacing: 10) {
+                Image(systemName: iconName)
+                    .font(.system(size: 16, weight: .regular))
+                    .foregroundStyle(iconColor.opacity(0.55))
+                    .frame(width: 22)
+
+                Text(LocalizedStringKey(labelKey))
+                    .font(.system(size: 16, weight: .regular))
+                    .foregroundStyle(subtitleColor.opacity(0.55))
+
+                Spacer(minLength: 0)
+            }
+
+            Text(LocalizedStringKey(reasonKey))
+                .font(.system(size: 12, weight: .regular))
+                .foregroundStyle(disabledSubtitleColor)
+                .padding(.leading, AppTheme.Layout.horizontalInset + 32)
+                .accessibilityIdentifier("library.menu.download.unavailable_reason")
+        }
+        .padding(.horizontal, AppTheme.Layout.horizontalInset)
+        .padding(.vertical, 12)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("library.menu.download.disabled")
+    }
 }
 
 #Preview("Populated Light") {
@@ -498,7 +633,6 @@ private struct LibraryRowMenuSheet: View {
         entry: makeLibraryPreviewEntry(),
         usesDarkPalette: true,
         notificationEnabled: .constant(false),
-        onDownload: {},
         onRemove: {}
     )
     .padding(.top, 8)

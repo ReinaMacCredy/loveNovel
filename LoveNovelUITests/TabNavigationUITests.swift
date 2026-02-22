@@ -130,6 +130,56 @@ final class TabNavigationUITests: XCTestCase {
         XCTAssertTrue(detailScreen.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
     }
 
+    func testLibraryHeaderSearchFiltersSeededEntriesLocally() {
+        let app = UITestLaunchConfiguration.launchConfiguredApp(seedLibrary: true)
+
+        let tabBar = app.tabBars.firstMatch
+        XCTAssertTrue(tabBar.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        tabBar.buttons["Library"].tap()
+
+        let searchButton = app.buttons["library.header.search"]
+        XCTAssertTrue(searchButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
+        searchButton.tap()
+
+        let searchInput = app.textFields["library.search.input"]
+        XCTAssertTrue(searchInput.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
+        searchInput.tap()
+        searchInput.typeText("Seeded")
+
+        let seededRow = app.descendants(matching: .any)
+            .matching(identifier: "library.row.ui-seed-book")
+            .firstMatch
+        XCTAssertTrue(seededRow.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+
+        let clearButton = app.buttons["library.search.clear"]
+        if clearButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief) {
+            clearButton.tap()
+        }
+        searchInput.typeText("No Match")
+
+        let noResultsTitle = app.staticTexts["library.search.no_results.title"]
+        XCTAssertTrue(noResultsTitle.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+    }
+
+    func testLibraryMenuDownloadIsDisabledWithReason() {
+        let app = UITestLaunchConfiguration.launchConfiguredApp(seedLibrary: true)
+
+        let tabBar = app.tabBars.firstMatch
+        XCTAssertTrue(tabBar.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        tabBar.buttons["Library"].tap()
+
+        let rowMenuButton = app.descendants(matching: .any)
+            .matching(identifier: "library.row.menu.ui-seed-book")
+            .firstMatch
+        XCTAssertTrue(rowMenuButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
+        rowMenuButton.tap()
+
+        let disabledReason = app.descendants(matching: .any)
+            .matching(identifier: "library.menu.download.unavailable_reason")
+            .firstMatch
+        XCTAssertTrue(disabledReason.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+    }
+
     func testExploreFilterButtonOpensAllStoriesListAndNavigatesToDetail() {
         let app = UITestLaunchConfiguration.launchConfiguredApp()
 

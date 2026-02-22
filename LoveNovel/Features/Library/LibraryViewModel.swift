@@ -44,6 +44,22 @@ final class LibraryViewModel: ObservableObject {
         AppLocalization.format("library.progress.read", entry.lastReadChapter, entry.totalChapters)
     }
 
+    func filteredEntries(
+        _ entries: [LibraryShelfEntry],
+        matching query: String
+    ) -> [LibraryShelfEntry] {
+        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedQuery.isEmpty else {
+            return entries
+        }
+
+        return entries.filter { entry in
+            entry.book.title.localizedStandardContains(trimmedQuery)
+            || entry.book.author.localizedStandardContains(trimmedQuery)
+            || entry.book.summary.localizedStandardContains(trimmedQuery)
+        }
+    }
+
     private func sortedHistoryEntries(
         _ entries: [LibraryShelfEntry],
         option: LibraryHistorySortOption

@@ -144,6 +144,29 @@ final class NovelDetailNavigationUITests: XCTestCase {
         XCTAssertTrue(app.buttons["reader.top.settings"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
     }
 
+    func testNovelDetailNoBackendActionsAreDisabledWithReasons() {
+        let app = UITestLaunchConfiguration.launchConfiguredApp()
+        openRiceTeaDetail(in: app)
+
+        let reportButton = app.buttons["novel_detail.report"]
+        XCTAssertTrue(reportButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        XCTAssertFalse(reportButton.isEnabled)
+        XCTAssertTrue(app.staticTexts["novel_detail.report.unavailable_reason"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+
+        let reviewTab = app.buttons["novel_detail.tab.review"]
+        XCTAssertTrue(reviewTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        reviewTab.tap()
+
+        let writeReviewButton = app.buttons["novel_detail.review.write"]
+        XCTAssertTrue(writeReviewButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        XCTAssertFalse(writeReviewButton.isEnabled)
+        XCTAssertTrue(app.staticTexts["novel_detail.review.unavailable_reason"].waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+
+        let commentsTab = app.buttons["novel_detail.tab.comments"]
+        XCTAssertTrue(commentsTab.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        commentsTab.tap()
+    }
+
     private func openRiceTeaDetail(in app: XCUIApplication) {
         activateExploreTab(in: app)
 

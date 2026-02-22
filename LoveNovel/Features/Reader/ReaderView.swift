@@ -178,7 +178,7 @@ struct ReaderView: View {
     }
 
     private var chapterContent: some View {
-        ScrollView(.vertical, showsIndicators: false) {
+        ScrollView(.vertical) {
             VStack(alignment: .leading, spacing: 28) {
                 Text(viewModel.chapterTitle)
                     .font(readerFont(size: viewModel.fontSize + 3, weight: .medium))
@@ -196,6 +196,7 @@ struct ReaderView: View {
             .padding(.bottom, 120)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .scrollIndicators(.hidden)
         .contentShape(Rectangle())
         .onTapGesture {
             withAnimation(.easeInOut(duration: 0.2)) {
@@ -352,7 +353,7 @@ struct ReaderView: View {
             .padding(.vertical, 16)
             .background(
                 RoundedRectangle(cornerRadius: 18)
-                    .fill(Color.white.opacity(0.6))
+                    .fill(AppTheme.Colors.translucentSurfaceBackground)
             )
 
             VStack(spacing: 0) {
@@ -369,7 +370,7 @@ struct ReaderView: View {
     }
 
     private var panelSettingsContent: some View {
-        ScrollView(.vertical, showsIndicators: false) {
+        ScrollView(.vertical) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Chế độ đọc")
                     .font(.system(size: 12, weight: .semibold))
@@ -399,7 +400,7 @@ struct ReaderView: View {
                     Capsule()
                         .stroke(AppTheme.Colors.accentBlue, lineWidth: 1.1)
                 )
-                .clipShape(Capsule())
+                .clipShape(.capsule)
 
                 Text("Cỡ chữ")
                     .font(.system(size: 12, weight: .semibold))
@@ -422,7 +423,7 @@ struct ReaderView: View {
                 .frame(height: 52)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.white.opacity(0.5))
+                        .fill(AppTheme.Colors.translucentSurfaceBackground)
                 )
 
                 Text("Màu")
@@ -441,7 +442,7 @@ struct ReaderView: View {
                                 
                                 // Subtle border for all circles to make them visible
                                 Circle()
-                                    .stroke(Color.black.opacity(0.08), lineWidth: 0.5)
+                                    .stroke(AppTheme.Colors.detailDivider, lineWidth: 0.5)
                                     .frame(width: 24, height: 24)
 
                                 if viewModel.selectedTheme == theme {
@@ -491,7 +492,11 @@ struct ReaderView: View {
                             .frame(height: 34)
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(viewModel.selectedFontName == fontName ? Color.white.opacity(0.5) : .clear)
+                                    .fill(
+                                        viewModel.selectedFontName == fontName
+                                            ? AppTheme.Colors.surfaceBackground
+                                            : .clear
+                                    )
                             )
                         }
                         .buttonStyle(.plain)
@@ -503,6 +508,7 @@ struct ReaderView: View {
             .padding(.bottom, 6)
             .frame(maxWidth: .infinity, alignment: .top)
         }
+        .scrollIndicators(.hidden)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
@@ -593,10 +599,10 @@ struct ReaderView: View {
                 } label: {
                     Text("ĐÃ HIỂU")
                         .font(.system(size: 18, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppTheme.Colors.emphasizedText)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(Capsule().fill(Color.black))
+                        .background(Capsule().fill(AppTheme.Colors.emphasizedSurface))
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("reader.tutorial.dismiss")
@@ -797,7 +803,7 @@ private struct ReaderChapterListOverlay: View {
 
     private var content: some View {
         ScrollViewReader { proxy in
-            ScrollView(.vertical, showsIndicators: false) {
+            ScrollView(.vertical) {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     ForEach(chapters) { chapter in
                         row(for: chapter)
@@ -807,6 +813,7 @@ private struct ReaderChapterListOverlay: View {
                 .padding(.top, 8)
                 .padding(.bottom, 24)
             }
+            .scrollIndicators(.hidden)
             .onAppear {
                 proxy.scrollTo(currentChapterIndex, anchor: .center)
             }

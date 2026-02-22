@@ -42,7 +42,7 @@ struct NovelDetailView: View {
                 await viewModel.load()
             }
             .alert(
-                "Coming Soon",
+                "novel_detail.notice.title",
                 isPresented: Binding(
                     get: { viewModel.alertMessage != nil },
                     set: { isPresented in
@@ -197,7 +197,7 @@ struct NovelDetailView: View {
                                         .foregroundStyle(AppTheme.Colors.star)
                                 }
 
-                                Text(String(format: "%.1f", viewModel.book.rating))
+                                Text(viewModel.book.rating, format: .number.precision(.fractionLength(1)))
                                     .font(.system(size: 12, weight: .medium))
                                     .foregroundStyle(.white.opacity(0.92))
 
@@ -287,7 +287,7 @@ struct NovelDetailView: View {
             }
         }
         .frame(height: AppTheme.Layout.detailTabHeight)
-        .background(.white)
+        .background(AppTheme.Colors.surfaceBackground)
         .overlay(alignment: .bottom) {
             Rectangle()
                 .fill(AppTheme.Colors.detailDivider)
@@ -365,7 +365,7 @@ struct NovelDetailView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-            .background(Color.white)
+            .background(AppTheme.Colors.surfaceBackground)
 
             Text(detail.longDescription)
                 .font(.system(size: 12, weight: .regular))
@@ -400,19 +400,29 @@ struct NovelDetailView: View {
                 }
             }
 
-            Button {
-                viewModel.alertMessage = AppLocalization.string("Report flow is coming in v2.")
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "flag.fill")
-                        .font(.system(size: 15, weight: .regular))
-                    Text("Báo lỗi")
-                        .font(.system(size: 15, weight: .regular))
+            VStack(spacing: 4) {
+                Button(action: {}) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "flag.fill")
+                            .font(.system(size: 15, weight: .regular))
+                        Text("Báo lỗi")
+                            .font(.system(size: 15, weight: .regular))
+                    }
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .frame(maxWidth: .infinity)
                 }
-                .foregroundStyle(AppTheme.Colors.textSecondary)
-                .frame(maxWidth: .infinity)
+                .buttonStyle(.plain)
+                .disabled(!viewModel.isReportEnabled)
+                .opacity(viewModel.isReportEnabled ? 1 : 0.46)
+                .accessibilityIdentifier("novel_detail.report")
+
+                Text(viewModel.reportUnavailableReason)
+                    .font(.system(size: 12, weight: .regular))
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, AppTheme.Layout.horizontalInset)
+                    .accessibilityIdentifier("novel_detail.report.unavailable_reason")
             }
-            .buttonStyle(.plain)
             .padding(.top, 4)
             .padding(.bottom, 8)
         }
@@ -441,7 +451,7 @@ struct NovelDetailView: View {
                                     Text(review.author)
                                         .font(.system(size: 16, weight: .semibold))
                                     Spacer()
-                                    Text(String(format: "%.1f ★", review.rating))
+                                    Text("\(review.rating, format: .number.precision(.fractionLength(1))) ★")
                                         .font(.system(size: 14, weight: .medium))
                                         .foregroundStyle(AppTheme.Colors.textSecondary)
                                 }
@@ -455,7 +465,10 @@ struct NovelDetailView: View {
                                     .foregroundStyle(AppTheme.Colors.textSecondary)
                             }
                             .padding(16)
-                            .background(RoundedRectangle(cornerRadius: 14).fill(.white))
+                            .background(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .fill(AppTheme.Colors.surfaceBackground)
+                            )
                         }
                     }
                     .padding(.horizontal, AppTheme.Layout.horizontalInset)
@@ -463,17 +476,27 @@ struct NovelDetailView: View {
                 }
             }
 
-            Button {
-                viewModel.didTapWriteReview()
-            } label: {
-                Image(systemName: "pencil")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 50, height: 50)
-                    .background(Circle().fill(AppTheme.Colors.accentBlue))
-                    .shadow(color: Color.black.opacity(0.2), radius: 10, y: 4)
+            VStack(alignment: .trailing, spacing: 6) {
+                Button(action: {}) {
+                    Image(systemName: "pencil")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 50, height: 50)
+                        .background(Circle().fill(AppTheme.Colors.accentBlue))
+                        .shadow(color: Color.black.opacity(0.2), radius: 10, y: 4)
+                }
+                .buttonStyle(.plain)
+                .disabled(!viewModel.isReviewSubmissionEnabled)
+                .opacity(viewModel.isReviewSubmissionEnabled ? 1 : 0.46)
+                .accessibilityIdentifier("novel_detail.review.write")
+
+                Text(viewModel.reviewSubmissionUnavailableReason)
+                    .font(.system(size: 11, weight: .regular))
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .multilineTextAlignment(.trailing)
+                    .frame(maxWidth: 190, alignment: .trailing)
+                    .accessibilityIdentifier("novel_detail.review.unavailable_reason")
             }
-            .buttonStyle(.plain)
             .padding(.trailing, AppTheme.Layout.horizontalInset)
             .padding(.bottom, 96)
         }
@@ -500,7 +523,7 @@ struct NovelDetailView: View {
                 Capsule()
                     .stroke(AppTheme.Colors.pillBorder, lineWidth: 1.5)
             )
-            .clipShape(Capsule())
+            .clipShape(.capsule)
             .padding(.horizontal, AppTheme.Layout.horizontalInset)
             .padding(.top, 20)
 
@@ -538,7 +561,10 @@ struct NovelDetailView: View {
                                 .foregroundStyle(AppTheme.Colors.textSecondary)
                         }
                         .padding(16)
-                        .background(RoundedRectangle(cornerRadius: 14).fill(.white))
+                        .background(
+                            RoundedRectangle(cornerRadius: 14)
+                                .fill(AppTheme.Colors.surfaceBackground)
+                        )
                     }
                 }
                 .padding(.horizontal, AppTheme.Layout.horizontalInset)
@@ -635,10 +661,10 @@ struct NovelDetailView: View {
             } label: {
                 Text("Đọc")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppTheme.Colors.emphasizedText)
                     .padding(.horizontal, 22)
                     .padding(.vertical, 6)
-                    .background(Capsule().fill(.black))
+                    .background(Capsule().fill(AppTheme.Colors.emphasizedSurface))
             }
             .buttonStyle(.plain)
 
@@ -661,9 +687,9 @@ struct NovelDetailView: View {
         .padding(.horizontal, 12)
         .background(
             RoundedRectangle(cornerRadius: AppTheme.Layout.detailActionBarCornerRadius)
-                .fill(Color.white)
+                .fill(AppTheme.Colors.surfaceBackground)
         )
-        .shadow(color: Color.black.opacity(0.1), radius: 10, y: 5)
+        .shadow(color: AppTheme.Colors.cardShadow, radius: 10, y: 5)
     }
 
     private func openReaderFromCurrentContext() {
@@ -773,23 +799,32 @@ struct NovelDetailView: View {
     }
 
     private var commentComposerBar: some View {
-        HStack(spacing: 14) {
-            Image(systemName: "text.bubble")
-                .font(.system(size: 21, weight: .regular))
-                .foregroundStyle(AppTheme.Colors.mutedIcon)
-
-            TextField("Add a comment", text: $viewModel.draftComment)
-                .font(.system(size: 15, weight: .regular))
-                .keyboardType(.default)
-
-            Button {
-                viewModel.didTapSendComment()
-            } label: {
-                Image(systemName: "paperplane")
-                    .font(.system(size: 24, weight: .regular))
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 14) {
+                Image(systemName: "text.bubble")
+                    .font(.system(size: 21, weight: .regular))
                     .foregroundStyle(AppTheme.Colors.mutedIcon)
+
+                TextField("Add a comment", text: $viewModel.draftComment)
+                    .font(.system(size: 15, weight: .regular))
+                    .keyboardType(.default)
+                    .disabled(!viewModel.isCommentSubmissionEnabled)
+                    .accessibilityIdentifier("novel_detail.comments.input")
+
+                Button(action: {}) {
+                    Image(systemName: "paperplane")
+                        .font(.system(size: 24, weight: .regular))
+                        .foregroundStyle(AppTheme.Colors.mutedIcon)
+                }
+                .buttonStyle(.plain)
+                .disabled(!viewModel.isCommentSubmissionEnabled)
+                .accessibilityIdentifier("novel_detail.comments.send")
             }
-            .buttonStyle(.plain)
+
+            Text(viewModel.commentSubmissionUnavailableReason)
+                .font(.system(size: 12, weight: .regular))
+                .foregroundStyle(AppTheme.Colors.textSecondary)
+                .accessibilityIdentifier("novel_detail.comments.unavailable_reason")
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 16)
@@ -798,7 +833,7 @@ struct NovelDetailView: View {
                 .stroke(AppTheme.Colors.pillBorder, lineWidth: 1.2)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.white.opacity(0.8))
+                        .fill(AppTheme.Colors.translucentSurfaceBackground)
                 )
         )
     }
@@ -863,7 +898,7 @@ struct NovelDetailView: View {
                             .padding(.vertical, 5)
                             .background(
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(Color.white.opacity(0.85))
+                                    .fill(AppTheme.Colors.translucentSurfaceBackground)
                             )
                     }
                 }
@@ -1009,7 +1044,7 @@ private struct AuthorRelatedBookCard: View {
                             .font(.system(size: 8, weight: .semibold))
                             .foregroundStyle(AppTheme.Colors.star)
                     }
-                    Text(String(format: "%.1f", book.rating))
+                    Text(book.rating, format: .number.precision(.fractionLength(1)))
                         .font(.system(size: 9, weight: .medium))
                         .foregroundStyle(AppTheme.Colors.textPrimary)
                         .padding(.leading, 4)
@@ -1019,7 +1054,10 @@ private struct AuthorRelatedBookCard: View {
         }
         .padding(9)
         .frame(width: 290, height: 148)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Color.white))
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(AppTheme.Colors.surfaceBackground)
+        )
     }
 }
 

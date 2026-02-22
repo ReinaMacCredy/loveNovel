@@ -53,7 +53,6 @@ final class ExploreViewModel: ObservableObject {
     @Published private(set) var detailsByBookID: [String: BookDetail] = [:]
     @Published private(set) var errorMessage: String?
     @Published private(set) var selectedStoryMode: StoryMode = .all
-    @Published var placeholderMessage: String?
 
     private let catalog: any CatalogProviding
     private let bookDetails: any BookDetailProviding
@@ -113,28 +112,16 @@ final class ExploreViewModel: ObservableObject {
         }
     }
 
-    func showPlaceholder(message: String) {
-        placeholderMessage = message
-    }
-
-    func dismissPlaceholder() {
-        placeholderMessage = nil
-    }
-
     func setStoryMode(_ storyMode: StoryMode) {
         selectedStoryMode = storyMode
     }
 
-    func didTapBook(_ book: Book) {
-        showPlaceholder(message: AppLocalization.format("explore.placeholder.book_details", book.title))
-    }
+    func chapterCountForLibrary(for book: Book) -> Int? {
+        guard let chapterCount = detailsByBookID[book.id]?.chapterCount, chapterCount > 0 else {
+            return nil
+        }
 
-    func didTapRead(_ book: Book) {
-        showPlaceholder(message: AppLocalization.format("explore.placeholder.reader_for_book", book.title))
-    }
-
-    func didTapAdd(_ book: Book) {
-        showPlaceholder(message: AppLocalization.format("explore.placeholder.book_added", book.title))
+        return chapterCount
     }
 
     func searchBooks(matching query: String) async -> [Book] {
