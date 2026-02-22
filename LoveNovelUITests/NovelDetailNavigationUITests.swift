@@ -173,7 +173,7 @@ final class NovelDetailNavigationUITests: XCTestCase {
         start.press(forDuration: 0.05, thenDragTo: end)
     }
 
-    private func appears(_ element: XCUIElement, within timeout: TimeInterval, pollInterval: TimeInterval = 0.1) -> Bool {
+    private func appears(_ element: XCUIElement, within timeout: TimeInterval, pollInterval: TimeInterval = 0.2) -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
 
         while Date() < deadline {

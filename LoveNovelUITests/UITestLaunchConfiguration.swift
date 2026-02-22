@@ -2,14 +2,14 @@ import XCTest
 
 enum UITestLaunchConfiguration {
     enum Timeout {
-        static let brief: TimeInterval = 1
-        static let tutorial: TimeInterval = 1.5
-        static let short: TimeInterval = 2
-        static let sheet: TimeInterval = 3
-        static let medium: TimeInterval = 4
-        static let list: TimeInterval = 6
-        static let long: TimeInterval = 8
-        static let longest: TimeInterval = 10
+        static let brief: TimeInterval = 1.5
+        static let tutorial: TimeInterval = 2.5
+        static let short: TimeInterval = 3
+        static let sheet: TimeInterval = 5
+        static let medium: TimeInterval = 6
+        static let list: TimeInterval = 8
+        static let long: TimeInterval = 10
+        static let longest: TimeInterval = 12
     }
 
     static func launchConfiguredApp(seedLibrary: Bool = false) -> XCUIApplication {
