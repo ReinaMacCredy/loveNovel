@@ -483,6 +483,102 @@ Use the `mcp__xcode__*` toolset as the first choice for Xcode-aware validation w
   - simulator screenshot via `xcrun simctl io booted screenshot <output-path>` when live runtime UI is being verified
 - Always use `xcodegen generate` after `project.yml` changes; never hand-edit `.xcodeproj`.
 
+## Subagent Orchestration Pattern
+
+Use this pattern when work is broad, parallelizable, or likely to inflate context in a single thread.
+
+### Expanded Use Cases
+
+Use orchestration not only for fully parallel feature work, but also for mixed and sequential workflows where focused isolation improves speed or reliability:
+
+- **Read + implement split**: one worker maps code paths while main or another worker implements.
+- **Implement + verify split**: one worker edits, another runs targeted checks or diagnostics.
+- **Risk checks**: a worker validates migrations, security-sensitive flows, or performance hotspots before merge.
+- **Large-file surgery**: isolate heavy refactors in a worker while main keeps user coordination concise.
+- **Cross-module changes**: assign one worker per module and synthesize behavior at the end.
+- **Research tasks**: delegate docs/reference lookups while implementation continues.
+
+### Use Case Catalog (Default to Orchestrate)
+
+Use orchestration by default for any task matching one or more of these categories:
+
+- **Feature delivery**: split into discover, implement, verify, and polish tracks.
+- **Bug fixes**: split into reproduce, root-cause analysis, fix, and regression test tracks.
+- **Refactors**: split by module/feature area, then run a dedicated verification track.
+- **Performance work**: split into profiling, optimization changes, and benchmark validation.
+- **Security hardening**: split into threat check, code changes, and abuse-case tests.
+- **Data/schema/migration changes**: split into migration logic, compatibility checks, and rollback validation.
+- **Concurrency/thread-safety**: split isolation audit, code fixes, and race-focused tests.
+- **UI/UX changes**: split visual implementation, accessibility review, and screenshot/preview verification.
+- **API integration**: split external API research, integration coding, and contract/error-path testing.
+- **Test suite work**: split flaky test triage, test fixes, and stability reruns.
+- **CI failures**: split log triage, targeted fix, and CI-parity local rerun.
+- **Release prep**: split checklist validation, versioning/changelog updates, and final smoke tests.
+- **Code review response**: split comment intake, patch implementation, and reviewer-proof verification.
+- **Documentation updates**: split technical fact-checking, doc writing, and command/example validation.
+- **Developer experience/tooling**: split tool config changes, script updates, and onboarding verification.
+- **Multi-repo or cross-package work**: split one worker per repo/package and synthesize contract changes.
+- **Incident response**: split impact assessment, mitigation patch, and post-fix guardrail updates.
+- **Large unknown tasks**: start with read-only discovery workers, then spawn focused implementation workers.
+- **Any task with 2+ independent tracks**: orchestrate by default.
+
+### Single-Thread Fallback
+
+Prefer single-thread execution only when all of the following are true:
+
+- Scope is small (single-file or single-step).
+- Dependencies are tightly serial (next step depends immediately on previous output).
+- Coordination overhead would exceed expected parallelism gains.
+
+Default trigger: if a task has 2 or more independently executable tracks, likely benefits from orchestration.
+
+### Micro-Orchestration Mode
+
+For medium tasks that are not fully parallelizable, use short sequential handoffs to keep context tight:
+
+1. Worker A gathers facts and returns a concrete plan delta.
+2. Worker B implements the smallest viable slice.
+3. Worker C verifies and reports regressions/coverage gaps.
+
+This still follows `spawn(job, capabilities) -> result` and keeps main focused on synthesis.
+
+### Contract
+
+```text
+spawn(job, capabilities) -> result
+```
+
+- **IN `job`**: one specific task with clear success criteria.
+- **IN `capabilities`**: allowed tools/scope (read-only, full edits, tests, web lookup, etc.).
+- **OUT `result`**: concise outcome with evidence (files, counts, checks, errors).
+
+### Roles
+
+- **Main agent**: owns user conversation, decomposition, delegation, and synthesis.
+- **Subagent**: isolated process/thread with focused context and one scoped assignment.
+
+### Lifecycle
+
+1. Main detects a multi-part task and splits it into independent jobs.
+2. Main spawns one subagent per job (`handoff`) with explicit scope.
+3. Subagents execute independently and report results.
+4. Main reads each thread (`read_thread`), merges outcomes, resolves conflicts, and continues.
+
+### Communication Rules
+
+- User messages are handled by main first.
+- Main may spawn follow-up subagents when requirements change.
+- Do not assume a running subagent receives live incremental user updates.
+- If direct interaction is needed, switch/follow to that sub-thread intentionally.
+
+### Reliability Rules
+
+- Keep each subagent narrow: one job, one owner, one result.
+- Prefer parallel subagents for independent work; sequence only when dependencies exist.
+- Isolate failures: if one subagent fails, rerun only that branch.
+- Require every result to include verifiable artifacts (paths, checks, command outcomes).
+- Escalate progressively: start direct, then fan out when complexity or context load increases.
+
 ## Skill Auto-Load Policy
 
 Load `swift-concurrency`, `swiftui-expert-skill`, and `core-data-expert` at the start of every new chat in this repo.
