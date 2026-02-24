@@ -1,4 +1,6 @@
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 private enum ReaderStorageKey {
     static let didShowTutorial = "reader.didShowTutorial"
@@ -20,6 +22,7 @@ struct ReaderView: View {
         initialChapter: BookChapter,
         chapterCount: Int,
         chapterList: [BookChapter] = [],
+        featureFactory: any ReaderFeatureFactory = PreviewFeatureFactory.live,
         onProgressChange: ((_ chapterIndex: Int, _ totalChapters: Int) -> Void)? = nil,
         onClose: (() -> Void)? = nil
     ) {
@@ -27,7 +30,7 @@ struct ReaderView: View {
         self.onProgressChange = onProgressChange
         self.onClose = onClose
         _viewModel = StateObject(
-            wrappedValue: ReaderViewModel(
+            wrappedValue: featureFactory.makeReaderViewModel(
                 book: book,
                 initialChapter: initialChapter,
                 chapterCount: chapterCount,

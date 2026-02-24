@@ -62,7 +62,7 @@ private struct LeftEdgeSwipeUpBackModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     func leftEdgeSwipeUpBackGesture(
         edgeWidth: CGFloat = 14,
         minimumVerticalTravel: CGFloat = 80,

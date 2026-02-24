@@ -1,4 +1,6 @@
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 enum BookCoverSize {
     case compact

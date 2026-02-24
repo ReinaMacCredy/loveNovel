@@ -1,6 +1,6 @@
 import SwiftUI
 import Testing
-@testable import LoveNovel
+@testable import LoveNovelCore
 
 @Suite("App settings tests", .tags(.settings, .fast), .serialized)
 struct AppSettingsTests {

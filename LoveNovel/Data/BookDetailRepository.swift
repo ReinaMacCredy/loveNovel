@@ -1,9 +1,10 @@
 import Foundation
+import LoveNovelDomain
 
-enum BookDetailRepositoryError: LocalizedError {
+public enum BookDetailRepositoryError: LocalizedError {
     case missingResource(String)
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case let .missingResource(name):
             return "Could not find resource \(name).json in bundle."
@@ -11,12 +12,12 @@ enum BookDetailRepositoryError: LocalizedError {
     }
 }
 
-enum BookDetailSource {
+public enum BookDetailSource {
     case bundled(fileName: String, bundle: Bundle)
     case rawData(Data)
 }
 
-actor BookDetailRepository: BookDetailProviding {
+public actor BookDetailRepository: BookDetailProviding {
     private struct BookDetailPayload: Codable, Sendable {
         let details: [BookDetail]
     }
@@ -30,7 +31,7 @@ actor BookDetailRepository: BookDetailProviding {
     private var loadCount: Int = 0
     #endif
 
-    init(
+    public init(
         source: BookDetailSource = .bundled(fileName: "mock_book_details", bundle: .main),
         decoder: JSONDecoder = JSONDecoder()
     ) {
@@ -38,7 +39,7 @@ actor BookDetailRepository: BookDetailProviding {
         self.decoder = decoder
     }
 
-    func fetchDetail(for book: Book) async throws -> BookDetail {
+    public func fetchDetail(for book: Book) async throws -> BookDetail {
         if let cachedDetail = cachedDetailsByBookId?[book.id] {
             return cachedDetail
         }
@@ -75,7 +76,7 @@ actor BookDetailRepository: BookDetailProviding {
     }
 
     #if DEBUG
-    func debugLoadCount() -> Int {
+    public func debugLoadCount() -> Int {
         loadCount
     }
     #endif

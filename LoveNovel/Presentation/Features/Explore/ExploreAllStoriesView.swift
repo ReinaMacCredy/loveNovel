@@ -1,8 +1,10 @@
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 struct ExploreAllStoriesView: View {
     @ObservedObject var viewModel: ExploreViewModel
-    private let container: AppContainer
+    private let featureFactory: any AppFeatureFactory
 
     @Environment(\.dismiss) private var dismiss
     @State private var selectedBook: Book?
@@ -11,10 +13,10 @@ struct ExploreAllStoriesView: View {
 
     init(
         viewModel: ExploreViewModel,
-        container: AppContainer = .live
+        featureFactory: any AppFeatureFactory = PreviewFeatureFactory.live
     ) {
         self.viewModel = viewModel
-        self.container = container
+        self.featureFactory = featureFactory
     }
 
     var body: some View {
@@ -33,7 +35,7 @@ struct ExploreAllStoriesView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(item: $selectedBook) { book in
-            NovelDetailView(book: book, container: container)
+            NovelDetailView(book: book, featureFactory: featureFactory)
         }
         .accessibilityIdentifier("screen.explore.all_stories")
     }
@@ -250,10 +252,10 @@ private enum Phase: Equatable {
 
 #Preview {
     NavigationStack {
-        let container = AppContainer.live
+        let featureFactory = PreviewFeatureFactory.live
         ExploreAllStoriesView(
-            viewModel: container.makeExploreViewModel(),
-            container: container
+            viewModel: featureFactory.makeExploreViewModel(),
+            featureFactory: featureFactory
         )
     }
     .environmentObject(LibraryCollectionStore(storageKey: "ExploreAllStoriesView.preview.collection"))

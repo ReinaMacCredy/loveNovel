@@ -1,9 +1,10 @@
 import Foundation
+import LoveNovelDomain
 
-enum CatalogRepositoryError: LocalizedError {
+public enum CatalogRepositoryError: LocalizedError {
     case missingResource(String)
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case let .missingResource(name):
             return "Could not find resource \(name).json in bundle."
@@ -11,12 +12,12 @@ enum CatalogRepositoryError: LocalizedError {
     }
 }
 
-enum CatalogSource {
+public enum CatalogSource {
     case bundled(fileName: String, bundle: Bundle)
     case rawData(Data)
 }
 
-actor CatalogRepository: CatalogProviding {
+public actor CatalogRepository: CatalogProviding {
     private final class BundleToken {}
 
     private let source: CatalogSource
@@ -26,7 +27,7 @@ actor CatalogRepository: CatalogProviding {
     private var loadCount: Int = 0
     #endif
 
-    init(
+    public init(
         source: CatalogSource = .bundled(fileName: "mock_catalog", bundle: .main),
         decoder: JSONDecoder = JSONDecoder()
     ) {
@@ -34,7 +35,7 @@ actor CatalogRepository: CatalogProviding {
         self.decoder = decoder
     }
 
-    func fetchHomeFeed() async throws -> HomeFeed {
+    public func fetchHomeFeed() async throws -> HomeFeed {
         if let cachedFeed {
             return cachedFeed
         }
@@ -51,7 +52,7 @@ actor CatalogRepository: CatalogProviding {
     }
 
     #if DEBUG
-    func debugLoadCount() -> Int {
+    public func debugLoadCount() -> Int {
         loadCount
     }
     #endif

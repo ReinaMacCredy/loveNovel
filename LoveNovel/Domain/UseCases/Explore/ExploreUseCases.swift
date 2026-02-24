@@ -1,42 +1,58 @@
 import Foundation
 
-struct ExploreAllStoriesListItem: Identifiable, Sendable, Equatable {
-    let id: String
-    let book: Book
-    let categoryTag: String
-    let rankTag: String
-    let chapterCount: Int
-    let viewsLabel: String
+public struct ExploreAllStoriesListItem: Identifiable, Sendable, Equatable {
+    public let id: String
+    public let book: Book
+    public let categoryTag: String
+    public let rankTag: String
+    public let chapterCount: Int
+    public let viewsLabel: String
+
+    public init(
+        id: String,
+        book: Book,
+        categoryTag: String,
+        rankTag: String,
+        chapterCount: Int,
+        viewsLabel: String
+    ) {
+        self.id = id
+        self.book = book
+        self.categoryTag = categoryTag
+        self.rankTag = rankTag
+        self.chapterCount = chapterCount
+        self.viewsLabel = viewsLabel
+    }
 }
 
-protocol LoadHomeFeedUseCase: Sendable {
+public protocol LoadHomeFeedUseCase: Sendable {
     func execute() async throws -> HomeFeed
 }
 
-struct DefaultLoadHomeFeedUseCase: LoadHomeFeedUseCase {
+public struct DefaultLoadHomeFeedUseCase: LoadHomeFeedUseCase {
     private let catalog: any CatalogProviding
 
-    init(catalog: any CatalogProviding) {
+    public init(catalog: any CatalogProviding) {
         self.catalog = catalog
     }
 
-    func execute() async throws -> HomeFeed {
+    public func execute() async throws -> HomeFeed {
         try await catalog.fetchHomeFeed()
     }
 }
 
-protocol PreloadBookDetailsUseCase: Sendable {
+public protocol PreloadBookDetailsUseCase: Sendable {
     func execute(for books: [Book]) async -> [String: BookDetail]
 }
 
-struct DefaultPreloadBookDetailsUseCase: PreloadBookDetailsUseCase {
+public struct DefaultPreloadBookDetailsUseCase: PreloadBookDetailsUseCase {
     private let bookDetails: any BookDetailProviding
 
-    init(bookDetails: any BookDetailProviding) {
+    public init(bookDetails: any BookDetailProviding) {
         self.bookDetails = bookDetails
     }
 
-    func execute(for books: [Book]) async -> [String: BookDetail] {
+    public func execute(for books: [Book]) async -> [String: BookDetail] {
         guard !books.isEmpty else {
             return [:]
         }
@@ -72,12 +88,14 @@ struct DefaultPreloadBookDetailsUseCase: PreloadBookDetailsUseCase {
     }
 }
 
-protocol SearchBooksUseCase: Sendable {
+public protocol SearchBooksUseCase: Sendable {
     func execute(query: String, in feed: HomeFeed) -> [Book]
 }
 
-struct DefaultSearchBooksUseCase: SearchBooksUseCase {
-    func execute(query: String, in feed: HomeFeed) -> [Book] {
+public struct DefaultSearchBooksUseCase: SearchBooksUseCase {
+    public init() {}
+
+    public func execute(query: String, in feed: HomeFeed) -> [Book] {
         let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedQuery.isEmpty else {
             return []
@@ -96,18 +114,18 @@ struct DefaultSearchBooksUseCase: SearchBooksUseCase {
     }
 }
 
-protocol BuildAllStoriesListUseCase: Sendable {
+public protocol BuildAllStoriesListUseCase: Sendable {
     func execute(from feed: HomeFeed) async -> [ExploreAllStoriesListItem]
 }
 
-struct DefaultBuildAllStoriesListUseCase: BuildAllStoriesListUseCase {
+public struct DefaultBuildAllStoriesListUseCase: BuildAllStoriesListUseCase {
     private let bookDetails: any BookDetailProviding
 
-    init(bookDetails: any BookDetailProviding) {
+    public init(bookDetails: any BookDetailProviding) {
         self.bookDetails = bookDetails
     }
 
-    func execute(from feed: HomeFeed) async -> [ExploreAllStoriesListItem] {
+    public func execute(from feed: HomeFeed) async -> [ExploreAllStoriesListItem] {
         let books = ExploreBooks.uniqueBooks(in: feed)
         var items: [ExploreAllStoriesListItem] = []
         items.reserveCapacity(books.count)
@@ -164,8 +182,8 @@ struct DefaultBuildAllStoriesListUseCase: BuildAllStoriesListUseCase {
     }
 }
 
-enum ExploreBooks {
-    static func uniqueBooks(in feed: HomeFeed) -> [Book] {
+public enum ExploreBooks {
+    public static func uniqueBooks(in feed: HomeFeed) -> [Book] {
         var seenBookIDs = Set<String>()
         let orderedBooks = feed.latest + [feed.featured] + feed.recommended + feed.moreLikeThis
 

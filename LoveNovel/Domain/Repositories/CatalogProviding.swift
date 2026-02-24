@@ -1,5 +1,5 @@
 import Foundation
 
-protocol CatalogProviding: Sendable {
+public protocol CatalogProviding: Sendable {
     func fetchHomeFeed() async throws -> HomeFeed
 }

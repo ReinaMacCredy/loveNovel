@@ -1,5 +1,7 @@
 import CoreGraphics
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 @MainActor
 final class ReaderViewModel: ObservableObject {
@@ -53,6 +55,7 @@ final class ReaderViewModel: ObservableObject {
     let book: Book
     let totalChapters: Int
     let availableFonts: [String] = ["Avenir Next", "Arial", "Helvetica", "Palatino"]
+    private let buildChapterUseCase: any BuildReaderChapterUseCase
     private let chapterTimestampText: String
     private let providedChaptersByIndex: [Int: BookChapter]?
 
@@ -61,9 +64,11 @@ final class ReaderViewModel: ObservableObject {
         initialChapter: BookChapter,
         chapterCount: Int,
         chapters: [BookChapter] = [],
-        shouldShowTutorial: Bool
+        shouldShowTutorial: Bool,
+        buildChapterUseCase: any BuildReaderChapterUseCase
     ) {
         self.book = book
+        self.buildChapterUseCase = buildChapterUseCase
         let maxProvidedChapterIndex = chapters.map(\.index).max() ?? 0
         let normalizedTotalChapters = max(chapterCount, maxProvidedChapterIndex, 1)
         self.totalChapters = normalizedTotalChapters
@@ -207,15 +212,11 @@ final class ReaderViewModel: ObservableObject {
     }
 
     private func chapter(for index: Int) -> BookChapter {
-        if let providedChapter = providedChaptersByIndex?[index] {
-            return providedChapter
-        }
-
-        return BookChapter(
-            id: "\(book.id)-chapter-\(index)",
-            index: index,
-            title: AppLocalization.format("novel_detail.chapter.title", index),
-            timestampText: chapterTimestampText
+        buildChapterUseCase.execute(
+            bookID: book.id,
+            chapterIndex: index,
+            chapterTimestampText: chapterTimestampText,
+            providedChapter: providedChaptersByIndex?[index]
         )
     }
 

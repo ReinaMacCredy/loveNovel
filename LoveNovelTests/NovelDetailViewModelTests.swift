@@ -1,12 +1,20 @@
 import Foundation
 import Testing
-@testable import LoveNovel
+@testable import LoveNovelCore
+@testable import LoveNovelDomain
+@testable import LoveNovelPresentation
 
 private struct StubBookDetailProvider: BookDetailProviding {
     let operation: @Sendable (Book) async throws -> BookDetail
 
     func fetchDetail(for book: Book) async throws -> BookDetail {
         try await operation(book)
+    }
+}
+
+private struct StubChapterTitleFormatter: ChapterTitleFormatting {
+    func chapterTitle(for index: Int) -> String {
+        "Chapter \(index)"
     }
 }
 
@@ -136,7 +144,9 @@ struct NovelDetailViewModelTests {
         NovelDetailViewModel(
             book: Self.sampleBook,
             loadBookDetailUseCase: DefaultLoadBookDetailUseCase(detailProvider: detailProvider),
-            buildDisplayedChaptersUseCase: DefaultBuildDisplayedChaptersUseCase(),
+            buildDisplayedChaptersUseCase: DefaultBuildDisplayedChaptersUseCase(
+                chapterTitleFormatter: StubChapterTitleFormatter()
+            ),
             sortBookCommentsUseCase: DefaultSortBookCommentsUseCase()
         )
     }

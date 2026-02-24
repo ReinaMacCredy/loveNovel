@@ -1,10 +1,12 @@
 import Foundation
+import LoveNovelCore
+import LoveNovelDomain
 
-enum UITestBootstrap {
+public enum UITestBootstrap {
     private static let seedLibraryFlag = "-uitest.seedLibrary"
     private static let resetLibraryFlag = "-uitest.resetLibrary"
 
-    static func applyIfNeeded(
+    public static func applyIfNeeded(
         arguments: [String] = ProcessInfo.processInfo.arguments,
         userDefaults: UserDefaults = .standard
     ) {

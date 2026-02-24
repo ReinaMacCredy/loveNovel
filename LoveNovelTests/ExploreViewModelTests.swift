@@ -1,7 +1,9 @@
 import CoreGraphics
 import Foundation
 import Testing
-@testable import LoveNovel
+@testable import LoveNovelCore
+@testable import LoveNovelDomain
+@testable import LoveNovelPresentation
 
 private struct StubCatalogProvider: CatalogProviding {
     let operation: @Sendable () async throws -> HomeFeed

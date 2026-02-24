@@ -1,6 +1,7 @@
 import Foundation
 import Testing
-@testable import LoveNovel
+@testable import LoveNovelDomain
+@testable import LoveNovelPresentation
 
 @MainActor
 @Suite("Library view model tests", .tags(.viewModel))

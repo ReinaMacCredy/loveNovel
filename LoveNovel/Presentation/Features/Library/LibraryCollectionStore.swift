@@ -1,5 +1,7 @@
 import Foundation
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 struct LibraryShelfEntry: Codable, Identifiable, Sendable, Equatable, Hashable {
     let id: Book.ID

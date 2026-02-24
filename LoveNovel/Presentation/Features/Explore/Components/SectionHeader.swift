@@ -1,4 +1,6 @@
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 struct SectionHeader: View {
     let title: String
