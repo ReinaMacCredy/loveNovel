@@ -4,16 +4,22 @@ struct NovelDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var libraryStore: LibraryCollectionStore
     @StateObject private var viewModel: NovelDetailViewModel
+    private let container: AppContainer
     @State private var readerDestination: ReaderDestination?
     @State private var libraryToggleAnimationValue: Int = 0
     @State private var showRemoveFromLibraryConfirmation: Bool = false
     private let scrollSpaceName = "novel_detail.scroll"
 
-    init(book: Book) {
-        _viewModel = StateObject(wrappedValue: NovelDetailViewModel(book: book))
+    init(book: Book, container: AppContainer = .live) {
+        self.container = container
+        _viewModel = StateObject(wrappedValue: container.makeNovelDetailViewModel(book: book))
     }
 
-    init(viewModel: @autoclosure @escaping () -> NovelDetailViewModel) {
+    init(
+        viewModel: @autoclosure @escaping () -> NovelDetailViewModel,
+        container: AppContainer = .live
+    ) {
+        self.container = container
         _viewModel = StateObject(wrappedValue: viewModel())
     }
 

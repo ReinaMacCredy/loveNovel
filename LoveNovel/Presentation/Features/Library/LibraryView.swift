@@ -2,6 +2,8 @@ import SwiftUI
 import UIKit
 
 struct LibraryView: View {
+    private let container: AppContainer
+
     @EnvironmentObject private var libraryStore: LibraryCollectionStore
     @Environment(\.colorScheme) private var colorScheme
 
@@ -73,6 +75,10 @@ struct LibraryView: View {
         !trimmedSearchQuery.isEmpty
     }
 
+    init(container: AppContainer = .live) {
+        self.container = container
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -89,7 +95,7 @@ struct LibraryView: View {
                 .padding(.bottom, 8)
             }
             .navigationDestination(item: $selectedBook) { book in
-                NovelDetailView(book: book)
+                NovelDetailView(book: book, container: container)
             }
             .toolbar(.hidden, for: .navigationBar)
         }

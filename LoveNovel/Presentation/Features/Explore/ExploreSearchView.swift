@@ -2,12 +2,21 @@ import SwiftUI
 
 struct ExploreSearchView: View {
     @ObservedObject var viewModel: ExploreViewModel
+    private let container: AppContainer
 
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isSearchFieldFocused: Bool
     @State private var query: String = ""
     @State private var selectedBook: Book?
     @State private var searchPhase: SearchPhase = .idle
+
+    init(
+        viewModel: ExploreViewModel,
+        container: AppContainer = .live
+    ) {
+        self.viewModel = viewModel
+        self.container = container
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -41,7 +50,7 @@ struct ExploreSearchView: View {
             isSearchFieldFocused = false
         }
         .navigationDestination(item: $selectedBook) { book in
-            NovelDetailView(book: book)
+            NovelDetailView(book: book, container: container)
         }
         .accessibilityIdentifier("screen.explore.search")
     }
@@ -357,6 +366,11 @@ private struct SearchBookRow: View {
 
 #Preview {
     NavigationStack {
-        ExploreSearchView(viewModel: ExploreViewModel())
+        let container = AppContainer.live
+        ExploreSearchView(
+            viewModel: container.makeExploreViewModel(),
+            container: container
+        )
     }
+    .environmentObject(LibraryCollectionStore(storageKey: "ExploreSearchView.preview.collection"))
 }

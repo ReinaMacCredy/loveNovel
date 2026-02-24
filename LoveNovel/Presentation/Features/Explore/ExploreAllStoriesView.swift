@@ -2,11 +2,20 @@ import SwiftUI
 
 struct ExploreAllStoriesView: View {
     @ObservedObject var viewModel: ExploreViewModel
+    private let container: AppContainer
 
     @Environment(\.dismiss) private var dismiss
     @State private var selectedBook: Book?
     @State private var phase: Phase = .idle
     @State private var listItems: [ExploreViewModel.AllStoriesListItem] = []
+
+    init(
+        viewModel: ExploreViewModel,
+        container: AppContainer = .live
+    ) {
+        self.viewModel = viewModel
+        self.container = container
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -24,7 +33,7 @@ struct ExploreAllStoriesView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(item: $selectedBook) { book in
-            NovelDetailView(book: book)
+            NovelDetailView(book: book, container: container)
         }
         .accessibilityIdentifier("screen.explore.all_stories")
     }
@@ -241,6 +250,11 @@ private enum Phase: Equatable {
 
 #Preview {
     NavigationStack {
-        ExploreAllStoriesView(viewModel: ExploreViewModel())
+        let container = AppContainer.live
+        ExploreAllStoriesView(
+            viewModel: container.makeExploreViewModel(),
+            container: container
+        )
     }
+    .environmentObject(LibraryCollectionStore(storageKey: "ExploreAllStoriesView.preview.collection"))
 }
