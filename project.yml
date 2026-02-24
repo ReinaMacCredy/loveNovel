@@ -10,15 +10,85 @@ settings:
     TARGETED_DEVICE_FAMILY: 1
     SUPPORTS_MACCATALYST: NO
     SWIFT_EMIT_LOC_STRINGS: NO
+targetTemplates:
+  iosModule:
+    type: framework
+    platform: iOS
+    deploymentTarget: "26.0"
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        SKIP_INSTALL: YES
 targets:
+  LoveNovelCore:
+    templates:
+      - iosModule
+    sources:
+      - path: LoveNovel/App
+        includes:
+          - AppLocalization.swift
+          - AppSettings.swift
+          - LeftEdgeSwipeUpBackModifier.swift
+      - path: LoveNovel/Theme
+      - path: LoveNovel/Core/Contracts
+      - path: LoveNovel/en.lproj
+        buildPhase: resources
+      - path: LoveNovel/vi.lproj
+        buildPhase: resources
+
+  LoveNovelDomain:
+    templates:
+      - iosModule
+    sources:
+      - path: LoveNovel/Domain
+    dependencies:
+      - target: LoveNovelCore
+
+  LoveNovelData:
+    templates:
+      - iosModule
+    sources:
+      - path: LoveNovel/Data
+    dependencies:
+      - target: LoveNovelDomain
+
+  LoveNovelPresentation:
+    templates:
+      - iosModule
+    sources:
+      - path: LoveNovel/Presentation
+      - path: LoveNovel/App
+        includes:
+          - AppChapterTitleFormatter.swift
+          - RootTabView.swift
+          - UITestBootstrap.swift
+      - path: LoveNovel/Core/DI
+        includes:
+          - AppContainer.swift
+          - FeatureFactories.swift
+    dependencies:
+      - target: LoveNovelCore
+      - target: LoveNovelDomain
+      - target: LoveNovelData
+
   LoveNovel:
     type: application
     platform: iOS
     deploymentTarget: "26.0"
     sources:
-      - path: LoveNovel
-        excludes:
-          - Info.plist
+      - path: LoveNovel/LoveNovelApp.swift
+      - path: LoveNovel/Assets.xcassets
+        buildPhase: resources
+      - path: LoveNovel/Resources
+        buildPhase: resources
+      - path: LoveNovel/en.lproj
+        buildPhase: resources
+      - path: LoveNovel/vi.lproj
+        buildPhase: resources
+      - path: LoveNovel/Preview Content/Preview Assets.xcassets
+        buildPhase: resources
+    dependencies:
+      - target: LoveNovelPresentation
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.reinamaccredy.lovenovel
@@ -40,7 +110,10 @@ targets:
     sources:
       - LoveNovelTests
     dependencies:
-      - target: LoveNovel
+      - target: LoveNovelCore
+      - target: LoveNovelDomain
+      - target: LoveNovelData
+      - target: LoveNovelPresentation
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.reinamaccredy.lovenovel.tests

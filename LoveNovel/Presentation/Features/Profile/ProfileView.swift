@@ -1,4 +1,6 @@
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 struct ProfileView: View {
     @State private var showLoginAlert: Bool = false

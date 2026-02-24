@@ -1,4 +1,6 @@
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 @MainActor
 final class NovelDetailViewModel: ObservableObject {

@@ -1,9 +1,11 @@
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 struct ExploreView: View {
     @EnvironmentObject private var libraryStore: LibraryCollectionStore
     @StateObject private var viewModel: ExploreViewModel
-    private let container: AppContainer
+    private let featureFactory: any AppFeatureFactory
     @State private var selectedBook: Book?
     @State private var isStoryModeSheetPresented: Bool = false
     @State private var isShowingSearch: Bool = false
@@ -13,11 +15,11 @@ struct ExploreView: View {
     private let bannerAutoScrollTimer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     init(
-        container: AppContainer = .live,
+        featureFactory: any AppFeatureFactory = PreviewFeatureFactory.live,
         viewModel: ExploreViewModel? = nil
     ) {
-        self.container = container
-        _viewModel = StateObject(wrappedValue: viewModel ?? container.makeExploreViewModel())
+        self.featureFactory = featureFactory
+        _viewModel = StateObject(wrappedValue: viewModel ?? featureFactory.makeExploreViewModel())
     }
 
     var body: some View {
@@ -44,13 +46,13 @@ struct ExploreView: View {
                 .presentationDragIndicator(.hidden)
             }
             .navigationDestination(item: $selectedBook) { book in
-                NovelDetailView(book: book, container: container)
+                NovelDetailView(book: book, featureFactory: featureFactory)
             }
             .navigationDestination(isPresented: $isShowingSearch) {
-                ExploreSearchView(viewModel: viewModel, container: container)
+                ExploreSearchView(viewModel: viewModel, featureFactory: featureFactory)
             }
             .navigationDestination(isPresented: $isShowingAllStories) {
-                ExploreAllStoriesView(viewModel: viewModel, container: container)
+                ExploreAllStoriesView(viewModel: viewModel, featureFactory: featureFactory)
             }
             .toolbar((isShowingSearch || isShowingAllStories) ? .hidden : .automatic, for: .tabBar)
             .animation(.smooth, value: isShowingSearch)
@@ -712,6 +714,6 @@ private struct StarRatingRow: View {
 }
 
 #Preview {
-    ExploreView(container: .live)
+    ExploreView(featureFactory: PreviewFeatureFactory.live)
         .environmentObject(LibraryCollectionStore(storageKey: "ExploreView.preview.collection"))
 }

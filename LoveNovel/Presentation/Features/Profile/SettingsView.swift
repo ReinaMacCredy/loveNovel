@@ -1,4 +1,6 @@
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss

@@ -1,13 +1,15 @@
 import SwiftUI
 import UIKit
+import LoveNovelCore
+import LoveNovelDomain
 
 struct LibraryView: View {
-    private let container: AppContainer
+    private let featureFactory: any AppFeatureFactory
 
     @EnvironmentObject private var libraryStore: LibraryCollectionStore
     @Environment(\.colorScheme) private var colorScheme
 
-    @StateObject private var viewModel = LibraryViewModel()
+    @StateObject private var viewModel: LibraryViewModel
     @State private var selectedBook: Book?
     @State private var showSortSettings: Bool = false
     @State private var menuEntry: LibraryShelfEntry?
@@ -75,8 +77,11 @@ struct LibraryView: View {
         !trimmedSearchQuery.isEmpty
     }
 
-    init(container: AppContainer = .live) {
-        self.container = container
+    init(
+        featureFactory: any AppFeatureFactory = PreviewFeatureFactory.live
+    ) {
+        self.featureFactory = featureFactory
+        _viewModel = StateObject(wrappedValue: featureFactory.makeLibraryViewModel())
     }
 
     var body: some View {
@@ -95,7 +100,7 @@ struct LibraryView: View {
                 .padding(.bottom, 8)
             }
             .navigationDestination(item: $selectedBook) { book in
-                NovelDetailView(book: book, container: container)
+                NovelDetailView(book: book, featureFactory: featureFactory)
             }
             .toolbar(.hidden, for: .navigationBar)
         }

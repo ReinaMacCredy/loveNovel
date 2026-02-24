@@ -4,8 +4,8 @@ This project follows a four-layer structure:
 
 - `Domain`: business entities, repository protocols, and use cases.
 - `Data`: concrete repository implementations and data-source concerns.
-- `Presentation`: SwiftUI views and `@MainActor` view models.
-- `Core`: composition and cross-cutting app wiring (dependency injection).
+- `Presentation`: SwiftUI views, feature application use cases, and `@MainActor` view models.
+- `Core`: composition and cross-cutting contracts (dependency injection, shared ports).
 
 ## Dependency Direction
 
@@ -18,10 +18,12 @@ Use this rule to avoid architecture drift:
 
 ## ViewModel Rule
 
-View models must depend on use-case protocols, not repositories directly.
+View models must depend on use-case protocols, not repositories directly, and screens should depend on feature-factory protocols instead of concrete containers.
 
 - Allowed: `ExploreViewModel(loadHomeFeedUseCase: ...)`
 - Not allowed: `ExploreViewModel(catalogRepository: ...)`
+- Allowed: `ExploreView(featureFactory: some ExploreFeatureFactory)`
+- Not allowed: `ExploreView(container: AppContainer)` as a concrete dependency
 
 ## Composition Root
 
@@ -29,7 +31,8 @@ View models must depend on use-case protocols, not repositories directly.
 
 - Construct repositories once.
 - Build use-case objects from repositories.
-- Provide factories for presentation-layer view models.
+- Provide feature factories (`ExploreFeatureFactory`, `NovelDetailFeatureFactory`, `LibraryFeatureFactory`, `ReaderFeatureFactory`).
+- Inject cross-layer ports (for example `ChapterTitleFormatting`) to keep Domain free of App/static globals.
 - Keep this as the single place where Data and Presentation are wired together.
 
 ## Testing Guidance

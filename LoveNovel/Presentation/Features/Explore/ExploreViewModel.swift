@@ -1,4 +1,6 @@
 import Foundation
+import LoveNovelCore
+import LoveNovelDomain
 
 @MainActor
 final class ExploreViewModel: ObservableObject {

@@ -1,4 +1,5 @@
 import SwiftUI
+import LoveNovelCore
 
 enum AppTab: Hashable {
     case library
@@ -6,24 +7,30 @@ enum AppTab: Hashable {
     case profile
 }
 
-struct RootTabView: View {
-    private let container: AppContainer
+public struct RootTabView: View {
+    @AppStorage(AppSettingsKey.preferredLanguage) private var preferredLanguageRawValue: String = AppLanguageOption.english.rawValue
+    @StateObject private var libraryStore = LibraryCollectionStore()
+    private let featureFactory: any AppFeatureFactory
 
     @State private var selectedTab: AppTab = .explore
 
-    init(container: AppContainer = .live) {
-        self.container = container
+    public init() {
+        self.featureFactory = AppContainer.live
     }
 
-    var body: some View {
+    init(featureFactory: any AppFeatureFactory) {
+        self.featureFactory = featureFactory
+    }
+
+    public var body: some View {
         TabView(selection: $selectedTab) {
-            LibraryView(container: container)
+            LibraryView(featureFactory: featureFactory)
                 .tag(AppTab.library)
                 .tabItem {
                     Label("Library", systemImage: "chart.bar.fill")
                 }
 
-            ExploreView(container: container)
+            ExploreView(featureFactory: featureFactory)
                 .tag(AppTab.explore)
                 .tabItem {
                     Label("Explore", systemImage: "safari")
@@ -41,10 +48,15 @@ struct RootTabView: View {
             AppTheme.Colors.screenBackground
                 .ignoresSafeArea()
         }
+        .environmentObject(libraryStore)
+        .environment(\.locale, selectedLanguage.locale)
+    }
+
+    private var selectedLanguage: AppLanguageOption {
+        AppLanguageOption(rawValue: preferredLanguageRawValue) ?? .english
     }
 }
 
 #Preview {
-    RootTabView(container: .live)
-        .environmentObject(LibraryCollectionStore(storageKey: "RootTabView.preview.collection"))
+    RootTabView(featureFactory: PreviewFeatureFactory.live)
 }

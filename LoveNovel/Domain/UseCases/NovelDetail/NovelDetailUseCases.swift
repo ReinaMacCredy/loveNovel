@@ -1,43 +1,50 @@
 import Foundation
+import LoveNovelCore
 
-enum NovelDetailChapterOrder: Sendable {
+public enum NovelDetailChapterOrder: Sendable {
     case oldest
     case newest
 }
 
-enum NovelDetailCommentSortOrder: Sendable {
+public enum NovelDetailCommentSortOrder: Sendable {
     case oldest
     case newest
     case liked
 }
 
-protocol LoadBookDetailUseCase: Sendable {
+public protocol LoadBookDetailUseCase: Sendable {
     func execute(for book: Book) async throws -> BookDetail
 }
 
-struct DefaultLoadBookDetailUseCase: LoadBookDetailUseCase {
+public struct DefaultLoadBookDetailUseCase: LoadBookDetailUseCase {
     private let detailProvider: any BookDetailProviding
 
-    init(detailProvider: any BookDetailProviding) {
+    public init(detailProvider: any BookDetailProviding) {
         self.detailProvider = detailProvider
     }
 
-    func execute(for book: Book) async throws -> BookDetail {
+    public func execute(for book: Book) async throws -> BookDetail {
         try await detailProvider.fetchDetail(for: book)
     }
 }
 
-protocol BuildDisplayedChaptersUseCase: Sendable {
+public protocol BuildDisplayedChaptersUseCase: Sendable {
     func execute(for detail: BookDetail, order: NovelDetailChapterOrder) -> [BookChapter]
 }
 
-struct DefaultBuildDisplayedChaptersUseCase: BuildDisplayedChaptersUseCase {
-    func execute(for detail: BookDetail, order: NovelDetailChapterOrder) -> [BookChapter] {
+public struct DefaultBuildDisplayedChaptersUseCase: BuildDisplayedChaptersUseCase {
+    private let chapterTitleFormatter: any ChapterTitleFormatting
+
+    public init(chapterTitleFormatter: any ChapterTitleFormatting) {
+        self.chapterTitleFormatter = chapterTitleFormatter
+    }
+
+    public func execute(for detail: BookDetail, order: NovelDetailChapterOrder) -> [BookChapter] {
         let chapters = (1...detail.chapterCount).map { index in
             BookChapter(
                 id: "\(detail.bookId)-chapter-\(index)",
                 index: index,
-                title: AppLocalization.format("novel_detail.chapter.title", index),
+                title: chapterTitleFormatter.chapterTitle(for: index),
                 timestampText: detail.chapterTimestamp
             )
         }
@@ -51,12 +58,14 @@ struct DefaultBuildDisplayedChaptersUseCase: BuildDisplayedChaptersUseCase {
     }
 }
 
-protocol SortBookCommentsUseCase: Sendable {
+public protocol SortBookCommentsUseCase: Sendable {
     func execute(comments: [BookComment], order: NovelDetailCommentSortOrder) -> [BookComment]
 }
 
-struct DefaultSortBookCommentsUseCase: SortBookCommentsUseCase {
-    func execute(comments: [BookComment], order: NovelDetailCommentSortOrder) -> [BookComment] {
+public struct DefaultSortBookCommentsUseCase: SortBookCommentsUseCase {
+    public init() {}
+
+    public func execute(comments: [BookComment], order: NovelDetailCommentSortOrder) -> [BookComment] {
         switch order {
         case .oldest:
             return comments.sorted { lhs, rhs in

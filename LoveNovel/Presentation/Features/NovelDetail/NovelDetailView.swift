@@ -1,25 +1,30 @@
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 struct NovelDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var libraryStore: LibraryCollectionStore
     @StateObject private var viewModel: NovelDetailViewModel
-    private let container: AppContainer
+    private let featureFactory: any (NovelDetailFeatureFactory & ReaderFeatureFactory)
     @State private var readerDestination: ReaderDestination?
     @State private var libraryToggleAnimationValue: Int = 0
     @State private var showRemoveFromLibraryConfirmation: Bool = false
     private let scrollSpaceName = "novel_detail.scroll"
 
-    init(book: Book, container: AppContainer = .live) {
-        self.container = container
-        _viewModel = StateObject(wrappedValue: container.makeNovelDetailViewModel(book: book))
+    init(
+        book: Book,
+        featureFactory: any (NovelDetailFeatureFactory & ReaderFeatureFactory) = PreviewFeatureFactory.live
+    ) {
+        self.featureFactory = featureFactory
+        _viewModel = StateObject(wrappedValue: featureFactory.makeNovelDetailViewModel(book: book))
     }
 
     init(
         viewModel: @autoclosure @escaping () -> NovelDetailViewModel,
-        container: AppContainer = .live
+        featureFactory: any (NovelDetailFeatureFactory & ReaderFeatureFactory) = PreviewFeatureFactory.live
     ) {
-        self.container = container
+        self.featureFactory = featureFactory
         _viewModel = StateObject(wrappedValue: viewModel())
     }
 
@@ -83,6 +88,7 @@ struct NovelDetailView: View {
                     initialChapter: destination.chapter,
                     chapterCount: destination.chapterCount,
                     chapterList: destination.chapters,
+                    featureFactory: featureFactory,
                     onProgressChange: { chapterIndex, totalChapters in
                         libraryStore.updateReadingProgress(
                             for: destination.book,

@@ -1,8 +1,10 @@
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 struct ExploreSearchView: View {
     @ObservedObject var viewModel: ExploreViewModel
-    private let container: AppContainer
+    private let featureFactory: any AppFeatureFactory
 
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isSearchFieldFocused: Bool
@@ -12,10 +14,10 @@ struct ExploreSearchView: View {
 
     init(
         viewModel: ExploreViewModel,
-        container: AppContainer = .live
+        featureFactory: any AppFeatureFactory = PreviewFeatureFactory.live
     ) {
         self.viewModel = viewModel
-        self.container = container
+        self.featureFactory = featureFactory
     }
 
     var body: some View {
@@ -50,7 +52,7 @@ struct ExploreSearchView: View {
             isSearchFieldFocused = false
         }
         .navigationDestination(item: $selectedBook) { book in
-            NovelDetailView(book: book, container: container)
+            NovelDetailView(book: book, featureFactory: featureFactory)
         }
         .accessibilityIdentifier("screen.explore.search")
     }
@@ -366,10 +368,10 @@ private struct SearchBookRow: View {
 
 #Preview {
     NavigationStack {
-        let container = AppContainer.live
+        let featureFactory = PreviewFeatureFactory.live
         ExploreSearchView(
-            viewModel: container.makeExploreViewModel(),
-            container: container
+            viewModel: featureFactory.makeExploreViewModel(),
+            featureFactory: featureFactory
         )
     }
     .environmentObject(LibraryCollectionStore(storageKey: "ExploreSearchView.preview.collection"))

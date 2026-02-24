@@ -1,5 +1,7 @@
 import Foundation
 import SwiftUI
+import LoveNovelCore
+import LoveNovelDomain
 
 @MainActor
 final class LibraryViewModel: ObservableObject {
@@ -16,7 +18,21 @@ final class LibraryViewModel: ObservableObject {
         }
     }
 
+    private let resolveDisplayedEntriesUseCase: any ResolveDisplayedLibraryEntriesUseCase
+    private let filterEntriesUseCase: any FilterLibraryEntriesUseCase
+    private let formatProgressLabelUseCase: any FormatLibraryProgressLabelUseCase
+
     @Published var selectedSegment: Segment = .history
+
+    init(
+        resolveDisplayedEntriesUseCase: any ResolveDisplayedLibraryEntriesUseCase = DefaultResolveDisplayedLibraryEntriesUseCase(),
+        filterEntriesUseCase: any FilterLibraryEntriesUseCase = DefaultFilterLibraryEntriesUseCase(),
+        formatProgressLabelUseCase: any FormatLibraryProgressLabelUseCase = DefaultFormatLibraryProgressLabelUseCase()
+    ) {
+        self.resolveDisplayedEntriesUseCase = resolveDisplayedEntriesUseCase
+        self.filterEntriesUseCase = filterEntriesUseCase
+        self.formatProgressLabelUseCase = formatProgressLabelUseCase
+    }
 
     var emptyLineOne: String {
         AppLocalization.string("library.empty.line.one")
@@ -32,77 +48,23 @@ final class LibraryViewModel: ObservableObject {
         historySort: LibraryHistorySortOption,
         bookmarkSort: LibraryBookmarkSortOption
     ) -> [LibraryShelfEntry] {
-        switch selectedSegment {
-        case .history:
-            return sortedHistoryEntries(historyEntries, option: historySort)
-        case .bookmark:
-            return sortedBookmarkEntries(bookmarkEntries, option: bookmarkSort)
-        }
+        resolveDisplayedEntriesUseCase.execute(
+            selectedSegment: selectedSegment,
+            historyEntries: historyEntries,
+            bookmarkEntries: bookmarkEntries,
+            historySort: historySort,
+            bookmarkSort: bookmarkSort
+        )
     }
 
     func progressLabel(for entry: LibraryShelfEntry) -> String {
-        AppLocalization.format("library.progress.read", entry.lastReadChapter, entry.totalChapters)
+        formatProgressLabelUseCase.execute(entry: entry)
     }
 
     func filteredEntries(
         _ entries: [LibraryShelfEntry],
         matching query: String
     ) -> [LibraryShelfEntry] {
-        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedQuery.isEmpty else {
-            return entries
-        }
-
-        return entries.filter { entry in
-            entry.book.title.localizedStandardContains(trimmedQuery)
-            || entry.book.author.localizedStandardContains(trimmedQuery)
-            || entry.book.summary.localizedStandardContains(trimmedQuery)
-        }
-    }
-
-    private func sortedHistoryEntries(
-        _ entries: [LibraryShelfEntry],
-        option: LibraryHistorySortOption
-    ) -> [LibraryShelfEntry] {
-        switch option {
-        case .newestChapter:
-            return entries.sorted { lhs, rhs in
-                if lhs.totalChapters == rhs.totalChapters {
-                    return lhs.lastReadAt > rhs.lastReadAt
-                }
-                return lhs.totalChapters > rhs.totalChapters
-            }
-        case .lastRead:
-            return entries.sorted { lhs, rhs in
-                lhs.lastReadAt > rhs.lastReadAt
-            }
-        case .title:
-            return entries.sorted { lhs, rhs in
-                lhs.book.title.localizedCaseInsensitiveCompare(rhs.book.title) == .orderedAscending
-            }
-        }
-    }
-
-    private func sortedBookmarkEntries(
-        _ entries: [LibraryShelfEntry],
-        option: LibraryBookmarkSortOption
-    ) -> [LibraryShelfEntry] {
-        switch option {
-        case .newestChapter:
-            return entries.sorted { lhs, rhs in
-                if lhs.totalChapters == rhs.totalChapters {
-                    return lhs.savedAt > rhs.savedAt
-                }
-                return lhs.totalChapters > rhs.totalChapters
-            }
-        case .newestSaved:
-            return entries.sorted { lhs, rhs in
-                lhs.savedAt > rhs.savedAt
-            }
-        case .title:
-            return entries.sorted { lhs, rhs in
-                lhs.book.title.localizedCaseInsensitiveCompare(rhs.book.title) == .orderedAscending
-            }
-        }
+        filterEntriesUseCase.execute(entries, query: query)
     }
 }

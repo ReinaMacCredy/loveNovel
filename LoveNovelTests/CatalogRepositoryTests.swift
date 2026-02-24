@@ -1,6 +1,7 @@
 import Foundation
 import Testing
-@testable import LoveNovel
+@testable import LoveNovelData
+@testable import LoveNovelDomain
 
 @Suite("Catalog repository tests", .tags(.repository, .fast))
 struct CatalogRepositoryTests {

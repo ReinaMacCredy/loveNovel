@@ -1,22 +1,22 @@
 import SwiftUI
 
-enum AppSettingsKey {
-    static let preferredLanguage = "settings.preferredLanguage"
-    static let readerDarkMode = "settings.reader.darkMode"
-    static let readerLightTheme = "settings.reader.lightTheme"
-    static let readerDarkTheme = "settings.reader.darkTheme"
-    static let libraryHistorySort = "settings.library.historySort"
-    static let libraryBookmarkSort = "settings.library.bookmarkSort"
-    static let libraryCollectionState = "settings.library.collectionState"
+public enum AppSettingsKey {
+    public static let preferredLanguage = "settings.preferredLanguage"
+    public static let readerDarkMode = "settings.reader.darkMode"
+    public static let readerLightTheme = "settings.reader.lightTheme"
+    public static let readerDarkTheme = "settings.reader.darkTheme"
+    public static let libraryHistorySort = "settings.library.historySort"
+    public static let libraryBookmarkSort = "settings.library.bookmarkSort"
+    public static let libraryCollectionState = "settings.library.collectionState"
 }
 
-enum AppLanguageOption: String, CaseIterable, Identifiable {
+public enum AppLanguageOption: String, CaseIterable, Identifiable {
     case english
     case vietnamese
 
-    var id: Self { self }
+    public var id: Self { self }
 
-    var titleKey: LocalizedStringKey {
+    public var titleKey: LocalizedStringKey {
         switch self {
         case .english:
             return "English"
@@ -25,7 +25,7 @@ enum AppLanguageOption: String, CaseIterable, Identifiable {
         }
     }
 
-    var localeIdentifier: String {
+    public var localeIdentifier: String {
         switch self {
         case .english:
             return "en"
@@ -34,11 +34,11 @@ enum AppLanguageOption: String, CaseIterable, Identifiable {
         }
     }
 
-    var locale: Locale {
+    public var locale: Locale {
         Locale(identifier: localeIdentifier)
     }
 
-    static var current: AppLanguageOption {
+    public static var current: AppLanguageOption {
         guard
             let storedValue = UserDefaults.standard.string(forKey: AppSettingsKey.preferredLanguage),
             let language = AppLanguageOption(rawValue: storedValue)
@@ -50,14 +50,14 @@ enum AppLanguageOption: String, CaseIterable, Identifiable {
     }
 }
 
-enum ReaderDarkModeOption: String, CaseIterable, Identifiable {
+public enum ReaderDarkModeOption: String, CaseIterable, Identifiable {
     case auto
     case off
     case on
 
-    var id: Self { self }
+    public var id: Self { self }
 
-    var titleKey: LocalizedStringKey {
+    public var titleKey: LocalizedStringKey {
         switch self {
         case .auto:
             return "Auto"
@@ -68,7 +68,7 @@ enum ReaderDarkModeOption: String, CaseIterable, Identifiable {
         }
     }
 
-    func usesDarkTheme(systemScheme: ColorScheme) -> Bool {
+    public func usesDarkTheme(systemScheme: ColorScheme) -> Bool {
         switch self {
         case .auto:
             return systemScheme == .dark
@@ -80,18 +80,18 @@ enum ReaderDarkModeOption: String, CaseIterable, Identifiable {
     }
 }
 
-enum LibraryHistorySortOption: String, CaseIterable, Identifiable {
+public enum LibraryHistorySortOption: String, CaseIterable, Identifiable {
     case newestChapter = "Chương mới"
     case lastRead = "Mới đọc"
     case title = "Tên truyện"
 
-    var id: Self { self }
+    public var id: Self { self }
 
-    var titleKey: LocalizedStringKey {
+    public var titleKey: LocalizedStringKey {
         LocalizedStringKey(rawValue)
     }
 
-    var accessibilityID: String {
+    public var accessibilityID: String {
         switch self {
         case .newestChapter:
             return "newest_chapter"
@@ -103,18 +103,18 @@ enum LibraryHistorySortOption: String, CaseIterable, Identifiable {
     }
 }
 
-enum LibraryBookmarkSortOption: String, CaseIterable, Identifiable {
+public enum LibraryBookmarkSortOption: String, CaseIterable, Identifiable {
     case newestChapter = "Chương mới"
     case newestSaved = "Mới lưu"
     case title = "Tên truyện"
 
-    var id: Self { self }
+    public var id: Self { self }
 
-    var titleKey: LocalizedStringKey {
+    public var titleKey: LocalizedStringKey {
         LocalizedStringKey(rawValue)
     }
 
-    var accessibilityID: String {
+    public var accessibilityID: String {
         switch self {
         case .newestChapter:
             return "newest_chapter"

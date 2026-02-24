@@ -1,5 +1,13 @@
 import Testing
-@testable import LoveNovel
+@testable import LoveNovelCore
+@testable import LoveNovelDomain
+@testable import LoveNovelPresentation
+
+private struct StubReaderChapterTitleFormatter: ChapterTitleFormatting {
+    func chapterTitle(for index: Int) -> String {
+        "Chapter \(index)"
+    }
+}
 
 @MainActor
 @Suite("Reader view model tests", .tags(.viewModel, .fast))
@@ -129,7 +137,10 @@ struct ReaderViewModelTests {
             ),
             chapterCount: chapterCount,
             chapters: chapters,
-            shouldShowTutorial: shouldShowTutorial
+            shouldShowTutorial: shouldShowTutorial,
+            buildChapterUseCase: DefaultBuildReaderChapterUseCase(
+                chapterTitleFormatter: StubReaderChapterTitleFormatter()
+            )
         )
     }
 }
