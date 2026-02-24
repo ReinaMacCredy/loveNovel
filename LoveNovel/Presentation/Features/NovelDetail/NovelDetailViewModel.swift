@@ -3,7 +3,7 @@ import LoveNovelCore
 import LoveNovelDomain
 
 @MainActor
-final class NovelDetailViewModel: ObservableObject {
+public final class NovelDetailViewModel: ObservableObject {
     enum Phase: Equatable {
         case idle
         case loading
@@ -86,6 +86,21 @@ final class NovelDetailViewModel: ObservableObject {
         self.loadBookDetailUseCase = loadBookDetailUseCase
         self.buildDisplayedChaptersUseCase = buildDisplayedChaptersUseCase
         self.sortBookCommentsUseCase = sortBookCommentsUseCase
+    }
+
+    public static func live(
+        book: Book,
+        bookDetailRepository: any BookDetailProviding,
+        chapterTitleFormatter: any ChapterTitleFormatting
+    ) -> NovelDetailViewModel {
+        NovelDetailViewModel(
+            book: book,
+            loadBookDetailUseCase: DefaultLoadBookDetailUseCase(detailProvider: bookDetailRepository),
+            buildDisplayedChaptersUseCase: DefaultBuildDisplayedChaptersUseCase(
+                chapterTitleFormatter: chapterTitleFormatter
+            ),
+            sortBookCommentsUseCase: DefaultSortBookCommentsUseCase()
+        )
     }
 
     func load(force: Bool = false) async {

@@ -2,6 +2,7 @@ import Foundation
 import LoveNovelCore
 import LoveNovelData
 import LoveNovelDomain
+import LoveNovelPresentation
 
 struct AppContainer: Sendable, AppFeatureFactory {
     static let live = AppContainer()
@@ -22,33 +23,24 @@ struct AppContainer: Sendable, AppFeatureFactory {
 
     @MainActor
     func makeExploreViewModel() -> ExploreViewModel {
-        ExploreViewModel(
-            loadHomeFeedUseCase: DefaultLoadHomeFeedUseCase(catalog: catalogRepository),
-            preloadBookDetailsUseCase: DefaultPreloadBookDetailsUseCase(bookDetails: bookDetailRepository),
-            searchBooksUseCase: DefaultSearchBooksUseCase(),
-            buildAllStoriesListUseCase: DefaultBuildAllStoriesListUseCase(bookDetails: bookDetailRepository)
+        ExploreViewModel.live(
+            catalogRepository: catalogRepository,
+            bookDetailRepository: bookDetailRepository
         )
     }
 
     @MainActor
     func makeNovelDetailViewModel(book: Book) -> NovelDetailViewModel {
-        NovelDetailViewModel(
+        NovelDetailViewModel.live(
             book: book,
-            loadBookDetailUseCase: DefaultLoadBookDetailUseCase(detailProvider: bookDetailRepository),
-            buildDisplayedChaptersUseCase: DefaultBuildDisplayedChaptersUseCase(
-                chapterTitleFormatter: chapterTitleFormatter
-            ),
-            sortBookCommentsUseCase: DefaultSortBookCommentsUseCase()
+            bookDetailRepository: bookDetailRepository,
+            chapterTitleFormatter: chapterTitleFormatter
         )
     }
 
     @MainActor
     func makeLibraryViewModel() -> LibraryViewModel {
-        LibraryViewModel(
-            resolveDisplayedEntriesUseCase: DefaultResolveDisplayedLibraryEntriesUseCase(),
-            filterEntriesUseCase: DefaultFilterLibraryEntriesUseCase(),
-            formatProgressLabelUseCase: DefaultFormatLibraryProgressLabelUseCase()
-        )
+        LibraryViewModel.live()
     }
 
     @MainActor
@@ -59,15 +51,13 @@ struct AppContainer: Sendable, AppFeatureFactory {
         chapters: [BookChapter],
         shouldShowTutorial: Bool
     ) -> ReaderViewModel {
-        ReaderViewModel(
+        ReaderViewModel.live(
             book: book,
             initialChapter: initialChapter,
             chapterCount: chapterCount,
             chapters: chapters,
             shouldShowTutorial: shouldShowTutorial,
-            buildChapterUseCase: DefaultBuildReaderChapterUseCase(
-                chapterTitleFormatter: chapterTitleFormatter
-            )
+            chapterTitleFormatter: chapterTitleFormatter
         )
     }
 }

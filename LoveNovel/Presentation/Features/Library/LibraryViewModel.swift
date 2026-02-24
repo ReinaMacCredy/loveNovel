@@ -4,7 +4,7 @@ import LoveNovelCore
 import LoveNovelDomain
 
 @MainActor
-final class LibraryViewModel: ObservableObject {
+public final class LibraryViewModel: ObservableObject {
     enum Segment: String, CaseIterable, Identifiable {
         case history = "History"
         case bookmark = "Bookmark"
@@ -32,6 +32,14 @@ final class LibraryViewModel: ObservableObject {
         self.resolveDisplayedEntriesUseCase = resolveDisplayedEntriesUseCase
         self.filterEntriesUseCase = filterEntriesUseCase
         self.formatProgressLabelUseCase = formatProgressLabelUseCase
+    }
+
+    public static func live() -> LibraryViewModel {
+        LibraryViewModel(
+            resolveDisplayedEntriesUseCase: DefaultResolveDisplayedLibraryEntriesUseCase(),
+            filterEntriesUseCase: DefaultFilterLibraryEntriesUseCase(),
+            formatProgressLabelUseCase: DefaultFormatLibraryProgressLabelUseCase()
+        )
     }
 
     var emptyLineOne: String {

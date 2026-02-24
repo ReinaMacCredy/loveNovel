@@ -59,17 +59,14 @@ targets:
       - path: LoveNovel/Presentation
       - path: LoveNovel/App
         includes:
-          - AppChapterTitleFormatter.swift
           - RootTabView.swift
           - UITestBootstrap.swift
       - path: LoveNovel/Core/DI
         includes:
-          - AppContainer.swift
           - FeatureFactories.swift
     dependencies:
       - target: LoveNovelCore
       - target: LoveNovelDomain
-      - target: LoveNovelData
 
   LoveNovel:
     type: application
@@ -77,6 +74,12 @@ targets:
     deploymentTarget: "26.0"
     sources:
       - path: LoveNovel/LoveNovelApp.swift
+      - path: LoveNovel/App
+        includes:
+          - AppChapterTitleFormatter.swift
+      - path: LoveNovel/Core/DI
+        includes:
+          - AppContainer.swift
       - path: LoveNovel/Assets.xcassets
         buildPhase: resources
       - path: LoveNovel/Resources
@@ -88,6 +91,9 @@ targets:
       - path: LoveNovel/Preview Content/Preview Assets.xcassets
         buildPhase: resources
     dependencies:
+      - target: LoveNovelCore
+      - target: LoveNovelDomain
+      - target: LoveNovelData
       - target: LoveNovelPresentation
     settings:
       base:

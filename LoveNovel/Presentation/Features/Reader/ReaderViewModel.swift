@@ -4,7 +4,7 @@ import LoveNovelCore
 import LoveNovelDomain
 
 @MainActor
-final class ReaderViewModel: ObservableObject {
+public final class ReaderViewModel: ObservableObject {
     enum PanelTab: String, CaseIterable, Identifiable {
         case info = "Thông tin"
         case settings = "Cài đặt"
@@ -89,6 +89,26 @@ final class ReaderViewModel: ObservableObject {
         } else {
             self.providedChaptersByIndex = validProvidedChapters
         }
+    }
+
+    public static func live(
+        book: Book,
+        initialChapter: BookChapter,
+        chapterCount: Int,
+        chapters: [BookChapter],
+        shouldShowTutorial: Bool,
+        chapterTitleFormatter: any ChapterTitleFormatting
+    ) -> ReaderViewModel {
+        ReaderViewModel(
+            book: book,
+            initialChapter: initialChapter,
+            chapterCount: chapterCount,
+            chapters: chapters,
+            shouldShowTutorial: shouldShowTutorial,
+            buildChapterUseCase: DefaultBuildReaderChapterUseCase(
+                chapterTitleFormatter: chapterTitleFormatter
+            )
+        )
     }
 
     var chapterTrailTitle: String {

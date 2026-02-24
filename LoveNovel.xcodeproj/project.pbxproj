@@ -7,16 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0498159395E7C8728AF3FDAE /* LoveNovelDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 60C158FFC7660E505913ABCF /* LoveNovelDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		04B1A4ECD1B5C428547A315D /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 401EA58F021AA7422407FC9D /* en.lproj */; };
 		08294BFC65188323A8B6DC11 /* CatalogProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A57178DB75226F2BD4C7B3C /* CatalogProviding.swift */; };
 		0F77AEFDFD0F023C010C54CF /* NovelDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A190A542BCA6273C62AAD8 /* NovelDetailView.swift */; };
 		0FBC13B1BB2E408B2D403AD1 /* LoveNovelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02BD211964C995FF78E0BC9 /* LoveNovelApp.swift */; };
 		10249258BAB99F0BBA4275E5 /* BookCoverStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57385241D00854F3EFA9B2B8 /* BookCoverStrip.swift */; };
 		11812A684A6FFE57FF165D57 /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33EB8424721C73890429617 /* ExploreViewModel.swift */; };
+		1728FCAE6C44D91616C78E00 /* AppChapterTitleFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1990E6935831B94986C7C25 /* AppChapterTitleFormatter.swift */; };
 		178B6919E783E3EFF203DBD3 /* FeaturedBookCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4676CADEC3285DC9BEBA6448 /* FeaturedBookCard.swift */; };
 		1F0B62C20B35416A763B5F88 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A09BD48C496A817D4F53A76 /* ExploreView.swift */; };
 		2133EE8E38A892184153C2A5 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5326316643814DB347B5BD /* AppSettings.swift */; };
-		25BB8E922229E5C01E0FD58E /* AppChapterTitleFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1990E6935831B94986C7C25 /* AppChapterTitleFormatter.swift */; };
 		2826877B431287F557B7632D /* PreviewFeatureFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDA6EF37281B1A2BC5CF24D /* PreviewFeatureFactory.swift */; };
 		2BB8ADF4A467943B3B3E4CBC /* NovelDetailUseCasesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A4C8E5DCFD1F2628D7F6AA /* NovelDetailUseCasesTests.swift */; };
 		383A996A2F60BD8C72BC0169 /* FilterButtonLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F0849031E7B3D7FD6738C1 /* FilterButtonLabel.swift */; };
@@ -25,10 +26,12 @@
 		3F26B6E5F78714CA343A9209 /* CatalogRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B91929AA31D64F670D52BCA /* CatalogRepository.swift */; };
 		42B903E2DDB861079CBC2731 /* BookDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83922F2BC0FB1379971A73E3 /* BookDetail.swift */; };
 		43DA821D92059FB7922B6FB8 /* NovelCoverCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010BCDA1718B19410817F5B /* NovelCoverCard.swift */; };
+		46867BA1D700AEE5E6F64F71 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351776053DC8FB5235717A5B /* AppContainer.swift */; };
 		46FFA2F112018AA2C35D50BD /* vi.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AE949F428C387E93B53CE /* vi.lproj */; };
 		495A33D917F524BC54152A58 /* LoveNovelPresentation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 27DF387EAA7ECD1A2C2348D6 /* LoveNovelPresentation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4F9ACE1C63DC1CA73CA393E1 /* BookDetailProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E164EC115DF589D3AACE86F /* BookDetailProviding.swift */; };
 		52003C3977B9DDFEF8621AFE /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5E1CD1C701D4851D3B6EE3 /* Book.swift */; };
+		53B36D82F3B3A8D4DE2F818A /* LoveNovelCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B4DF8B58A5D25F5037C5386 /* LoveNovelCore.framework */; };
 		53B5742DD88B90E06ACB1DED /* NovelDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A58FA31367313D84EEA59B6 /* NovelDetailViewModel.swift */; };
 		5532A7D5758BC6289832DC69 /* LoveNovelDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60C158FFC7660E505913ABCF /* LoveNovelDomain.framework */; };
 		5A9F5884EA684BB550E033B3 /* LibrarySortSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0154614EED7C681D88FF060D /* LibrarySortSettingsView.swift */; };
@@ -39,10 +42,10 @@
 		6C5C3E371FF5FCEC49BD6590 /* LibraryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788DE1B370D3D76CAFA1BFE7 /* LibraryViewModelTests.swift */; };
 		6C877D91FE0905EEC7591CD3 /* BookDetailRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA80E657254C16DBE672E48 /* BookDetailRepository.swift */; };
 		6E8015AE6E7E7359F8D81725 /* AsyncGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9E222CA34B9BC617DB670B /* AsyncGate.swift */; };
-		774A3B928BFC5794C41AB4AB /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351776053DC8FB5235717A5B /* AppContainer.swift */; };
 		7F48492B4EFABB151787B048 /* CatalogRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 859F9A0E1DAD16CB544E92B6 /* CatalogRepositoryTests.swift */; };
 		7F5FD394346BA590F0FDEEB0 /* LibraryCollectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F532261185BDC75ECC28E2B2 /* LibraryCollectionStore.swift */; };
 		82D72C4670D1E1ABE4E46579 /* ChapterTitleFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD9E461B76BC0EB7BF88D2A /* ChapterTitleFormatting.swift */; };
+		8540A145A4395539FADC5189 /* LoveNovelData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 68E0CDC34BA899497D269C65 /* LoveNovelData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		892267D582C07D5BF9250933 /* ExploreUseCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0BEFD812EB7FFA61C2E0D6 /* ExploreUseCases.swift */; };
 		8CCE5D5261D4E3C3AC1CF1EC /* LoveNovelDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60C158FFC7660E505913ABCF /* LoveNovelDomain.framework */; };
 		8CF6B552484EA082B2E70041 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B49243CC21E6663338C299 /* RootTabView.swift */; };
@@ -50,10 +53,10 @@
 		92B6E1C720CA17C402AFED41 /* DarkModeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC01C69D01D5B9FA009DC7 /* DarkModeSettingsView.swift */; };
 		9587539BFF869BA65C70EA18 /* LeftEdgeSwipeUpBackModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3484631880E554A538398CDB /* LeftEdgeSwipeUpBackModifier.swift */; };
 		95EA700E445D1B9C6D206E8F /* NovelDetailUseCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDBD587F0148D884D714FBC /* NovelDetailUseCases.swift */; };
-		96CAE28196750F2FCDBB48A8 /* LoveNovelData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E0CDC34BA899497D269C65 /* LoveNovelData.framework */; };
 		9AAE25C88C7D8DAAA6015316 /* mock_book_details.json in Resources */ = {isa = PBXBuildFile; fileRef = 44AC963FDFD26193CE9E11A7 /* mock_book_details.json */; };
 		9FC6C13CB088FBA14A9DB09A /* ReaderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C268016FC006002D0D1DAFB /* ReaderViewModelTests.swift */; };
 		A03CCB68B53CBCD9C589314C /* AppLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F9334A91EE9850E441C71E /* AppLocalization.swift */; };
+		A0C25B1B69D293772BC7F2FA /* LoveNovelDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60C158FFC7660E505913ABCF /* LoveNovelDomain.framework */; };
 		A2D37E16F2A4ACF09E651AA1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D2F9A7FE9FAF13935C4F10B3 /* Preview Assets.xcassets */; };
 		A5308F3228D9FADD1519E60A /* BookDetailRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514382D7C531748B4CC40661 /* BookDetailRepositoryTests.swift */; };
 		A73FA343E3942E60A2EBAF4A /* LoveNovelDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60C158FFC7660E505913ABCF /* LoveNovelDomain.framework */; };
@@ -78,6 +81,8 @@
 		D2F7173327318DF7E37A68E4 /* LoveNovelCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B4DF8B58A5D25F5037C5386 /* LoveNovelCore.framework */; };
 		D978DE32E45BE8D21A4FBA8F /* LoveNovelPresentation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 27DF387EAA7ECD1A2C2348D6 /* LoveNovelPresentation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA397D4F8D5665C738D1C2AC /* LoveNovelData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E0CDC34BA899497D269C65 /* LoveNovelData.framework */; };
+		DADDC30E23EBDE45302BD4FD /* LoveNovelCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6B4DF8B58A5D25F5037C5386 /* LoveNovelCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DB0D7C27808AE18BBE037DD5 /* LoveNovelData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68E0CDC34BA899497D269C65 /* LoveNovelData.framework */; };
 		DDFCFBF934993AD2C9820EA5 /* ExploreAllStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613A2793BCFB0DA8B22F6DC4 /* ExploreAllStoriesView.swift */; };
 		E00EB3FB22C3E88FA9BED3B2 /* ExploreViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2118C897BCDCB2D00C78782 /* ExploreViewModelTests.swift */; };
 		E0773FE15ED511BE91A26187 /* LibraryCollectionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2F755544DDCF63E9AD41B6 /* LibraryCollectionStoreTests.swift */; };
@@ -108,6 +113,13 @@
 			remoteGlobalIDString = 014627473219C0797DC532B1;
 			remoteInfo = LoveNovelData;
 		};
+		0A576C63CBF80AAB961D32D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6080AA3623CA21A93C9FBFF4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 014627473219C0797DC532B1;
+			remoteInfo = LoveNovelData;
+		};
 		180BBD3D67C7CC5125B8D31B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6080AA3623CA21A93C9FBFF4 /* Project object */;
@@ -115,12 +127,12 @@
 			remoteGlobalIDString = 0E5DC55C901AA1D8F939DF9A;
 			remoteInfo = LoveNovel;
 		};
-		31F1763C3E594A6CB216F77B /* PBXContainerItemProxy */ = {
+		2434A207CD32F42AE1B311B2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6080AA3623CA21A93C9FBFF4 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 014627473219C0797DC532B1;
-			remoteInfo = LoveNovelData;
+			remoteGlobalIDString = 62F641F8D2B1A252C82F8EA9;
+			remoteInfo = LoveNovelDomain;
 		};
 		4A95A973DA194984FF8EF79A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -157,6 +169,13 @@
 			remoteGlobalIDString = 0BAA1A4EFAB74DE370EFE89C;
 			remoteInfo = LoveNovelCore;
 		};
+		94664AD59B0575EAB113108D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6080AA3623CA21A93C9FBFF4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0BAA1A4EFAB74DE370EFE89C;
+			remoteInfo = LoveNovelCore;
+		};
 		A3A60FEF6BF5CAE153B7B4DE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6080AA3623CA21A93C9FBFF4 /* Project object */;
@@ -180,6 +199,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				DADDC30E23EBDE45302BD4FD /* LoveNovelCore.framework in Embed Frameworks */,
+				0498159395E7C8728AF3FDAE /* LoveNovelDomain.framework in Embed Frameworks */,
+				8540A145A4395539FADC5189 /* LoveNovelData.framework in Embed Frameworks */,
 				495A33D917F524BC54152A58 /* LoveNovelPresentation.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -296,6 +318,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53B36D82F3B3A8D4DE2F818A /* LoveNovelCore.framework in Frameworks */,
+				A0C25B1B69D293772BC7F2FA /* LoveNovelDomain.framework in Frameworks */,
+				DB0D7C27808AE18BBE037DD5 /* LoveNovelData.framework in Frameworks */,
 				AEE49EC2FBECB8EEA6FF563F /* LoveNovelPresentation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -314,7 +339,6 @@
 			files = (
 				D2F7173327318DF7E37A68E4 /* LoveNovelCore.framework in Frameworks */,
 				A73FA343E3942E60A2EBAF4A /* LoveNovelDomain.framework in Frameworks */,
-				96CAE28196750F2FCDBB48A8 /* LoveNovelData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -720,6 +744,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				4B45B2CCE79C0F979A34BA27 /* PBXTargetDependency */,
+				7FD9E41A3CE323571BB1005E /* PBXTargetDependency */,
+				7F68EB0EC47E26EC50C25A8C /* PBXTargetDependency */,
 				CAB45BFFBFE66ED5CFDC2B42 /* PBXTargetDependency */,
 			);
 			name = LoveNovel;
@@ -801,7 +828,6 @@
 			dependencies = (
 				A1D537F444C2924F91D27984 /* PBXTargetDependency */,
 				68C991156B8281BD50BB539A /* PBXTargetDependency */,
-				9BC5CA1A770762D3A35FBEB2 /* PBXTargetDependency */,
 			);
 			name = LoveNovelPresentation;
 			packageProductDependencies = (
@@ -908,6 +934,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1728FCAE6C44D91616C78E00 /* AppChapterTitleFormatter.swift in Sources */,
+				46867BA1D700AEE5E6F64F71 /* AppContainer.swift in Sources */,
 				0FBC13B1BB2E408B2D403AD1 /* LoveNovelApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -940,8 +968,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25BB8E922229E5C01E0FD58E /* AppChapterTitleFormatter.swift in Sources */,
-				774A3B928BFC5794C41AB4AB /* AppContainer.swift in Sources */,
 				10249258BAB99F0BBA4275E5 /* BookCoverStrip.swift in Sources */,
 				92B6E1C720CA17C402AFED41 /* DarkModeSettingsView.swift in Sources */,
 				DDFCFBF934993AD2C9820EA5 /* ExploreAllStoriesView.swift in Sources */,
@@ -998,6 +1024,11 @@
 			target = 0BAA1A4EFAB74DE370EFE89C /* LoveNovelCore */;
 			targetProxy = 4A95A973DA194984FF8EF79A /* PBXContainerItemProxy */;
 		};
+		4B45B2CCE79C0F979A34BA27 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0BAA1A4EFAB74DE370EFE89C /* LoveNovelCore */;
+			targetProxy = 94664AD59B0575EAB113108D /* PBXContainerItemProxy */;
+		};
 		5A6F1C57714056C9D7575D55 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 62F641F8D2B1A252C82F8EA9 /* LoveNovelDomain */;
@@ -1018,15 +1049,20 @@
 			target = 62F641F8D2B1A252C82F8EA9 /* LoveNovelDomain */;
 			targetProxy = 6B968FD4B0C729303733D26C /* PBXContainerItemProxy */;
 		};
+		7F68EB0EC47E26EC50C25A8C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 014627473219C0797DC532B1 /* LoveNovelData */;
+			targetProxy = 0A576C63CBF80AAB961D32D1 /* PBXContainerItemProxy */;
+		};
+		7FD9E41A3CE323571BB1005E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 62F641F8D2B1A252C82F8EA9 /* LoveNovelDomain */;
+			targetProxy = 2434A207CD32F42AE1B311B2 /* PBXContainerItemProxy */;
+		};
 		9238EC55422B3F44F5441C12 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 0E5DC55C901AA1D8F939DF9A /* LoveNovel */;
 			targetProxy = 180BBD3D67C7CC5125B8D31B /* PBXContainerItemProxy */;
-		};
-		9BC5CA1A770762D3A35FBEB2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 014627473219C0797DC532B1 /* LoveNovelData */;
-			targetProxy = 31F1763C3E594A6CB216F77B /* PBXContainerItemProxy */;
 		};
 		A1D537F444C2924F91D27984 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

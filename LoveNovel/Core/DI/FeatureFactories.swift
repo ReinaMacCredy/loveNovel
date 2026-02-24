@@ -1,22 +1,22 @@
 import Foundation
 import LoveNovelDomain
 
-protocol ExploreFeatureFactory: Sendable {
+public protocol ExploreFeatureFactory: Sendable {
     @MainActor
     func makeExploreViewModel() -> ExploreViewModel
 }
 
-protocol NovelDetailFeatureFactory: Sendable {
+public protocol NovelDetailFeatureFactory: Sendable {
     @MainActor
     func makeNovelDetailViewModel(book: Book) -> NovelDetailViewModel
 }
 
-protocol LibraryFeatureFactory: Sendable {
+public protocol LibraryFeatureFactory: Sendable {
     @MainActor
     func makeLibraryViewModel() -> LibraryViewModel
 }
 
-protocol ReaderFeatureFactory: Sendable {
+public protocol ReaderFeatureFactory: Sendable {
     @MainActor
     func makeReaderViewModel(
         book: Book,
@@ -27,7 +27,7 @@ protocol ReaderFeatureFactory: Sendable {
     ) -> ReaderViewModel
 }
 
-typealias AppFeatureFactory = ExploreFeatureFactory
+public typealias AppFeatureFactory = ExploreFeatureFactory
     & NovelDetailFeatureFactory
     & LibraryFeatureFactory
     & ReaderFeatureFactory

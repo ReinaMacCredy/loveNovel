@@ -14,11 +14,7 @@ public struct RootTabView: View {
 
     @State private var selectedTab: AppTab = .explore
 
-    public init() {
-        self.featureFactory = AppContainer.live
-    }
-
-    init(featureFactory: any AppFeatureFactory) {
+    public init(featureFactory: any AppFeatureFactory) {
         self.featureFactory = featureFactory
     }
 
