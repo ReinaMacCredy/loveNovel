@@ -3,6 +3,7 @@ import SwiftUI
 struct ExploreView: View {
     @EnvironmentObject private var libraryStore: LibraryCollectionStore
     @StateObject private var viewModel: ExploreViewModel
+    private let container: AppContainer
     @State private var selectedBook: Book?
     @State private var isStoryModeSheetPresented: Bool = false
     @State private var isShowingSearch: Bool = false
@@ -11,8 +12,12 @@ struct ExploreView: View {
     @State private var isBannerDragging: Bool = false
     private let bannerAutoScrollTimer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
-    init(viewModel: @autoclosure @escaping () -> ExploreViewModel = ExploreViewModel()) {
-        _viewModel = StateObject(wrappedValue: viewModel())
+    init(
+        container: AppContainer = .live,
+        viewModel: ExploreViewModel? = nil
+    ) {
+        self.container = container
+        _viewModel = StateObject(wrappedValue: viewModel ?? container.makeExploreViewModel())
     }
 
     var body: some View {
@@ -39,13 +44,13 @@ struct ExploreView: View {
                 .presentationDragIndicator(.hidden)
             }
             .navigationDestination(item: $selectedBook) { book in
-                NovelDetailView(book: book)
+                NovelDetailView(book: book, container: container)
             }
             .navigationDestination(isPresented: $isShowingSearch) {
-                ExploreSearchView(viewModel: viewModel)
+                ExploreSearchView(viewModel: viewModel, container: container)
             }
             .navigationDestination(isPresented: $isShowingAllStories) {
-                ExploreAllStoriesView(viewModel: viewModel)
+                ExploreAllStoriesView(viewModel: viewModel, container: container)
             }
             .toolbar((isShowingSearch || isShowingAllStories) ? .hidden : .automatic, for: .tabBar)
             .animation(.smooth, value: isShowingSearch)
@@ -707,5 +712,6 @@ private struct StarRatingRow: View {
 }
 
 #Preview {
-    ExploreView()
+    ExploreView(container: .live)
+        .environmentObject(LibraryCollectionStore(storageKey: "ExploreView.preview.collection"))
 }

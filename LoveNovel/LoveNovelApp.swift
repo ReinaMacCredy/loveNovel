@@ -3,6 +3,9 @@ import SwiftUI
 @main
 struct LoveNovelApp: App {
     @AppStorage(AppSettingsKey.preferredLanguage) private var preferredLanguageRawValue: String = AppLanguageOption.english.rawValue
+    @StateObject private var libraryStore = LibraryCollectionStore()
+
+    private let container = AppContainer.live
 
     init() {
         UITestBootstrap.applyIfNeeded()
@@ -10,7 +13,8 @@ struct LoveNovelApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootTabView()
+            RootTabView(container: container)
+                .environmentObject(libraryStore)
                 .environment(\.locale, selectedLanguage.locale)
         }
     }

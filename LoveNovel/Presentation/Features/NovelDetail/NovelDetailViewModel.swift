@@ -32,11 +32,31 @@ final class NovelDetailViewModel: ObservableObject {
         var titleKey: LocalizedStringKey {
             LocalizedStringKey(rawValue)
         }
+
+        var useCaseOrder: NovelDetailCommentSortOrder {
+            switch self {
+            case .oldest:
+                return .oldest
+            case .newest:
+                return .newest
+            case .liked:
+                return .liked
+            }
+        }
     }
 
     enum ChapterOrder {
         case oldest
         case newest
+
+        var useCaseOrder: NovelDetailChapterOrder {
+            switch self {
+            case .oldest:
+                return .oldest
+            case .newest:
+                return .newest
+            }
+        }
     }
 
     @Published private(set) var phase: Phase = .idle
@@ -50,11 +70,20 @@ final class NovelDetailViewModel: ObservableObject {
 
     let book: Book
 
-    private let detailProvider: any BookDetailProviding
+    private let loadBookDetailUseCase: any LoadBookDetailUseCase
+    private let buildDisplayedChaptersUseCase: any BuildDisplayedChaptersUseCase
+    private let sortBookCommentsUseCase: any SortBookCommentsUseCase
 
-    init(book: Book, detailProvider: any BookDetailProviding = BookDetailRepository()) {
+    init(
+        book: Book,
+        loadBookDetailUseCase: any LoadBookDetailUseCase,
+        buildDisplayedChaptersUseCase: any BuildDisplayedChaptersUseCase,
+        sortBookCommentsUseCase: any SortBookCommentsUseCase
+    ) {
         self.book = book
-        self.detailProvider = detailProvider
+        self.loadBookDetailUseCase = loadBookDetailUseCase
+        self.buildDisplayedChaptersUseCase = buildDisplayedChaptersUseCase
+        self.sortBookCommentsUseCase = sortBookCommentsUseCase
     }
 
     func load(force: Bool = false) async {
@@ -70,7 +99,7 @@ final class NovelDetailViewModel: ObservableObject {
         errorMessage = nil
 
         do {
-            let loadedDetail = try await detailProvider.fetchDetail(for: book)
+            let loadedDetail = try await loadBookDetailUseCase.execute(for: book)
 
             if Task.isCancelled {
                 phase = .idle
@@ -105,21 +134,7 @@ final class NovelDetailViewModel: ObservableObject {
             return []
         }
 
-        let chapters = (1...detail.chapterCount).map { index in
-            BookChapter(
-                id: "\(detail.bookId)-chapter-\(index)",
-                index: index,
-                title: AppLocalization.format("novel_detail.chapter.title", index),
-                timestampText: detail.chapterTimestamp
-            )
-        }
-
-        switch chapterOrder {
-        case .oldest:
-            return chapters
-        case .newest:
-            return chapters.reversed()
-        }
+        return buildDisplayedChaptersUseCase.execute(for: detail, order: chapterOrder.useCaseOrder)
     }
 
     var displayedComments: [BookComment] {
@@ -127,23 +142,7 @@ final class NovelDetailViewModel: ObservableObject {
             return []
         }
 
-        switch commentSort {
-        case .oldest:
-            return detail.comments.sorted { lhs, rhs in
-                lhs.createdAtText < rhs.createdAtText
-            }
-        case .newest:
-            return detail.comments.sorted { lhs, rhs in
-                lhs.createdAtText > rhs.createdAtText
-            }
-        case .liked:
-            return detail.comments.sorted { lhs, rhs in
-                if lhs.likes == rhs.likes {
-                    return lhs.createdAtText > rhs.createdAtText
-                }
-                return lhs.likes > rhs.likes
-            }
-        }
+        return sortBookCommentsUseCase.execute(comments: detail.comments, order: commentSort.useCaseOrder)
     }
 
     var displayedReviews: [BookReview] {

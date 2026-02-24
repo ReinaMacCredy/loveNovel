@@ -7,18 +7,23 @@ enum AppTab: Hashable {
 }
 
 struct RootTabView: View {
+    private let container: AppContainer
+
     @State private var selectedTab: AppTab = .explore
-    @StateObject private var libraryStore = LibraryCollectionStore()
+
+    init(container: AppContainer = .live) {
+        self.container = container
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            LibraryView()
+            LibraryView(container: container)
                 .tag(AppTab.library)
                 .tabItem {
                     Label("Library", systemImage: "chart.bar.fill")
                 }
 
-            ExploreView()
+            ExploreView(container: container)
                 .tag(AppTab.explore)
                 .tabItem {
                     Label("Explore", systemImage: "safari")
@@ -36,10 +41,10 @@ struct RootTabView: View {
             AppTheme.Colors.screenBackground
                 .ignoresSafeArea()
         }
-        .environmentObject(libraryStore)
     }
 }
 
 #Preview {
-    RootTabView()
+    RootTabView(container: .live)
+        .environmentObject(LibraryCollectionStore(storageKey: "RootTabView.preview.collection"))
 }

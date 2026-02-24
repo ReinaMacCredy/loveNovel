@@ -30,7 +30,7 @@ struct ExploreViewModelTests {
             return Self.sampleFeed
         }
 
-        let viewModel = ExploreViewModel(catalog: provider)
+        let viewModel = makeViewModel(catalog: provider)
 
         let loadTask = Task {
             await viewModel.load()
@@ -54,7 +54,7 @@ struct ExploreViewModelTests {
             throw TestFailure()
         }
 
-        let viewModel = ExploreViewModel(catalog: provider)
+        let viewModel = makeViewModel(catalog: provider)
 
         await viewModel.load()
 
@@ -69,7 +69,7 @@ struct ExploreViewModelTests {
             Self.sampleFeed
         }
 
-        let viewModel = ExploreViewModel(catalog: provider)
+        let viewModel = makeViewModel(catalog: provider)
 
         let titleMatches = await viewModel.searchBooks(matching: "mutabilis")
         #expect(titleMatches.map(\.id) == ["mutabilis"])
@@ -87,7 +87,7 @@ struct ExploreViewModelTests {
             Self.sampleFeed
         }
 
-        let viewModel = ExploreViewModel(catalog: provider)
+        let viewModel = makeViewModel(catalog: provider)
 
         let matches = await viewModel.searchBooks(matching: "   ")
         #expect(matches.isEmpty)
@@ -101,7 +101,7 @@ struct ExploreViewModelTests {
             return Self.sampleFeed
         }
 
-        let viewModel = ExploreViewModel(catalog: provider)
+        let viewModel = makeViewModel(catalog: provider)
 
         let loadTask = Task {
             await viewModel.load()
@@ -132,7 +132,7 @@ struct ExploreViewModelTests {
             Self.sampleDetail(for: book, chapterCount: book.id == "mutabilis" ? 42 : 21, genre: "Đô Thị")
         }
 
-        let viewModel = ExploreViewModel(catalog: provider, bookDetails: detailProvider)
+        let viewModel = makeViewModel(catalog: provider, bookDetails: detailProvider)
 
         let rows = await viewModel.allStoriesListItems()
 
@@ -155,7 +155,7 @@ struct ExploreViewModelTests {
             throw TestFailure()
         }
 
-        let viewModel = ExploreViewModel(catalog: provider, bookDetails: detailProvider)
+        let viewModel = makeViewModel(catalog: provider, bookDetails: detailProvider)
 
         let rows = await viewModel.allStoriesListItems()
 
@@ -172,7 +172,7 @@ struct ExploreViewModelTests {
             Self.sampleFeed
         }
 
-        let viewModel = ExploreViewModel(catalog: provider)
+        let viewModel = makeViewModel(catalog: provider)
 
         #expect(viewModel.selectedStoryMode == .all)
 
@@ -191,7 +191,7 @@ struct ExploreViewModelTests {
             Self.sampleDetail(for: book, chapterCount: 77, genre: "Đô Thị")
         }
 
-        let viewModel = ExploreViewModel(catalog: provider, bookDetails: detailProvider)
+        let viewModel = makeViewModel(catalog: provider, bookDetails: detailProvider)
         let featuredBook = Self.sampleFeed.featured
 
         #expect(viewModel.chapterCountForLibrary(for: featuredBook) == nil)
@@ -213,11 +213,31 @@ struct ExploreViewModelTests {
             throw TestFailure()
         }
 
-        let viewModel = ExploreViewModel(catalog: provider, bookDetails: detailProvider)
+        let viewModel = makeViewModel(catalog: provider, bookDetails: detailProvider)
 
         await viewModel.load()
 
         #expect(viewModel.chapterCountForLibrary(for: Self.sampleFeed.featured) == nil)
+    }
+
+    private func makeViewModel(
+        catalog: any CatalogProviding,
+        bookDetails: any BookDetailProviding
+    ) -> ExploreViewModel {
+        ExploreViewModel(
+            loadHomeFeedUseCase: DefaultLoadHomeFeedUseCase(catalog: catalog),
+            preloadBookDetailsUseCase: DefaultPreloadBookDetailsUseCase(bookDetails: bookDetails),
+            searchBooksUseCase: DefaultSearchBooksUseCase(),
+            buildAllStoriesListUseCase: DefaultBuildAllStoriesListUseCase(bookDetails: bookDetails)
+        )
+    }
+
+    private func makeViewModel(catalog: any CatalogProviding) -> ExploreViewModel {
+        let fallbackDetails = StubBookDetailProvider { book in
+            Self.sampleDetail(for: book, chapterCount: 12, genre: "Fiction")
+        }
+
+        return makeViewModel(catalog: catalog, bookDetails: fallbackDetails)
     }
 
     nonisolated private static let sampleFeed = HomeFeed(

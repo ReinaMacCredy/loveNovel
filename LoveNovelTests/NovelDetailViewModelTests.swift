@@ -22,7 +22,7 @@ struct NovelDetailViewModelTests {
             return sampleDetail
         }
 
-        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
+        let viewModel = makeViewModel(detailProvider: provider)
 
         let loadTask = Task {
             await viewModel.load()
@@ -45,7 +45,7 @@ struct NovelDetailViewModelTests {
             throw TestFailure()
         }
 
-        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
+        let viewModel = makeViewModel(detailProvider: provider)
 
         await viewModel.load()
 
@@ -61,7 +61,7 @@ struct NovelDetailViewModelTests {
             sampleDetail
         }
 
-        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
+        let viewModel = makeViewModel(detailProvider: provider)
         #expect(viewModel.chapterCountForLibrary == nil)
 
         await viewModel.load()
@@ -76,7 +76,7 @@ struct NovelDetailViewModelTests {
             sampleDetail
         }
 
-        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
+        let viewModel = makeViewModel(detailProvider: provider)
 
         await viewModel.load()
 
@@ -106,7 +106,7 @@ struct NovelDetailViewModelTests {
             sampleDetail
         }
 
-        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
+        let viewModel = makeViewModel(detailProvider: provider)
 
         await viewModel.load()
         viewModel.setCommentSort(sort)
@@ -122,7 +122,7 @@ struct NovelDetailViewModelTests {
             sampleDetail
         }
 
-        let viewModel = NovelDetailViewModel(book: Self.sampleBook, detailProvider: provider)
+        let viewModel = makeViewModel(detailProvider: provider)
 
         #expect(viewModel.isReportEnabled == false)
         #expect(viewModel.isReviewSubmissionEnabled == false)
@@ -130,6 +130,15 @@ struct NovelDetailViewModelTests {
         #expect(viewModel.reportUnavailableReason.isEmpty == false)
         #expect(viewModel.reviewSubmissionUnavailableReason.isEmpty == false)
         #expect(viewModel.commentSubmissionUnavailableReason.isEmpty == false)
+    }
+
+    private func makeViewModel(detailProvider: any BookDetailProviding) -> NovelDetailViewModel {
+        NovelDetailViewModel(
+            book: Self.sampleBook,
+            loadBookDetailUseCase: DefaultLoadBookDetailUseCase(detailProvider: detailProvider),
+            buildDisplayedChaptersUseCase: DefaultBuildDisplayedChaptersUseCase(),
+            sortBookCommentsUseCase: DefaultSortBookCommentsUseCase()
+        )
     }
 
     private static let sampleBook = Book(
