@@ -176,10 +176,16 @@ struct NovelDetailView: View {
                     }
 
                     HStack(alignment: .top, spacing: 10) {
-                        HeroCoverCard(
+                        NovelCoverCard(
                             book: viewModel.book,
                             width: coverWidth,
-                            height: coverHeight
+                            height: coverHeight,
+                            cornerRadius: 14,
+                            variant: .hero,
+                            showsBorder: true,
+                            shadowColor: Color.black.opacity(0.26),
+                            shadowRadius: 14,
+                            shadowYOffset: 8
                         )
 
                         VStack(alignment: .leading, spacing: 4) {
@@ -963,51 +969,6 @@ private struct ReaderDestination: Identifiable, Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
-    }
-}
-
-private struct HeroCoverCard: View {
-    let book: Book
-    let width: CGFloat
-    let height: CGFloat
-
-    var body: some View {
-        RoundedRectangle(cornerRadius: 14)
-            .fill(
-                LinearGradient(
-                    colors: [
-                        Color(hex: book.accentHex),
-                        Color(hex: book.accentHex).opacity(0.4),
-                        Color.black.opacity(0.9)
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
-            .frame(width: width, height: height)
-            .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color.white.opacity(0.14), lineWidth: 1)
-            )
-            .shadow(color: Color.black.opacity(0.26), radius: 14, y: 8)
-            .overlay(alignment: .bottomLeading) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(book.title)
-                        .font(.system(size: 12, weight: .heavy))
-                        .foregroundStyle(.white)
-                        .lineLimit(2)
-
-                    Text("A novel about the digital underground")
-                        .font(.system(size: 6.5, weight: .regular))
-                        .foregroundStyle(.white.opacity(0.8))
-                        .lineLimit(2)
-
-                    Text(book.author)
-                        .font(.system(size: 8, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.85))
-                }
-                .padding(8)
-            }
     }
 }
 

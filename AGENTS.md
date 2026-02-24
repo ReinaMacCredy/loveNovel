@@ -1,11 +1,12 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `LoveNovel/` contains the app target, organized by Clean Architecture layers:
-  - `Domain/`: entities, repository protocols, and use cases.
-  - `Data/`: actor-based repository implementations and data sources.
-  - `Presentation/`: SwiftUI screens/components and `@MainActor` view models.
-  - `Core/DI/AppContainer.swift`: centralized dependency composition.
+- `LoveNovel/` is organized by Clean Architecture layers and built as separate targets:
+  - `LoveNovelCore`: shared app settings/localization/theme/contracts.
+  - `LoveNovelDomain`: entities, repository protocols, and use cases.
+  - `LoveNovelData`: actor-based repository implementations and data sources.
+  - `LoveNovelPresentation`: SwiftUI screens/components and `@MainActor` view models.
+  - App shell target `LoveNovel` composes features through centralized DI (`Core/DI/AppContainer.swift`).
 - Supporting folders: `App/` (app shell), `Theme/`, `Resources/`, `en.lproj/`, `vi.lproj/`.
 - Tests:
   - `LoveNovelTests/` for unit/integration logic.
@@ -21,7 +22,7 @@
 - `xcodebuild ... test -only-testing:LoveNovelTests/ExploreViewModelTests` runs a focused suite.
 
 ## MCP Tool Playbook
-MCP health check (February 13, 2026): `mcp__xcode__XcodeListWindows` returned a valid workspace tab (`windowtab3`), so treat Xcode MCP as available by default.
+Use `mcp__xcode__XcodeListWindows` first to get the current `tabIdentifier`, then run other `mcp__xcode__*` tools.
 
 Use the `mcp__xcode__*` toolset as the first choice for Xcode-aware validation workflows. Use shell + `apply_patch` as the default editing path for code/text changes.
 
@@ -115,7 +116,7 @@ Use the `mcp__xcode__*` toolset as the first choice for Xcode-aware validation w
 
 ## Coding Style & Naming Conventions
 - Follow Swift 6 strict concurrency: `Sendable` models, actors in Data, `@MainActor` view models, and cancellation-aware async code.
-- Preserve architecture boundaries: Domain never depends on Data, Presentation, or Core.
+- Preserve architecture boundaries: Domain must not depend on Data or Presentation; Core remains dependency-only.
 - View models must depend on use-case protocols, not repository implementations.
 - Naming: `PascalCase` for types/files, `camelCase` for members, test files as `{TypeName}Tests.swift`.
 - Use Xcode default formatting (4-space indentation). No project SwiftLint/SwiftFormat config is enforced.

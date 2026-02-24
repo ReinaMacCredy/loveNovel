@@ -429,56 +429,14 @@ private struct LibraryBookCover: View {
     var size: CGSize = CGSize(width: 60, height: 88)
     var cornerRadius: CGFloat = 8
 
-    private var fallbackCover: some View {
-        RoundedRectangle(cornerRadius: cornerRadius)
-            .fill(
-                LinearGradient(
-                    colors: [
-                        Color(hex: book.accentHex),
-                        Color(hex: book.accentHex).opacity(0.48),
-                        Color.black.opacity(0.84)
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
-            .overlay(alignment: .bottomLeading) {
-                Text(String(book.title.prefix(1)))
-                    .font(.system(size: 22, weight: .heavy))
-                    .foregroundStyle(.white.opacity(0.95))
-                    .padding(.leading, 6)
-                    .padding(.bottom, 4)
-            }
-    }
-
     var body: some View {
-        Group {
-            if let uiImage = UIImage(named: "cover.\(book.id)") {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
-            } else if let remoteCoverURL = remoteCoverURL {
-                AsyncImage(url: remoteCoverURL) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    default:
-                        fallbackCover
-                    }
-                }
-            } else {
-                fallbackCover
-            }
-        }
-        .frame(width: size.width, height: size.height)
-        .clipShape(.rect(cornerRadius: cornerRadius))
-        .shadow(color: AppTheme.Colors.cardShadow, radius: 5, y: 2)
-    }
-
-    private var remoteCoverURL: URL? {
-        URL(string: "https://picsum.photos/seed/lovenovel-\(book.id)/240/360")
+        NovelCoverCard(
+            book: book,
+            width: size.width,
+            height: size.height,
+            cornerRadius: cornerRadius,
+            variant: .compact
+        )
     }
 }
 
