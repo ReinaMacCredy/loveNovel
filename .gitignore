@@ -6,3 +6,6 @@ DerivedData/
 *.xcodeproj/xcuserdata/
 .maestro
 .artifacts/
+
+# bv (beads viewer) local config and caches
+.bv/
