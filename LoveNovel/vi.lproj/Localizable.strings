@@ -33,6 +33,16 @@
 "library.search.no_results.title" = "Không tìm thấy truyện";
 "library.search.no_results.message" = "Không có kết quả cho \"%@\" trong Tủ Truyện.";
 "Library search" = "Tìm kiếm thư viện";
+"library.sort.accessibility.open_settings" = "Cài đặt sắp xếp thư viện";
+"library.sort.accessibility.back" = "Quay lại sắp xếp thư viện";
+"library.sort.title" = "Sắp xếp tủ truyện";
+"library.sort.section.history" = "Lịch sử";
+"library.sort.section.bookmark" = "Đánh dấu";
+"library.sort.action.reset" = "Đặt lại mặc định";
+"library.sort.option.newest_chapter" = "Chương mới";
+"library.sort.option.recently_read" = "Mới đọc";
+"library.sort.option.recently_saved" = "Mới lưu";
+"library.sort.option.title" = "Tên truyện";
 "Library sort settings" = "Cài đặt sắp xếp thư viện";
 "Library sort back" = "Quay lại sắp xếp thư viện";
 "Sắp xếp tủ truyện" = "Sắp xếp tủ truyện";

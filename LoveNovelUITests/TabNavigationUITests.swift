@@ -113,6 +113,42 @@ final class TabNavigationUITests: XCTestCase {
         XCTAssertTrue(historyButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
     }
 
+    func testLibrarySortSettingsResetToDefaultRestoresSelections() {
+        let app = UITestLaunchConfiguration.launchConfiguredApp()
+
+        let tabBar = app.tabBars.firstMatch
+        XCTAssertTrue(tabBar.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        tabBar.buttons["Library"].tap()
+
+        let sortSettingsButton = app.buttons["library.header.sort_settings"]
+        XCTAssertTrue(sortSettingsButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        sortSettingsButton.tap()
+
+        let resetButton = app.buttons.matching(
+            NSPredicate(format: "label IN %@", ["Reset to default", "Đặt lại mặc định"])
+        )
+            .firstMatch
+        XCTAssertTrue(resetButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        XCTAssertTrue(["Reset to default", "Đặt lại mặc định"].contains(resetButton.label))
+        XCTAssertFalse(resetButton.isEnabled)
+
+        let newChapterButton = app.buttons.matching(
+            NSPredicate(format: "label IN %@", ["New chapter", "Chương mới"])
+        ).firstMatch
+        XCTAssertTrue(newChapterButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        newChapterButton.tap()
+
+        let enabledPredicate = NSPredicate(format: "isEnabled == true")
+        let enabledExpectation = XCTNSPredicateExpectation(predicate: enabledPredicate, object: resetButton)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabledExpectation], timeout: UITestLaunchConfiguration.Timeout.short), .completed)
+
+        resetButton.tap()
+
+        let disabledPredicate = NSPredicate(format: "isEnabled == false")
+        let disabledExpectation = XCTNSPredicateExpectation(predicate: disabledPredicate, object: resetButton)
+        XCTAssertEqual(XCTWaiter.wait(for: [disabledExpectation], timeout: UITestLaunchConfiguration.Timeout.short), .completed)
+    }
+
     func testLibraryRowTapNavigatesToNovelDetail() {
         let app = UITestLaunchConfiguration.launchConfiguredApp(seedLibrary: true)
 

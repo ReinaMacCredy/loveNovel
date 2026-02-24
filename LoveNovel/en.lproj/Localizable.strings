@@ -33,6 +33,16 @@
 "library.search.no_results.title" = "No books found";
 "library.search.no_results.message" = "No result for \"%@\" in your Library.";
 "Library search" = "Library search";
+"library.sort.accessibility.open_settings" = "Library sort settings";
+"library.sort.accessibility.back" = "Library sort back";
+"library.sort.title" = "Library sort";
+"library.sort.section.history" = "History";
+"library.sort.section.bookmark" = "Bookmark";
+"library.sort.action.reset" = "Reset to default";
+"library.sort.option.newest_chapter" = "New chapter";
+"library.sort.option.recently_read" = "Recently read";
+"library.sort.option.recently_saved" = "Recently saved";
+"library.sort.option.title" = "Title";
 "Library sort settings" = "Library sort settings";
 "Library sort back" = "Library sort back";
 "Sắp xếp tủ truyện" = "Library sort";

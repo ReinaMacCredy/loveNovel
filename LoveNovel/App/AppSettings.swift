@@ -80,15 +80,32 @@ public enum ReaderDarkModeOption: String, CaseIterable, Identifiable {
     }
 }
 
-public enum LibraryHistorySortOption: String, CaseIterable, Identifiable {
-    case newestChapter = "Chương mới"
-    case lastRead = "Mới đọc"
-    case title = "Tên truyện"
+public enum LibraryHistorySortOption: String, CaseIterable, Identifiable, Sendable {
+    case newestChapter = "newest_chapter"
+    case lastRead = "last_read"
+    case title = "title"
+
+    public static let defaultOption: Self = .lastRead
 
     public var id: Self { self }
 
     public var titleKey: LocalizedStringKey {
-        LocalizedStringKey(rawValue)
+        LocalizedStringKey(localizationKey)
+    }
+
+    public var storageValue: String {
+        rawValue
+    }
+
+    public var localizationKey: String {
+        switch self {
+        case .newestChapter:
+            return "library.sort.option.newest_chapter"
+        case .lastRead:
+            return "library.sort.option.recently_read"
+        case .title:
+            return "library.sort.option.title"
+        }
     }
 
     public var accessibilityID: String {
@@ -101,17 +118,51 @@ public enum LibraryHistorySortOption: String, CaseIterable, Identifiable {
             return "title"
         }
     }
+
+    public static func fromStorageValue(_ storageValue: String) -> Self? {
+        if let option = Self(rawValue: storageValue) {
+            return option
+        }
+
+        switch storageValue {
+        case "Chương mới":
+            return .newestChapter
+        case "Mới đọc":
+            return .lastRead
+        case "Tên truyện":
+            return .title
+        default:
+            return nil
+        }
+    }
 }
 
-public enum LibraryBookmarkSortOption: String, CaseIterable, Identifiable {
-    case newestChapter = "Chương mới"
-    case newestSaved = "Mới lưu"
-    case title = "Tên truyện"
+public enum LibraryBookmarkSortOption: String, CaseIterable, Identifiable, Sendable {
+    case newestChapter = "newest_chapter"
+    case newestSaved = "newest_saved"
+    case title = "title"
+
+    public static let defaultOption: Self = .newestSaved
 
     public var id: Self { self }
 
     public var titleKey: LocalizedStringKey {
-        LocalizedStringKey(rawValue)
+        LocalizedStringKey(localizationKey)
+    }
+
+    public var storageValue: String {
+        rawValue
+    }
+
+    public var localizationKey: String {
+        switch self {
+        case .newestChapter:
+            return "library.sort.option.newest_chapter"
+        case .newestSaved:
+            return "library.sort.option.recently_saved"
+        case .title:
+            return "library.sort.option.title"
+        }
     }
 
     public var accessibilityID: String {
@@ -122,6 +173,23 @@ public enum LibraryBookmarkSortOption: String, CaseIterable, Identifiable {
             return "newest_saved"
         case .title:
             return "title"
+        }
+    }
+
+    public static func fromStorageValue(_ storageValue: String) -> Self? {
+        if let option = Self(rawValue: storageValue) {
+            return option
+        }
+
+        switch storageValue {
+        case "Chương mới":
+            return .newestChapter
+        case "Mới lưu":
+            return .newestSaved
+        case "Tên truyện":
+            return .title
+        default:
+            return nil
         }
     }
 }

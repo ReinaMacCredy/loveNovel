@@ -19,10 +19,10 @@ struct LibraryView: View {
     @FocusState private var isSearchFieldFocused: Bool
 
     @AppStorage(AppSettingsKey.libraryHistorySort)
-    private var historySortRawValue: String = LibraryHistorySortOption.lastRead.rawValue
+    private var historySortRawValue: String = LibraryHistorySortOption.defaultOption.storageValue
 
     @AppStorage(AppSettingsKey.libraryBookmarkSort)
-    private var bookmarkSortRawValue: String = LibraryBookmarkSortOption.newestSaved.rawValue
+    private var bookmarkSortRawValue: String = LibraryBookmarkSortOption.defaultOption.storageValue
 
     private var usesDarkPalette: Bool {
         colorScheme == .dark
@@ -49,11 +49,11 @@ struct LibraryView: View {
     }
 
     private var historySort: LibraryHistorySortOption {
-        LibraryHistorySortOption(rawValue: historySortRawValue) ?? .lastRead
+        LibraryHistorySortOption.fromStorageValue(historySortRawValue) ?? .defaultOption
     }
 
     private var bookmarkSort: LibraryBookmarkSortOption {
-        LibraryBookmarkSortOption(rawValue: bookmarkSortRawValue) ?? .newestSaved
+        LibraryBookmarkSortOption.fromStorageValue(bookmarkSortRawValue) ?? .defaultOption
     }
 
     private var baseEntries: [LibraryShelfEntry] {
@@ -182,7 +182,7 @@ struct LibraryView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("library.header.sort_settings")
-                    .accessibilityLabel(Text("Library sort settings"))
+                    .accessibilityLabel(Text("library.sort.accessibility.open_settings"))
                 }
             }
 

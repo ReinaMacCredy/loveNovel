@@ -46,6 +46,33 @@ struct AppSettingsTests {
         #expect(formatted == "Chi tiết Rice Tea sẽ có trong v2.")
     }
 
+    @Test("Library sort options support stable and legacy stored values")
+    func librarySortOptionsSupportStableAndLegacyStoredValues() {
+        #expect(LibraryHistorySortOption.defaultOption.storageValue == "last_read")
+        #expect(LibraryBookmarkSortOption.defaultOption.storageValue == "newest_saved")
+
+        #expect(LibraryHistorySortOption.fromStorageValue("last_read") == .lastRead)
+        #expect(LibraryHistorySortOption.fromStorageValue("Mới đọc") == .lastRead)
+        #expect(LibraryBookmarkSortOption.fromStorageValue("newest_saved") == .newestSaved)
+        #expect(LibraryBookmarkSortOption.fromStorageValue("Mới lưu") == .newestSaved)
+        #expect(LibraryHistorySortOption.fromStorageValue("unknown") == nil)
+        #expect(LibraryBookmarkSortOption.fromStorageValue("unknown") == nil)
+    }
+
+    @Test("Library sort localization keys resolve in both languages")
+    func librarySortLocalizationKeysResolveInBothLanguages() {
+        #expect(
+            AppLocalization.string(LibraryHistorySortOption.lastRead.localizationKey, language: .english)
+                == "Recently read"
+        )
+        #expect(
+            AppLocalization.string(LibraryHistorySortOption.lastRead.localizationKey, language: .vietnamese)
+                == "Mới đọc"
+        )
+        #expect(AppLocalization.string("library.sort.action.reset", language: .english) == "Reset to default")
+        #expect(AppLocalization.string("library.sort.action.reset", language: .vietnamese) == "Đặt lại mặc định")
+    }
+
     private static func withPreferredLanguage<T>(
         _ language: AppLanguageOption,
         perform: () -> T
