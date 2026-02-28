@@ -40,9 +40,9 @@ T1 ──┬── T2 ──┬── T4 ──┬── T5 ── T6
   - Expected interaction flow is explicitly documented in task log/PR notes.
 - **Validation**:
   - Manual checklist review before coding.
-- **status**: Not Completed
-- **log**:
-- **files edited/created**:
+- **status**: Completed
+- **log**: Scoped execution to NovelDetail add/remove flow only and parked broader UX backlog work.
+- **files edited/created**: `novel-detail-library-toggle-regression-plan.md`
 
 ### T2: Harden Library Toggle Feedback Behavior
 - **id**: `T2`
@@ -55,9 +55,9 @@ T1 ──┬── T2 ──┬── T4 ──┬── T5 ── T6
   - No behavior regression for disabled toggle state.
 - **Validation**:
   - Local run + manual interaction check in simulator.
-- **status**: Not Completed
-- **log**:
-- **files edited/created**:
+- **status**: Completed
+- **log**: Updated toggle icon ring to accept context-specific ring color and added stable confirmation dialog button identifiers.
+- **files edited/created**: `LoveNovel/Presentation/Features/NovelDetail/NovelDetailView.swift`
 
 ### T3: Add Accessibility-Safe Animation Guard
 - **id**: `T3`
@@ -69,9 +69,9 @@ T1 ──┬── T2 ──┬── T4 ──┬── T5 ── T6
   - No reliance on animation for conveying state change.
 - **Validation**:
   - Manual verification with reduced motion preference.
-- **status**: Not Completed
-- **log**:
-- **files edited/created**:
+- **status**: Completed
+- **log**: Added `accessibilityReduceMotion` guard in animation path so state changes remain functional without motion effects.
+- **files edited/created**: `LoveNovel/Presentation/Features/NovelDetail/NovelDetailView.swift`
 
 ## Sprint 2: Regression Coverage + Verification
 **Goal**: Add durable regression protection and confirm compile/test health.
@@ -89,9 +89,9 @@ T1 ──┬── T2 ──┬── T4 ──┬── T5 ── T6
   - Test is deterministic with existing launch configuration.
 - **Validation**:
   - Run targeted UI test suite that includes the new case.
-- **status**: Not Completed
-- **log**:
-- **files edited/created**:
+- **status**: Completed
+- **log**: Added `testLibraryToggleAddRemoveFlowShowsConfirmationAndRemovesOnConfirm`; normalized initial state and used `firstMatch` to avoid duplicate-query tap failures.
+- **files edited/created**: `LoveNovelUITests/NovelDetailNavigationUITests.swift`
 
 ### T5: Build + Targeted Test Verification
 - **id**: `T5`
@@ -106,9 +106,9 @@ T1 ──┬── T2 ──┬── T4 ──┬── T5 ── T6
   - `mcp__xcode__BuildProject`
   - `mcp__xcode__RunSomeTests` (`LoveNovelUITests/NovelDetailNavigationUITests`)
   - `mcp__xcode__XcodeListNavigatorIssues`
-- **status**: Not Completed
-- **log**:
-- **files edited/created**:
+- **status**: Completed
+- **log**: Build passed; targeted UI tests passed for no-backend action state and add/remove regression flow; Issue Navigator reports zero errors.
+- **files edited/created**: Xcode MCP outputs only
 
 ### T6: Delivery + Tracker Closure
 - **id**: `T6`
@@ -121,9 +121,9 @@ T1 ──┬── T2 ──┬── T4 ──┬── T5 ── T6
 - **Validation**:
   - `br close ln-1k2 --reason "..."`
   - `br ready --json --limit 10` shows next actionable queue.
-- **status**: Not Completed
-- **log**:
-- **files edited/created**:
+- **status**: Completed
+- **log**: Closed `ln-1k2` with implementation + MCP verification evidence; confirmed tracker queue is empty (`br ready` -> `[]`).
+- **files edited/created**: `.beads/issues.jsonl`
 
 ## Testing Strategy
 - Add one focused UI regression test for add/remove confirmation flow.
