@@ -167,6 +167,43 @@ final class NovelDetailNavigationUITests: XCTestCase {
         commentsTab.tap()
     }
 
+    func testLibraryToggleAddRemoveFlowShowsConfirmationAndRemovesOnConfirm() {
+        let app = UITestLaunchConfiguration.launchConfiguredApp()
+        openRiceTeaDetail(in: app)
+
+        let toggleButton = app.buttons.matching(identifier: "novel_detail.add_to_library").firstMatch
+        let removeConfirmButton = app.buttons.matching(identifier: "novel_detail.library.remove.confirm").firstMatch
+
+        XCTAssertTrue(toggleButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.medium))
+        XCTAssertTrue(toggleButton.isEnabled)
+
+        // Normalize to "not in library" regardless of persisted state.
+        toggleButton.tap()
+        if removeConfirmButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief) {
+            removeConfirmButton.tap()
+            XCTAssertFalse(removeConfirmButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief))
+        } else {
+            toggleButton.tap()
+            XCTAssertTrue(removeConfirmButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+            removeConfirmButton.tap()
+            XCTAssertFalse(removeConfirmButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief))
+        }
+
+        // Add path should not immediately show remove confirmation.
+        toggleButton.tap()
+        XCTAssertFalse(removeConfirmButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief))
+
+        // Remove path should show confirmation and remove when confirmed.
+        toggleButton.tap()
+        XCTAssertTrue(removeConfirmButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.short))
+        removeConfirmButton.tap()
+        XCTAssertFalse(removeConfirmButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief))
+
+        // Post-remove, a single tap should add again without confirmation.
+        toggleButton.tap()
+        XCTAssertFalse(removeConfirmButton.waitForExistence(timeout: UITestLaunchConfiguration.Timeout.brief))
+    }
+
     private func openRiceTeaDetail(in app: XCUIApplication) {
         activateExploreTab(in: app)
 
