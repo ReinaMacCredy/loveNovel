@@ -4,6 +4,7 @@ import LoveNovelDomain
 
 struct NovelDetailView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var accessibilityReduceMotion
     @EnvironmentObject private var libraryStore: LibraryCollectionStore
     @StateObject private var viewModel: NovelDetailViewModel
     private let featureFactory: any (NovelDetailFeatureFactory & ReaderFeatureFactory)
@@ -79,7 +80,10 @@ struct NovelDetailView: View {
                 Button(AppLocalization.string("library.menu.remove"), role: .destructive) {
                     confirmRemoveCurrentBookFromLibrary()
                 }
+                .accessibilityIdentifier("novel_detail.library.remove.confirm")
+
                 Button(AppLocalization.string("Cancel"), role: .cancel) {}
+                    .accessibilityIdentifier("novel_detail.library.remove.cancel")
             } message: {
                 Text(AppLocalization.format(
                     "novel_detail.library.remove.confirm.message",
@@ -254,7 +258,8 @@ struct NovelDetailView: View {
                                     iconSize: 16,
                                     containerSize: 40,
                                     foregroundStyle: AppTheme.Colors.accentBlue,
-                                    backgroundStyle: .white
+                                    backgroundStyle: .white,
+                                    ringStyle: AppTheme.Colors.accentBlue
                                 )
 
                                 Text(libraryToggleHeroTitle)
@@ -697,7 +702,8 @@ struct NovelDetailView: View {
                     iconSize: 18,
                     containerSize: 42,
                     foregroundStyle: .white,
-                    backgroundStyle: AppTheme.Colors.accentBlue
+                    backgroundStyle: AppTheme.Colors.accentBlue,
+                    ringStyle: .white
                 )
             }
             .buttonStyle(.plain)
@@ -804,7 +810,8 @@ struct NovelDetailView: View {
         iconSize: CGFloat,
         containerSize: CGFloat,
         foregroundStyle: Color,
-        backgroundStyle: Color
+        backgroundStyle: Color,
+        ringStyle: Color
     ) -> some View {
         Image(systemName: libraryToggleIconName)
             .font(.system(size: iconSize, weight: .semibold))
@@ -813,7 +820,7 @@ struct NovelDetailView: View {
             .background(Circle().fill(backgroundStyle))
             .overlay {
                 Circle()
-                    .stroke(AppTheme.Colors.accentBlue, lineWidth: 2)
+                    .stroke(ringStyle, lineWidth: 2)
                     .frame(width: containerSize, height: containerSize)
                     .scaleEffect(pulseRingScale)
                     .opacity(pulseRingOpacity)
@@ -824,6 +831,12 @@ struct NovelDetailView: View {
     }
 
     private func animateLibraryToggleIcon() {
+        guard !accessibilityReduceMotion else {
+            pulseRingScale = 1.0
+            pulseRingOpacity = 0
+            return
+        }
+
         libraryToggleAnimationValue += 1
 
         pulseRingScale = 1.0
