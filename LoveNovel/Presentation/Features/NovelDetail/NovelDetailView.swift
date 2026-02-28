@@ -10,6 +10,8 @@ struct NovelDetailView: View {
     @State private var readerDestination: ReaderDestination?
     @State private var libraryToggleAnimationValue: Int = 0
     @State private var showRemoveFromLibraryConfirmation: Bool = false
+    @State private var pulseRingScale: CGFloat = 1.0
+    @State private var pulseRingOpacity: Double = 0
     private let scrollSpaceName = "novel_detail.scroll"
 
     init(
@@ -77,10 +79,12 @@ struct NovelDetailView: View {
                 Button(AppLocalization.string("library.menu.remove"), role: .destructive) {
                     confirmRemoveCurrentBookFromLibrary()
                 }
-
                 Button(AppLocalization.string("Cancel"), role: .cancel) {}
             } message: {
-                Text(AppLocalization.format("novel_detail.library.remove.confirm.message", viewModel.book.title))
+                Text(AppLocalization.format(
+                    "novel_detail.library.remove.confirm.message",
+                    viewModel.book.title
+                ))
             }
             .navigationDestination(item: $readerDestination) { destination in
                 ReaderView(
@@ -807,6 +811,13 @@ struct NovelDetailView: View {
             .foregroundStyle(foregroundStyle)
             .frame(width: containerSize, height: containerSize)
             .background(Circle().fill(backgroundStyle))
+            .overlay {
+                Circle()
+                    .stroke(AppTheme.Colors.accentBlue, lineWidth: 2)
+                    .frame(width: containerSize, height: containerSize)
+                    .scaleEffect(pulseRingScale)
+                    .opacity(pulseRingOpacity)
+            }
             .contentTransition(.symbolEffect(.replace))
             .symbolEffect(.bounce, value: libraryToggleAnimationValue)
             .animation(.spring(response: 0.28, dampingFraction: 0.76), value: isCurrentBookInLibrary)
@@ -814,6 +825,13 @@ struct NovelDetailView: View {
 
     private func animateLibraryToggleIcon() {
         libraryToggleAnimationValue += 1
+
+        pulseRingScale = 1.0
+        pulseRingOpacity = 0.7
+        withAnimation(.easeOut(duration: 0.55)) {
+            pulseRingScale = 2.0
+            pulseRingOpacity = 0
+        }
     }
 
     private var commentComposerBar: some View {
