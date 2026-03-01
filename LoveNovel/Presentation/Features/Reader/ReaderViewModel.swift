@@ -40,6 +40,14 @@ public final class ReaderViewModel: ObservableObject {
         var id: Self { self }
     }
 
+    enum ListenSource: String, CaseIterable, Identifiable {
+        case appleTTS = "Apple TTS"
+        case googleOnline = "Google (Online)"
+        case microsoftOnline = "Microsoft (Online)"
+
+        var id: Self { self }
+    }
+
     @Published private(set) var isControlPanelVisible: Bool = false
     @Published private(set) var isChapterListVisible: Bool = false
     @Published private(set) var isTutorialVisible: Bool
@@ -50,6 +58,16 @@ public final class ReaderViewModel: ObservableObject {
     @Published var currentChapterIndex: Int
     @Published var fontSize: CGFloat = 24
     @Published var lineSpacing: CGFloat = 10
+    @Published private(set) var isListenPageVisible: Bool = false
+    @Published private(set) var isPlaying: Bool = false
+    @Published private(set) var isListenSettingsVisible: Bool = false
+    @Published private(set) var isListenSettingsBackdropEnabled: Bool = false
+    @Published private(set) var isListenSourceListVisible: Bool = false
+    @Published private(set) var isSleepTimerDialogVisible: Bool = false
+    @Published var selectedListenSource: ListenSource = .googleOnline
+    @Published var listenSpeed: Double = 1
+    @Published var sleepTimerInputMinutes: String = "15"
+    @Published private(set) var sleepTimerMinutes: Int?
     @Published var alertMessage: String?
 
     let book: Book
@@ -58,6 +76,7 @@ public final class ReaderViewModel: ObservableObject {
     private let buildChapterUseCase: any BuildReaderChapterUseCase
     private let chapterTimestampText: String
     private let providedChaptersByIndex: [Int: BookChapter]?
+    private var enableListenBackdropTask: Task<Void, Never>?
 
     init(
         book: Book,
@@ -184,6 +203,83 @@ public final class ReaderViewModel: ObservableObject {
 
     func dismissChapterList() {
         isChapterListVisible = false
+    }
+
+    func showListenPage() {
+        guard !isTutorialVisible else {
+            return
+        }
+
+        isControlPanelVisible = false
+        isListenPageVisible = true
+    }
+
+    func dismissListenPage() {
+        isListenPageVisible = false
+        isPlaying = false
+    }
+
+    func togglePlayback() {
+        isPlaying.toggle()
+    }
+
+    func showListenSettings() {
+        guard !isTutorialVisible else {
+            return
+        }
+
+        isListenSettingsVisible = true
+        isListenSettingsBackdropEnabled = false
+        enableListenBackdropTask?.cancel()
+        enableListenBackdropTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .milliseconds(220))
+            guard let self, self.isListenSettingsVisible else {
+                return
+            }
+
+            self.isListenSettingsBackdropEnabled = true
+        }
+    }
+
+    func dismissListenSettings() {
+        isListenSettingsVisible = false
+        isListenSettingsBackdropEnabled = false
+        isListenSourceListVisible = false
+        isSleepTimerDialogVisible = false
+        enableListenBackdropTask?.cancel()
+        enableListenBackdropTask = nil
+    }
+
+    func toggleListenSourceList() {
+        isListenSourceListVisible.toggle()
+    }
+
+    func setListenSource(_ source: ListenSource) {
+        selectedListenSource = source
+        isListenSourceListVisible = false
+    }
+
+    func setListenSpeed(_ speed: Double) {
+        listenSpeed = min(max(speed, 0.5), 2.0)
+    }
+
+    func showSleepTimerDialog() {
+        sleepTimerInputMinutes = "\(sleepTimerMinutes ?? 15)"
+        isSleepTimerDialogVisible = true
+    }
+
+    func dismissSleepTimerDialog() {
+        isSleepTimerDialogVisible = false
+    }
+
+    func confirmSleepTimer() {
+        guard let minutes = Int(sleepTimerInputMinutes), (1...240).contains(minutes) else {
+            alertMessage = "Số phút hẹn giờ cần trong khoảng 1 đến 240."
+            return
+        }
+
+        sleepTimerMinutes = minutes
+        isSleepTimerDialogVisible = false
     }
 
     func setPanelTab(_ tab: PanelTab) {

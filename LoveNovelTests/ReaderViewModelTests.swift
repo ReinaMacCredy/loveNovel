@@ -93,6 +93,98 @@ struct ReaderViewModelTests {
         #expect(viewModel.isChapterListVisible == false)
     }
 
+    @Test("Listen quick action flow toggles settings and source list")
+    func listenQuickActionFlowTogglesSettingsAndSourceList() {
+        let viewModel = Self.makeViewModel(shouldShowTutorial: false)
+
+        viewModel.showListenSettings()
+        #expect(viewModel.isListenSettingsVisible)
+        #expect(viewModel.isListenSourceListVisible == false)
+
+        viewModel.toggleListenSourceList()
+        #expect(viewModel.isListenSourceListVisible)
+
+        viewModel.setListenSource(.microsoftOnline)
+        #expect(viewModel.selectedListenSource == .microsoftOnline)
+        #expect(viewModel.isListenSourceListVisible == false)
+
+        viewModel.dismissListenSettings()
+        #expect(viewModel.isListenSettingsVisible == false)
+    }
+
+    @Test("Sleep timer dialog applies valid minutes")
+    func sleepTimerDialogAppliesValidMinutes() throws {
+        let viewModel = Self.makeViewModel(shouldShowTutorial: false)
+
+        viewModel.showSleepTimerDialog()
+        #expect(viewModel.isSleepTimerDialogVisible)
+
+        viewModel.sleepTimerInputMinutes = "25"
+        viewModel.confirmSleepTimer()
+
+        #expect(viewModel.isSleepTimerDialogVisible == false)
+        #expect(try #require(viewModel.sleepTimerMinutes) == 25)
+    }
+
+    @Test("Sleep timer rejects invalid minutes and keeps dialog open")
+    func sleepTimerRejectsInvalidMinutesAndKeepsDialogOpen() {
+        let viewModel = Self.makeViewModel(shouldShowTutorial: false)
+
+        viewModel.showSleepTimerDialog()
+        viewModel.sleepTimerInputMinutes = "500"
+        viewModel.confirmSleepTimer()
+
+        #expect(viewModel.isSleepTimerDialogVisible)
+        #expect(viewModel.sleepTimerMinutes == nil)
+        #expect(viewModel.alertMessage != nil)
+    }
+
+    @Test("Toggle playback flips isPlaying")
+    func togglePlaybackFlipsIsPlaying() {
+        let viewModel = Self.makeViewModel(shouldShowTutorial: false)
+
+        #expect(viewModel.isPlaying == false)
+
+        viewModel.togglePlayback()
+        #expect(viewModel.isPlaying)
+
+        viewModel.togglePlayback()
+        #expect(viewModel.isPlaying == false)
+    }
+
+    @Test("Show listen page sets visible and hides control panel")
+    func showListenPageSetsVisibleAndHidesControlPanel() {
+        let viewModel = Self.makeViewModel(shouldShowTutorial: false)
+
+        viewModel.toggleControlPanelFromCenterTap()
+        #expect(viewModel.isControlPanelVisible)
+
+        viewModel.showListenPage()
+        #expect(viewModel.isListenPageVisible)
+        #expect(viewModel.isControlPanelVisible == false)
+    }
+
+    @Test("Dismiss listen page resets isPlaying")
+    func dismissListenPageResetsIsPlaying() {
+        let viewModel = Self.makeViewModel(shouldShowTutorial: false)
+
+        viewModel.showListenPage()
+        viewModel.togglePlayback()
+        #expect(viewModel.isPlaying)
+
+        viewModel.dismissListenPage()
+        #expect(viewModel.isListenPageVisible == false)
+        #expect(viewModel.isPlaying == false)
+    }
+
+    @Test("Show listen page blocked during tutorial")
+    func showListenPageBlockedDuringTutorial() {
+        let viewModel = Self.makeViewModel(shouldShowTutorial: true)
+
+        viewModel.showListenPage()
+        #expect(viewModel.isListenPageVisible == false)
+    }
+
     @Test("Provided chapter list overrides generated chapter metadata")
     func providedChapterListOverridesGeneratedChapterMetadata() throws {
         let chapters = [

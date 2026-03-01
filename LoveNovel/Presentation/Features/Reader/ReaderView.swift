@@ -68,14 +68,24 @@ struct ReaderView: View {
             if viewModel.isTutorialVisible {
                 Color.black.opacity(0.5)
                     .ignoresSafeArea()
-                    .zIndex(6)
+                    .zIndex(8)
 
                 tutorialOverlay
-                    .zIndex(7)
+                    .zIndex(9)
             }
         }
         .animation(.easeInOut(duration: 0.2), value: viewModel.isControlPanelVisible)
         .animation(.easeInOut(duration: 0.2), value: viewModel.isChapterListVisible)
+        .fullScreenCover(isPresented: Binding(
+            get: { viewModel.isListenPageVisible },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.dismissListenPage()
+                }
+            }
+        )) {
+            ListenView(viewModel: viewModel)
+        }
         .leftEdgeSwipeUpBackGesture {
             closeReader()
         }
@@ -348,7 +358,7 @@ struct ReaderView: View {
                         title: "Nghe",
                         accessibilityIdentifier: "reader.quick.listen"
                     ) {
-                        viewModel.didTapPanelAction(AppLocalization.string("Nghe"))
+                        viewModel.showListenPage()
                     }
                 }
             }
