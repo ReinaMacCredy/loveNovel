@@ -291,138 +291,117 @@ struct ListenView: View {
                 .contentShape(Rectangle())
                 .allowsHitTesting(viewModel.isListenSettingsBackdropEnabled)
                 .onTapGesture {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        isSettingsVisible = false
-                        viewModel.dismissListenSettings()
-                    }
+                    dismissSettings()
                 }
 
-            VStack(alignment: .leading, spacing: 14) {
-                HStack {
-                    Text("Cai dat")
-                        .font(.system(size: 34, weight: .semibold))
-                        .foregroundStyle(AppTheme.Colors.textPrimary)
-
-                    Spacer()
-
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            isSettingsVisible = false
-                            viewModel.dismissListenSettings()
-                        }
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(AppTheme.Colors.textSecondary)
-                            .frame(width: 30, height: 30)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("listen.settings.close")
-                }
+            VStack(alignment: .leading, spacing: 0) {
+                settingsHeader
+                    .padding(.bottom, 20)
 
                 listenSourceSection
+                    .padding(.bottom, 18)
+
                 listenSpeedSection
+                    .padding(.bottom, 18)
 
-                Button {
-                    viewModel.showSleepTimerDialog()
-                    isSleepTimerFieldFocused = true
-                } label: {
-                    HStack(spacing: 10) {
-                        Image(systemName: "timer")
-                            .font(.system(size: 17, weight: .semibold))
-                            .foregroundStyle(AppTheme.Colors.textPrimary)
-
-                        Text(sleepTimerLabel)
-                            .font(.system(size: 17, weight: .medium))
-                            .foregroundStyle(AppTheme.Colors.textPrimary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .padding(.vertical, 8)
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("listen.settings.sleep_timer")
+                settingsSleepTimerRow
             }
             .padding(.horizontal, AppTheme.Layout.horizontalInset)
-            .padding(.top, 18)
-            .padding(.bottom, 28)
+            .padding(.top, 20)
+            .padding(.bottom, 34)
             .frame(maxWidth: .infinity, alignment: .topLeading)
             .background(
-                RoundedRectangle(cornerRadius: 0)
-                    .fill(AppTheme.Colors.screenBackground)
-                    .ignoresSafeArea(edges: .bottom)
+                UnevenRoundedRectangle(
+                    topLeadingRadius: 22,
+                    topTrailingRadius: 22
+                )
+                .fill(AppTheme.Colors.screenBackground)
+                .ignoresSafeArea(edges: .bottom)
             )
             .accessibilityIdentifier("listen.settings")
+        }
+    }
+
+    private var settingsHeader: some View {
+        HStack {
+            Text("Cai dat")
+                .font(.system(size: 24, weight: .bold))
+                .foregroundStyle(AppTheme.Colors.textPrimary)
+
+            Spacer()
+
+            Button {
+                dismissSettings()
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 26))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("listen.settings.close")
         }
     }
 
     private var listenSourceSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Nguon nghe")
-                .font(.system(size: 16, weight: .regular))
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(AppTheme.Colors.textSecondary)
+                .textCase(.uppercase)
 
-            VStack(spacing: 0) {
-                Button {
-                    viewModel.toggleListenSourceList()
-                } label: {
-                    HStack {
-                        Text(viewModel.selectedListenSource.rawValue)
-                            .font(.system(size: 17, weight: .regular))
-                            .foregroundStyle(AppTheme.Colors.textPrimary)
+            VStack(spacing: 2) {
+                ForEach(ReaderViewModel.ListenSource.allCases) { source in
+                    let isSelected = viewModel.selectedListenSource == source
 
-                        Spacer()
+                    Button {
+                        viewModel.setListenSource(source)
+                    } label: {
+                        HStack {
+                            Text(source.rawValue)
+                                .font(.system(size: 16, weight: isSelected ? .medium : .regular))
+                                .foregroundStyle(AppTheme.Colors.textPrimary)
 
-                        Image(systemName: "chevron.down")
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(AppTheme.Colors.textSecondary)
-                            .rotationEffect(.degrees(viewModel.isListenSourceListVisible ? 180 : 0))
-                    }
-                    .padding(.horizontal, 14)
-                    .frame(height: 52)
-                    .background(
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(AppTheme.Colors.translucentSurfaceBackground)
-                    )
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("listen.source.trigger")
+                            Spacer()
 
-                if viewModel.isListenSourceListVisible {
-                    VStack(spacing: 0) {
-                        ForEach(ReaderViewModel.ListenSource.allCases) { source in
-                            Button {
-                                viewModel.setListenSource(source)
-                            } label: {
-                                HStack {
-                                    Text(source.rawValue)
-                                        .font(.system(size: 17, weight: .regular))
-                                        .foregroundStyle(AppTheme.Colors.textPrimary)
-                                    Spacer()
-                                }
-                                .padding(.horizontal, 14)
-                                .frame(height: 52)
-                            }
-                            .buttonStyle(.plain)
-
-                            if source != ReaderViewModel.ListenSource.allCases.last {
-                                Divider()
+                            if isSelected {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundStyle(AppTheme.Colors.accentBlue)
                             }
                         }
+                        .padding(.horizontal, 14)
+                        .frame(height: 46)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(
+                                    isSelected
+                                        ? AppTheme.Colors.accentBlue.opacity(0.1)
+                                        : AppTheme.Colors.translucentSurfaceBackground
+                                )
+                        )
                     }
-                    .background(
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(AppTheme.Colors.translucentSurfaceBackground)
-                    )
+                    .buttonStyle(.plain)
                 }
             }
         }
     }
 
     private var listenSpeedSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Toc do")
-                .font(.system(size: 16, weight: .regular))
-                .foregroundStyle(AppTheme.Colors.textSecondary)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Toc do")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .textCase(.uppercase)
+
+                Spacer()
+
+                Text("\(formattedListenSpeed)x")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(AppTheme.Colors.accentBlue)
+                    .monospacedDigit()
+            }
 
             Slider(
                 value: Binding(
@@ -434,10 +413,67 @@ struct ListenView: View {
             )
             .tint(AppTheme.Colors.accentBlue)
 
-            Text("\(formattedListenSpeed)x")
-                .font(.system(size: 13, weight: .regular))
-                .foregroundStyle(AppTheme.Colors.textSecondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                Text("0.5x")
+                    .font(.system(size: 11, weight: .regular))
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+
+                Spacer()
+
+                Text("1.0x")
+                    .font(.system(size: 11, weight: .regular))
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+
+                Spacer()
+
+                Text("2.0x")
+                    .font(.system(size: 11, weight: .regular))
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+            }
+            .padding(.horizontal, 2)
+        }
+    }
+
+    private var settingsSleepTimerRow: some View {
+        Button {
+            viewModel.showSleepTimerDialog()
+            isSleepTimerFieldFocused = true
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "moon.fill")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(AppTheme.Colors.accentBlue)
+                    .frame(width: 32, height: 32)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(AppTheme.Colors.accentBlue.opacity(0.12))
+                    )
+
+                Text(sleepTimerLabel)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+            }
+            .padding(.horizontal, 14)
+            .frame(height: 52)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(AppTheme.Colors.translucentSurfaceBackground)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("listen.settings.sleep_timer")
+    }
+
+    private func dismissSettings() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            isSettingsVisible = false
+            viewModel.dismissListenSettings()
         }
     }
 
