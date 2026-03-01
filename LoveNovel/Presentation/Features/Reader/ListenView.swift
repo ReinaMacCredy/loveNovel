@@ -351,38 +351,68 @@ struct ListenView: View {
                 .textCase(.uppercase)
 
             VStack(spacing: 0) {
-                ForEach(Array(ReaderViewModel.ListenSource.allCases.enumerated()), id: \.element) { offset, source in
-                    let isSelected = viewModel.selectedListenSource == source
-
-                    Button {
-                        viewModel.setListenSource(source)
-                    } label: {
-                        HStack {
-                            Text(source.rawValue)
-                                .font(.system(size: 16, weight: isSelected ? .medium : .regular))
-                                .foregroundStyle(AppTheme.Colors.textPrimary)
-
-                            Spacer()
-
-                            if isSelected {
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundStyle(AppTheme.Colors.accentBlue)
-                            }
-                        }
-                        .padding(.horizontal, 14)
-                        .frame(height: 46)
-                        .background(
-                            isSelected
-                                ? AppTheme.Colors.accentBlue.opacity(0.08)
-                                : .clear
-                        )
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        viewModel.toggleListenSourceList()
                     }
-                    .buttonStyle(.plain)
+                } label: {
+                    HStack {
+                        Text(viewModel.selectedListenSource.rawValue)
+                            .font(.system(size: 16, weight: .regular))
+                            .foregroundStyle(AppTheme.Colors.textPrimary)
 
-                    if offset < ReaderViewModel.ListenSource.allCases.count - 1 {
-                        Divider()
-                            .padding(.leading, 14)
+                        Spacer()
+
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(AppTheme.Colors.textSecondary)
+                            .rotationEffect(.degrees(viewModel.isListenSourceListVisible ? 180 : 0))
+                    }
+                    .padding(.horizontal, 14)
+                    .frame(height: 48)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("listen.source.trigger")
+
+                if viewModel.isListenSourceListVisible {
+                    Divider()
+                        .padding(.leading, 14)
+
+                    ForEach(Array(ReaderViewModel.ListenSource.allCases.enumerated()), id: \.element) { offset, source in
+                        let isSelected = viewModel.selectedListenSource == source
+
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                viewModel.setListenSource(source)
+                            }
+                        } label: {
+                            HStack {
+                                Text(source.rawValue)
+                                    .font(.system(size: 16, weight: isSelected ? .medium : .regular))
+                                    .foregroundStyle(AppTheme.Colors.textPrimary)
+
+                                Spacer()
+
+                                if isSelected {
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundStyle(AppTheme.Colors.accentBlue)
+                                }
+                            }
+                            .padding(.horizontal, 14)
+                            .frame(height: 44)
+                            .background(
+                                isSelected
+                                    ? AppTheme.Colors.accentBlue.opacity(0.08)
+                                    : .clear
+                            )
+                        }
+                        .buttonStyle(.plain)
+
+                        if offset < ReaderViewModel.ListenSource.allCases.count - 1 {
+                            Divider()
+                                .padding(.leading, 14)
+                        }
                     }
                 }
             }
