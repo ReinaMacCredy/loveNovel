@@ -350,8 +350,8 @@ struct ListenView: View {
                 .foregroundStyle(AppTheme.Colors.textSecondary)
                 .textCase(.uppercase)
 
-            VStack(spacing: 2) {
-                ForEach(ReaderViewModel.ListenSource.allCases) { source in
+            VStack(spacing: 0) {
+                ForEach(Array(ReaderViewModel.ListenSource.allCases.enumerated()), id: \.element) { offset, source in
                     let isSelected = viewModel.selectedListenSource == source
 
                     Button {
@@ -373,17 +373,24 @@ struct ListenView: View {
                         .padding(.horizontal, 14)
                         .frame(height: 46)
                         .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(
-                                    isSelected
-                                        ? AppTheme.Colors.accentBlue.opacity(0.1)
-                                        : AppTheme.Colors.translucentSurfaceBackground
-                                )
+                            isSelected
+                                ? AppTheme.Colors.accentBlue.opacity(0.08)
+                                : .clear
                         )
                     }
                     .buttonStyle(.plain)
+
+                    if offset < ReaderViewModel.ListenSource.allCases.count - 1 {
+                        Divider()
+                            .padding(.leading, 14)
+                    }
                 }
             }
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(AppTheme.Colors.translucentSurfaceBackground)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
 
