@@ -101,19 +101,19 @@ struct ListenView: View {
 
     private var toolbarRow: some View {
         HStack(spacing: 0) {
-            toolbarButton(icon: "list.bullet", title: "D.S Chuong", identifier: "listen.toolbar.chapters") {
+            toolbarButton(icon: "list.bullet", titleKey: "reader.listen.toolbar.chapters", identifier: "listen.toolbar.chapters") {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     isChapterListVisible = true
                 }
             }
-            toolbarButton(icon: "gearshape", title: "Cai dat", identifier: "listen.toolbar.settings") {
+            toolbarButton(icon: "gearshape", titleKey: "reader.listen.toolbar.settings", identifier: "listen.toolbar.settings") {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     isSettingsVisible = true
                     viewModel.showListenSettings()
                 }
             }
-            toolbarButton(icon: "questionmark.circle", title: "Huong dan", identifier: "listen.toolbar.guide") {
-                viewModel.didTapPanelAction(AppLocalization.string("Huong dan"))
+            toolbarButton(icon: "questionmark.circle", titleKey: "reader.listen.toolbar.guide", identifier: "listen.toolbar.guide") {
+                viewModel.didTapPanelAction(AppLocalization.string("reader.listen.toolbar.guide"))
             }
         }
         .padding(.horizontal, AppTheme.Layout.horizontalInset)
@@ -121,7 +121,7 @@ struct ListenView: View {
 
     private func toolbarButton(
         icon: String,
-        title: String,
+        titleKey: String,
         identifier: String,
         action: @escaping () -> Void
     ) -> some View {
@@ -131,7 +131,7 @@ struct ListenView: View {
                     .font(.system(size: 18, weight: .regular))
                     .foregroundStyle(AppTheme.Colors.textSecondary)
 
-                Text(title)
+                Text(LocalizedStringKey(titleKey))
                     .font(.system(size: 11, weight: .regular))
                     .foregroundStyle(AppTheme.Colors.textSecondary)
             }
@@ -324,7 +324,7 @@ struct ListenView: View {
 
     private var settingsHeader: some View {
         HStack {
-            Text("Cai dat")
+            Text("reader.listen.settings.title")
                 .font(.system(size: 24, weight: .bold))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 
@@ -345,7 +345,7 @@ struct ListenView: View {
 
     private var listenSourceSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Nguon nghe")
+            Text("reader.listen.settings.source")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(AppTheme.Colors.textSecondary)
                 .textCase(.uppercase)
@@ -357,7 +357,7 @@ struct ListenView: View {
                     }
                 } label: {
                     HStack {
-                        Text(viewModel.selectedListenSource.rawValue)
+                        Text(viewModel.selectedListenSource.titleKey)
                             .font(.system(size: 16, weight: .regular))
                             .foregroundStyle(AppTheme.Colors.textPrimary)
 
@@ -387,7 +387,7 @@ struct ListenView: View {
                             }
                         } label: {
                             HStack {
-                                Text(source.rawValue)
+                                Text(source.titleKey)
                                     .font(.system(size: 16, weight: isSelected ? .medium : .regular))
                                     .foregroundStyle(AppTheme.Colors.textPrimary)
 
@@ -427,7 +427,7 @@ struct ListenView: View {
     private var listenSpeedSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Toc do")
+                Text("reader.listen.settings.speed")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(AppTheme.Colors.textSecondary)
                     .textCase(.uppercase)
@@ -525,7 +525,7 @@ struct ListenView: View {
                 }
 
             VStack(alignment: .leading, spacing: 18) {
-                Text("So phut hen gio")
+                Text("reader.listen.sleep_dialog.title")
                     .font(.system(size: 34, weight: .regular))
                     .foregroundStyle(AppTheme.Colors.textPrimary)
 
@@ -545,7 +545,7 @@ struct ListenView: View {
                 HStack {
                     Spacer()
 
-                    Button("Huy") {
+                    Button("reader.listen.sleep_dialog.cancel") {
                         viewModel.dismissSleepTimerDialog()
                         isSleepTimerFieldFocused = false
                     }
@@ -554,7 +554,7 @@ struct ListenView: View {
                     .foregroundStyle(AppTheme.Colors.accentBlue)
                     .accessibilityIdentifier("listen.sleep_cancel")
 
-                    Button("Dong y") {
+                    Button("reader.listen.sleep_dialog.confirm") {
                         viewModel.confirmSleepTimer()
                         isSleepTimerFieldFocused = false
                     }
@@ -584,10 +584,10 @@ struct ListenView: View {
 
     private var sleepTimerLabel: String {
         if let configuredMinutes = viewModel.sleepTimerMinutes {
-            return "Hen Gio Tat (\(configuredMinutes) phut)"
+            return AppLocalization.format("reader.listen.settings.sleep_timer_with_value", configuredMinutes)
         }
 
-        return "Hen Gio Tat"
+        return AppLocalization.string("reader.listen.settings.sleep_timer")
     }
 }
 
@@ -622,7 +622,7 @@ private struct ListenChapterListOverlay: View {
             Spacer()
         }
         .overlay {
-            Text("D.S Chuong")
+            Text("reader.listen.chapter_list.title")
                 .font(.system(size: 28, weight: .regular))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
                 .lineLimit(1)

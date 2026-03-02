@@ -41,11 +41,22 @@ public final class ReaderViewModel: ObservableObject {
     }
 
     enum ListenSource: String, CaseIterable, Identifiable {
-        case appleTTS = "Apple TTS"
-        case googleOnline = "Google (Online)"
-        case microsoftOnline = "Microsoft (Online)"
+        case appleTTS
+        case googleOnline
+        case microsoftOnline
 
         var id: Self { self }
+
+        var titleKey: LocalizedStringKey {
+            switch self {
+            case .appleTTS:
+                return "reader.listen.source.apple_tts"
+            case .googleOnline:
+                return "reader.listen.source.google_online"
+            case .microsoftOnline:
+                return "reader.listen.source.microsoft_online"
+            }
+        }
     }
 
     @Published private(set) var isControlPanelVisible: Bool = false
@@ -274,7 +285,7 @@ public final class ReaderViewModel: ObservableObject {
 
     func confirmSleepTimer() {
         guard let minutes = Int(sleepTimerInputMinutes), (1...240).contains(minutes) else {
-            alertMessage = "Số phút hẹn giờ cần trong khoảng 1 đến 240."
+            alertMessage = AppLocalization.format("reader.listen.validation.sleep_timer_range", 1, 240)
             return
         }
 
