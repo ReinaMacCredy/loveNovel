@@ -4,13 +4,6 @@ import LoveNovelDomain
 
 @MainActor
 public final class NovelDetailViewModel: ObservableObject {
-    enum Phase: Equatable {
-        case idle
-        case loading
-        case loaded
-        case failed
-    }
-
     enum Tab: String, CaseIterable, Identifiable {
         case info = "Info"
         case review = "Review"
@@ -61,7 +54,7 @@ public final class NovelDetailViewModel: ObservableObject {
         }
     }
 
-    @Published private(set) var phase: Phase = .idle
+    @Published private(set) var phase: LoadPhase = .idle
     @Published private(set) var detail: BookDetail?
     @Published private(set) var selectedTab: Tab = .info
     @Published private(set) var commentSort: CommentSort = .newest

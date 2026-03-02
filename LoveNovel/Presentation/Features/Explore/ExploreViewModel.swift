@@ -4,13 +4,6 @@ import LoveNovelDomain
 
 @MainActor
 public final class ExploreViewModel: ObservableObject {
-    enum Phase: Equatable {
-        case idle
-        case loading
-        case loaded
-        case failed
-    }
-
     enum StoryMode: String, CaseIterable, Identifiable {
         case all
         case male
@@ -43,7 +36,7 @@ public final class ExploreViewModel: ObservableObject {
 
     typealias AllStoriesListItem = ExploreAllStoriesListItem
 
-    @Published private(set) var phase: Phase = .idle
+    @Published private(set) var phase: LoadPhase = .idle
     @Published private(set) var feed: HomeFeed?
     @Published private(set) var detailsByBookID: [String: BookDetail] = [:]
     @Published private(set) var errorMessage: String?

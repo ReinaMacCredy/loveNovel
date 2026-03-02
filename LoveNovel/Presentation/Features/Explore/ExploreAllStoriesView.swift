@@ -8,7 +8,7 @@ struct ExploreAllStoriesView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var selectedBook: Book?
-    @State private var phase: Phase = .idle
+    @State private var phase: LoadPhase = .idle
     @State private var listItems: [ExploreViewModel.AllStoriesListItem] = []
 
     init(
@@ -241,13 +241,6 @@ private struct AllStoriesRow: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-}
-
-private enum Phase: Equatable {
-    case idle
-    case loading
-    case loaded
-    case failed
 }
 
 #Preview {
