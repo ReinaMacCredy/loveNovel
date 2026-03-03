@@ -13,7 +13,7 @@ struct PreviewFeatureFactory: AppFeatureFactory {
     init(
         catalogProvider: any CatalogProviding = PreviewCatalogProvider(),
         detailProvider: any BookDetailProviding = PreviewBookDetailProvider(),
-        chapterTitleFormatter: any ChapterTitleFormatting = PreviewChapterTitleFormatter()
+        chapterTitleFormatter: any ChapterTitleFormatting = AppChapterTitleFormatter()
     ) {
         self.catalogProvider = catalogProvider
         self.detailProvider = detailProvider
@@ -96,12 +96,6 @@ private struct PreviewBookDetailProvider: BookDetailProviding {
             reviews: [],
             comments: []
         )
-    }
-}
-
-private struct PreviewChapterTitleFormatter: ChapterTitleFormatting {
-    func chapterTitle(for index: Int) -> String {
-        AppLocalization.format("novel_detail.chapter.title", index)
     }
 }
 
