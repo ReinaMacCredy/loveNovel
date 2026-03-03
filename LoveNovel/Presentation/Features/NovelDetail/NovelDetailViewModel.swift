@@ -59,6 +59,8 @@ public final class NovelDetailViewModel: ObservableObject {
     @Published private(set) var selectedTab: Tab = .info
     @Published private(set) var commentSort: CommentSort = .newest
     @Published private(set) var chapterOrder: ChapterOrder = .newest
+    @Published private(set) var displayedChapters: [BookChapter] = []
+    @Published private(set) var displayedComments: [BookComment] = []
     @Published var draftComment: String = ""
     @Published var alertMessage: String?
     @Published private(set) var errorMessage: String?
@@ -117,11 +119,15 @@ public final class NovelDetailViewModel: ObservableObject {
             }
 
             detail = loadedDetail
+            rebuildChapters()
+            rebuildComments()
             phase = .loaded
         } catch is CancellationError {
             phase = .idle
         } catch {
             detail = nil
+            displayedChapters = []
+            displayedComments = []
             errorMessage = AppLocalization.string("Could not load story details.")
             phase = .failed
         }
@@ -133,26 +139,30 @@ public final class NovelDetailViewModel: ObservableObject {
 
     func toggleChapterOrder() {
         chapterOrder = chapterOrder == .newest ? .oldest : .newest
+        rebuildChapters()
     }
 
     func setCommentSort(_ sort: CommentSort) {
         commentSort = sort
+        rebuildComments()
     }
 
-    var displayedChapters: [BookChapter] {
+    private func rebuildChapters() {
         guard let detail else {
-            return []
+            displayedChapters = []
+            return
         }
 
-        return buildDisplayedChaptersUseCase.execute(for: detail, order: chapterOrder.useCaseOrder)
+        displayedChapters = buildDisplayedChaptersUseCase.execute(for: detail, order: chapterOrder.useCaseOrder)
     }
 
-    var displayedComments: [BookComment] {
+    private func rebuildComments() {
         guard let detail else {
-            return []
+            displayedComments = []
+            return
         }
 
-        return sortBookCommentsUseCase.execute(comments: detail.comments, order: commentSort.useCaseOrder)
+        displayedComments = sortBookCommentsUseCase.execute(comments: detail.comments, order: commentSort.useCaseOrder)
     }
 
     var displayedReviews: [BookReview] {
