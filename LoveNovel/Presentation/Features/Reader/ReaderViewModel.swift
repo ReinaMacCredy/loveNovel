@@ -108,6 +108,7 @@ public final class ReaderViewModel: ObservableObject {
     private let buildChapterUseCase: any BuildReaderChapterUseCase
     private let chapterTimestampText: String
     private let providedChaptersByIndex: [Int: BookChapter]?
+    private let cachedChapterList: [BookChapter]
     private var enableListenBackdropTask: Task<Void, Never>?
 
     init(
@@ -139,6 +140,15 @@ public final class ReaderViewModel: ObservableObject {
             self.providedChaptersByIndex = nil
         } else {
             self.providedChaptersByIndex = validProvidedChapters
+        }
+
+        self.cachedChapterList = (1...normalizedTotalChapters).map { index in
+            buildChapterUseCase.execute(
+                bookID: book.id,
+                chapterIndex: index,
+                chapterTimestampText: initialChapter.timestampText,
+                providedChapter: validProvidedChapters.isEmpty ? nil : validProvidedChapters[index]
+            )
         }
     }
 
@@ -195,7 +205,7 @@ public final class ReaderViewModel: ObservableObject {
     }
 
     var chapterList: [BookChapter] {
-        (1...totalChapters).map(chapter(for:))
+        cachedChapterList
     }
 
     func toggleControlPanelFromCenterTap() {
