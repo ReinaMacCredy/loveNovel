@@ -171,8 +171,8 @@ struct ExploreView: View {
     }
 
     private func loadedContent(_ feed: HomeFeed) -> some View {
-        let allBooks = uniqueBooks(in: feed)
-        let heroBooks = heroBooks(from: feed)
+        let allBooks = ExploreBooks.uniqueBooks(in: feed)
+        let heroBooks = heroBooks(from: allBooks, featured: feed.featured)
         let latestBooks = Array(feed.latest.prefix(8))
         let recommendedBooks = Array(feed.recommended.prefix(6))
         let realtimeBooks = realtimeBooks(from: allBooks)
@@ -514,17 +514,8 @@ struct ExploreView: View {
         }
     }
 
-    private func uniqueBooks(in feed: HomeFeed) -> [Book] {
-        var seenBookIDs = Set<String>()
-        let orderedBooks = feed.latest + [feed.featured] + feed.recommended + feed.moreLikeThis
-
-        return orderedBooks.filter { book in
-            seenBookIDs.insert(book.id).inserted
-        }
-    }
-
-    private func heroBooks(from feed: HomeFeed) -> [Book] {
-        let ordered = [feed.featured] + uniqueBooks(in: feed)
+    private func heroBooks(from allBooks: [Book], featured: Book) -> [Book] {
+        let ordered = [featured] + allBooks
         var seen = Set<String>()
 
         return ordered.filter { book in
