@@ -127,53 +127,61 @@ public struct DefaultBuildAllStoriesListUseCase: BuildAllStoriesListUseCase {
 
     public func execute(from feed: HomeFeed) async -> [ExploreAllStoriesListItem] {
         let books = ExploreBooks.uniqueBooks(in: feed)
-        var items: [ExploreAllStoriesListItem] = []
-        items.reserveCapacity(books.count)
+        guard !books.isEmpty else {
+            return []
+        }
 
-        for (index, book) in books.enumerated() {
-            if Task.isCancelled {
-                return []
+        let bookDetails = self.bookDetails
+        return await withTaskGroup(
+            of: (Int, ExploreAllStoriesListItem)?.self,
+            returning: [ExploreAllStoriesListItem].self
+        ) { group in
+            for (index, book) in books.enumerated() {
+                group.addTask {
+                    let rankTag = "#\(1508 + index)"
+
+                    do {
+                        let detail = try await bookDetails.fetchDetail(for: book)
+
+                        return (index, ExploreAllStoriesListItem(
+                            id: book.id,
+                            book: book,
+                            categoryTag: Self.formattedCategoryTag(from: detail.genres.first),
+                            rankTag: rankTag,
+                            chapterCount: detail.chapterCount,
+                            viewsLabel: detail.viewsLabel
+                        ))
+                    } catch is CancellationError {
+                        return nil
+                    } catch {
+                        return (index, ExploreAllStoriesListItem(
+                            id: book.id,
+                            book: book,
+                            categoryTag: "#NOVEL",
+                            rankTag: rankTag,
+                            chapterCount: 0,
+                            viewsLabel: "0"
+                        ))
+                    }
+                }
             }
 
-            let rankTag = "#\(1508 + index)"
+            var results: [(Int, ExploreAllStoriesListItem)] = []
+            results.reserveCapacity(books.count)
 
-            do {
-                let detail = try await bookDetails.fetchDetail(for: book)
-
-                if Task.isCancelled {
+            for await result in group {
+                guard let result else {
                     return []
                 }
 
-                items.append(
-                    ExploreAllStoriesListItem(
-                        id: book.id,
-                        book: book,
-                        categoryTag: formattedCategoryTag(from: detail.genres.first),
-                        rankTag: rankTag,
-                        chapterCount: detail.chapterCount,
-                        viewsLabel: detail.viewsLabel
-                    )
-                )
-            } catch is CancellationError {
-                return []
-            } catch {
-                items.append(
-                    ExploreAllStoriesListItem(
-                        id: book.id,
-                        book: book,
-                        categoryTag: "#NOVEL",
-                        rankTag: rankTag,
-                        chapterCount: 0,
-                        viewsLabel: "0"
-                    )
-                )
+                results.append(result)
             }
-        }
 
-        return items
+            return results.sorted { $0.0 < $1.0 }.map(\.1)
+        }
     }
 
-    private func formattedCategoryTag(from genre: String?) -> String {
+    private static func formattedCategoryTag(from genre: String?) -> String {
         guard let genre = genre?.trimmingCharacters(in: .whitespacesAndNewlines), !genre.isEmpty else {
             return "#NOVEL"
         }
