@@ -318,7 +318,7 @@ final class LibraryCollectionStore: ObservableObject {
         array.insert(id, at: 0)
     }
 
-    private struct PersistedState: Codable, Sendable {
+    struct PersistedState: Codable, Sendable {
         let entries: [LibraryShelfEntry]
         let historyOrder: [Book.ID]
         let bookmarkOrder: [Book.ID]

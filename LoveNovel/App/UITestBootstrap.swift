@@ -37,7 +37,7 @@ public enum UITestBootstrap {
             isMuted: true
         )
 
-        let seededState = PersistedLibraryState(
+        let seededState = LibraryCollectionStore.PersistedState(
             entries: [seededEntry],
             historyOrder: [seededEntry.id],
             bookmarkOrder: [seededEntry.id]
@@ -48,11 +48,5 @@ public enum UITestBootstrap {
         }
 
         userDefaults.set(data, forKey: AppSettingsKey.libraryCollectionState)
-    }
-
-    private struct PersistedLibraryState: Codable, Sendable {
-        let entries: [LibraryShelfEntry]
-        let historyOrder: [Book.ID]
-        let bookmarkOrder: [Book.ID]
     }
 }
