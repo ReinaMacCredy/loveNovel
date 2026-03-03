@@ -49,6 +49,7 @@
 		8CF6B552484EA082B2E70041 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B49243CC21E6663338C299 /* RootTabView.swift */; };
 		8EC5B07DA3A1155B41BE2C84 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F27CCD0105398461EA0BF951 /* ProfileView.swift */; };
 		92B6E1C720CA17C402AFED41 /* DarkModeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC01C69D01D5B9FA009DC7 /* DarkModeSettingsView.swift */; };
+		93374D5EBC2F5C5F5698528C /* ChapterListOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA9F2DF4B9043EB54AF14A1 /* ChapterListOverlay.swift */; };
 		9587539BFF869BA65C70EA18 /* LeftEdgeSwipeUpBackModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3484631880E554A538398CDB /* LeftEdgeSwipeUpBackModifier.swift */; };
 		95EA700E445D1B9C6D206E8F /* NovelDetailUseCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDBD587F0148D884D714FBC /* NovelDetailUseCases.swift */; };
 		9AAE25C88C7D8DAAA6015316 /* mock_book_details.json in Resources */ = {isa = PBXBuildFile; fileRef = 44AC963FDFD26193CE9E11A7 /* mock_book_details.json */; };
@@ -284,6 +285,7 @@
 		B6E80A51070E41E8FC1307B4 /* LoveNovelUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LoveNovelUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7541FC5AF7040CF4D8A6456 /* mock_catalog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mock_catalog.json; sourceTree = "<group>"; };
 		BAC687C3CDC10EFD1211E4E9 /* ExploreSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreSearchView.swift; sourceTree = "<group>"; };
+		BCA9F2DF4B9043EB54AF14A1 /* ChapterListOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterListOverlay.swift; sourceTree = "<group>"; };
 		C0DB0CF8F5EC67FDB3D3E52B /* LanguageSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingsView.swift; sourceTree = "<group>"; };
 		C281EC046A195AE25F51F09A /* LibraryUseCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryUseCases.swift; sourceTree = "<group>"; };
 		C7D16DBB85033C2BCF978A00 /* ListenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenView.swift; sourceTree = "<group>"; };
@@ -473,6 +475,7 @@
 		70E4F401FD73DC986309ED1F /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				BCA9F2DF4B9043EB54AF14A1 /* ChapterListOverlay.swift */,
 				CF6EBDD7166E09A7E67A0F28 /* Components */,
 			);
 			path = Shared;
@@ -967,6 +970,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93374D5EBC2F5C5F5698528C /* ChapterListOverlay.swift in Sources */,
 				92B6E1C720CA17C402AFED41 /* DarkModeSettingsView.swift in Sources */,
 				DDFCFBF934993AD2C9820EA5 /* ExploreAllStoriesView.swift in Sources */,
 				BC85878501FB643ADEFE6C30 /* ExploreSearchView.swift in Sources */,

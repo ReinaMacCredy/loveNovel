@@ -5,7 +5,6 @@ import LoveNovelDomain
 struct ListenView: View {
     @ObservedObject var viewModel: ReaderViewModel
     @State private var isChapterListVisible: Bool = false
-    @State private var isSettingsVisible: Bool = false
     @FocusState private var isSleepTimerFieldFocused: Bool
 
     var body: some View {
@@ -31,7 +30,7 @@ struct ListenView: View {
                     .zIndex(5)
             }
 
-            if isSettingsVisible {
+            if viewModel.isListenSettingsVisible {
                 listenSettingsOverlay
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .zIndex(6)
@@ -44,7 +43,7 @@ struct ListenView: View {
             }
         }
         .animation(.easeInOut(duration: 0.2), value: isChapterListVisible)
-        .animation(.easeInOut(duration: 0.2), value: isSettingsVisible)
+        .animation(.easeInOut(duration: 0.2), value: viewModel.isListenSettingsVisible)
         .animation(.easeInOut(duration: 0.2), value: viewModel.isSleepTimerDialogVisible)
         .alert(
             "Coming Soon",
@@ -107,10 +106,7 @@ struct ListenView: View {
                 }
             }
             toolbarButton(icon: "gearshape", titleKey: "reader.listen.toolbar.settings", identifier: "listen.toolbar.settings") {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    isSettingsVisible = true
-                    viewModel.showListenSettings()
-                }
+                viewModel.showListenSettings()
             }
             toolbarButton(icon: "questionmark.circle", titleKey: "reader.listen.toolbar.guide", identifier: "listen.toolbar.guide") {
                 viewModel.didTapPanelAction(AppLocalization.string("reader.listen.toolbar.guide"))
@@ -266,14 +262,17 @@ struct ListenView: View {
     // MARK: - Overlays
 
     private var chapterListOverlay: some View {
-        ListenChapterListOverlay(
+        ChapterListOverlay(
             chapters: viewModel.chapterList,
             currentChapterIndex: viewModel.currentChapterIndex,
+            titleKey: "reader.listen.chapter_list.title",
+            accessibilityPrefix: "listen",
             onBack: {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     isChapterListVisible = false
                 }
             },
+            onReload: nil,
             onSelectChapter: { chapterIndex in
                 viewModel.jumpToChapter(chapterIndex)
                 withAnimation(.easeInOut(duration: 0.2)) {
@@ -378,7 +377,7 @@ struct ListenView: View {
                     Divider()
                         .padding(.leading, 14)
 
-                    ForEach(Array(ReaderViewModel.ListenSource.allCases.enumerated()), id: \.element) { offset, source in
+                    ForEach(ReaderViewModel.ListenSource.allCases) { source in
                         let isSelected = viewModel.selectedListenSource == source
 
                         Button {
@@ -409,7 +408,7 @@ struct ListenView: View {
                         }
                         .buttonStyle(.plain)
 
-                        if offset < ReaderViewModel.ListenSource.allCases.count - 1 {
+                        if source != ReaderViewModel.ListenSource.allCases.last {
                             Divider()
                                 .padding(.leading, 14)
                         }
@@ -508,10 +507,7 @@ struct ListenView: View {
     }
 
     private func dismissSettings() {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            isSettingsVisible = false
-            viewModel.dismissListenSettings()
-        }
+        viewModel.dismissListenSettings()
     }
 
     private var sleepTimerDialogOverlay: some View {
@@ -588,111 +584,6 @@ struct ListenView: View {
         }
 
         return AppLocalization.string("reader.listen.settings.sleep_timer")
-    }
-}
-
-// MARK: - Chapter List Overlay
-
-private struct ListenChapterListOverlay: View {
-    let chapters: [BookChapter]
-    let currentChapterIndex: Int
-    let onBack: () -> Void
-    let onSelectChapter: (Int) -> Void
-
-    var body: some View {
-        VStack(spacing: 0) {
-            header
-            content
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(AppTheme.Colors.screenBackground.ignoresSafeArea())
-    }
-
-    private var header: some View {
-        HStack {
-            Button(action: onBack) {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 20, weight: .regular))
-                    .foregroundStyle(AppTheme.Colors.textPrimary)
-                    .frame(width: 32, height: 32)
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("listen.chapter_list.back")
-
-            Spacer()
-        }
-        .overlay {
-            Text("reader.listen.chapter_list.title")
-                .font(.system(size: 28, weight: .regular))
-                .foregroundStyle(AppTheme.Colors.textPrimary)
-                .lineLimit(1)
-        }
-        .padding(.horizontal, AppTheme.Layout.horizontalInset)
-        .safeAreaPadding(.top, 8)
-        .padding(.bottom, 8)
-    }
-
-    private var content: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.vertical) {
-                LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(chapters) { chapter in
-                        row(for: chapter)
-                            .id(chapter.index)
-                    }
-                }
-                .padding(.top, 8)
-                .padding(.bottom, 24)
-            }
-            .scrollIndicators(.hidden)
-            .onAppear {
-                proxy.scrollTo(currentChapterIndex, anchor: .center)
-            }
-        }
-    }
-
-    private func row(for chapter: BookChapter) -> some View {
-        let isCurrentChapter = chapter.index == currentChapterIndex
-
-        return Button {
-            onSelectChapter(chapter.index)
-        } label: {
-            HStack(alignment: .top, spacing: 16) {
-                Text("\(chapter.index)")
-                    .font(.system(size: 15, weight: isCurrentChapter ? .medium : .regular))
-                    .foregroundStyle(AppTheme.Colors.textSecondary)
-                    .frame(width: 34, alignment: .leading)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(chapter.title)
-                        .font(.system(size: 16, weight: isCurrentChapter ? .medium : .regular))
-                        .foregroundStyle(
-                            isCurrentChapter
-                                ? AppTheme.Colors.textPrimary
-                                : AppTheme.Colors.textSecondary
-                        )
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-
-                    Text("(\(chapter.timestampText))")
-                        .font(.system(size: 13, weight: .regular))
-                        .foregroundStyle(AppTheme.Colors.textSecondary.opacity(0.9))
-                        .lineLimit(1)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                Spacer(minLength: 0)
-            }
-            .padding(.vertical, 6)
-            .padding(.horizontal, AppTheme.Layout.horizontalInset)
-            .background(
-                isCurrentChapter
-                    ? AppTheme.Colors.textPrimary.opacity(0.06)
-                    : .clear
-            )
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("listen.chapter_list.row.\(chapter.index)")
     }
 }
 
