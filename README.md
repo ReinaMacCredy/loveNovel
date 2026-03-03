@@ -22,7 +22,7 @@ An iOS novel reading app for discovering, reading, and managing stories. Built w
 
 ```bash
 # Clone and generate the Xcode project
-git clone <repo-url> && cd loveNovel
+git clone https://github.com/ReinaMacCredy/loveNovel.git && cd loveNovel
 xcodegen generate
 
 # Build
