@@ -450,7 +450,7 @@ struct ReaderView: View {
                         } label: {
                             ZStack {
                                 Circle()
-                                    .fill(themeColor(for: theme))
+                                    .fill(theme.selectorColor)
                                     .frame(width: 24, height: 24)
                                 
                                 // Subtle border for all circles to make them visible
@@ -731,27 +731,6 @@ struct ReaderView: View {
             return .white.opacity(0.55)
         default:
             return AppTheme.Colors.textSecondary
-        }
-    }
-
-    private func themeColor(for theme: ReaderViewModel.ReaderThemeStyle) -> Color {
-        switch theme {
-        case .light:
-            return Color(red: 0.96, green: 0.97, blue: 0.98)
-        case .coolGray:
-            return Color(red: 0.90, green: 0.91, blue: 0.94)
-        case .pink:
-            return Color(red: 0.90, green: 0.86, blue: 0.86)
-        case .ivory:
-            return Color(red: 0.90, green: 0.89, blue: 0.83)
-        case .sepia:
-            return Color(red: 0.72, green: 0.68, blue: 0.60)
-        case .warmGray:
-            return Color(red: 0.71, green: 0.67, blue: 0.65)
-        case .charcoal:
-            return Color(red: 0.16, green: 0.16, blue: 0.19)
-        case .black:
-            return Color(red: 0, green: 0, blue: 0, opacity: 1.0)
         }
     }
 
